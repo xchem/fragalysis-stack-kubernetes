@@ -1,3 +1,4 @@
+docutils == 0.20.1
 pyqt5 == 5.15.10
 pyqtwebengine == 5.15.6
 Sphinx == 7.2.6
