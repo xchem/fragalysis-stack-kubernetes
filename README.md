@@ -1,11 +1,8 @@
-# Flexible playbooks for Fragalysis-Stack (Kubernetes)
+# Flexible playbooks for Fragalysis-Stack deployment (Kubernetes)
 
-![yamllint and doc build](https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes/workflows/lint%20and%20doc%20build/badge.svg)
+![yamllint and doc build](https://github.com/xchem/fragalysis-stack-kubernetes/workflows/lint%20and%20doc%20build/badge.svg)
 
-[![Documentation Status](https://readthedocs.org/projects/im-dls-fragalysis-stack-kubernetes/badge/?version=latest)](https://im-dls-fragalysis-stack-kubernetes.readthedocs.io/en/latest/?badge=latest)
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/informaticsmatters/dls-fragalysis-stack-kubernetes)
-
-[![CodeFactor](https://www.codefactor.io/repository/github/informaticsmatters/dls-fragalysis-stack-kubernetes/badge/master)](https://www.codefactor.io/repository/github/informaticsmatters/dls-fragalysis-stack-kubernetes/overview/master)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/xchem/fragalysis-stack-kubernetes)
 
 Ansible Playbooks (and Roles) for the deployment of the XChem [Fragalysis Stack]
 application to Kubernetes. This repository builds on the work accomplished
@@ -16,9 +13,9 @@ server.
 You'll need a Python environment where you need to install the project
 requirements (for Python and Ansible): -
 
-    python -m venv ~/.venv/dls-fragalysis-stack-kubernetes
-    source ~/.venv/dls-fragalysis-stack-kubernetes/bin/activate
-    
+    python -m venv venv
+    source venv/bin/activate
+
     pip install --upgrade pip
     pip install -r requirements.txt
     ansible-galaxy install -r requirements.yaml --force
@@ -36,7 +33,7 @@ in the `awx-configuration` directory.
 ## Editing the sensitive.vault
 Certain, sensitive, variables are located in the encrypted file
 `roles/fragalysis-stack/vars/sensitive.vault`. This file should not be
-committed un-encrypted and can be edited from the project root without 
+committed un-encrypted and can be edited from the project root without
 decrypting it, armed with the repository vault password, using: -
 
     ansible-vault edit roles/fragalysis-stack/vars/sensitive.vault
@@ -51,12 +48,10 @@ run the following from the project root: -
 
 The project documentation is also published to [Read The Docs],
 where you can find pre-compiled copies online.
- 
+
 ---
 
 [awx]: https://github.com/ansible/awx
 [fragalysis stack]: https://github.com/xchem/fragalysis-stack
-[openshift deployment]: https://github.com/InformaticsMatters/dls-fragalysis-stack-openshift
-[read the docs]: https://im-dls-fragalysis-stack-kubernetes.readthedocs.io/en/stable/
+[read the docs]: https://fragalysis-stack-kubernetes.readthedocs.io/en/stable/
 [sphinx]: https://pypi.org/project/Sphinx/
-[notes]: https://raw.githubusercontent.com/InformaticsMatters/okd-orchestrator/master/README-SPHINX.md
