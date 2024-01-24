@@ -72,6 +72,8 @@
       wait: yes
     loop:
     - statefulset-stack
+    - statefulset-worker
+    - deployment-beat
     - statefulset-database
 
   - name: Wait for database to disappear
@@ -81,6 +83,26 @@
       namespace: "{{ stack_namespace }}"
     register: db_result
     until: db_result.resources|length == 0
+    delay: 5
+    retries: "{{ (wait_timeout|int / 5)|int }}"
+
+  - name: Wait for stack to disappear
+    k8s_info:
+      kind: Pod
+      name: stack-0
+      namespace: "{{ stack_namespace }}"
+    register: stack_result
+    until: stack_result.resources|length == 0
+    delay: 5
+    retries: "{{ (wait_timeout|int / 5)|int }}"
+
+  - name: Wait for worker to disappear
+    k8s_info:
+      kind: Pod
+      name: worker-0
+      namespace: "{{ stack_namespace }}"
+    register: worker_result
+    until: worker_result.resources|length == 0
     delay: 5
     retries: "{{ (wait_timeout|int / 5)|int }}"
 
