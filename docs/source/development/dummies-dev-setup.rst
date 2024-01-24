@@ -24,14 +24,13 @@ component of the fragalysis stack:
 
 1.	`xchem/fragalysis-backend <https://github.com/xchem/fragalysis-backend>`_
 2.	`xchem/fragalysis-frontend <https://github.com/xchem/fragalysis-frontend>`_
-3.	`xchem/fragalysis-loader <https://github.com/xchem/fragalysis-loader>`_
-4.	`xchem/fragalysis-stack <https://github.com/xchem/fragalysis-stack>`_
+3.	`xchem/fragalysis-stack <https://github.com/xchem/fragalysis-stack>`_
 
 Old forks should have the current version of master put in - changes to the
 stack include changes to how CI/CD works, so it is important that all forks are
 brought up-to-date with the master branch of the XChem repositories
 
-Setting up with AWX
+Creating your stack
 ===================
 
 The stack image for your development environment can be accessed at
@@ -43,25 +42,27 @@ there are two kinds of jobs:
 
 *   **Common [...]** - these jobs are for duplicating the database and
     media components into your own stack
-*   **User [...]** - these jobs are for deploying or destroying the stack
+*   **User [...]** - these jobs are for deploying or wiping the stack
 
 If someone hasn't already run the first stack job for you, here's how to do it:
 
 1. Run the **User (<name>) Developer Fragalysis Stack** job
 
-    *   NB: **DO NOT** navigate to your stack URL
-        until you have completed steps 2 and 3 below
-    *   NB: the URL for your stack is spat out in the output of this job
+    *   NB: the URL for your stack is emitted in the output of this job
     *   NB: you must be logged in as your own user to create your own stack.
-        **DO NOT** run any other user's job under **any** circumstances
+        You **CANNOT** run any other user's template
 
-2. Run the **Common Database Replicator (One-Time)** job
+If you need a copy of the production/staging stack's data (and media): -
 
-    * NB: you must be logged in as your own user for this to populate your stack
+1. Run the **Common Database Replicator (One-Time)** job if you
 
-3. Run the **Common Media Replicator (One-Time)** job
+    *   NB: you must be logged in as your own user for this to populate your stack
+        You can only replicate to your own stack.
 
-    * NB: you must be logged in as your own user for this to populate your stack
+2. Run the **Common Media Replicator (One-Time)** job
+
+    *   NB: you must be logged in as your own user for this to populate your stack
+        You can only replicate to your own stack.
 
 Each job can be launched by clicking on the rocket icon next to the template,
 this will open the job template, and allow you to launch it.
@@ -70,6 +71,22 @@ For these first steps, it is fine to run the jobs without changing any parameter
 When the jobs are finished, navigate to the URL spat out by the job in
 step **1** above. You should now have a copy of the stack that is created from the
 ``xchem/master`` branches.
+
+Wiping your stack
+=================
+A playbook exists to wipe (erase) a stack. This playbook deletes the stack's
+Pods (including th database), and the database and (optionally) the media volumes.
+This ensures any future re-deployment of the stack will be "reset" (empty).
+
+To wipe a stack: -
+
+1.  Run the **User (<name>) Developer Fragalysis Stack [WIPE]** job
+
+    *   NB: you must be logged in as your own user for this to erase your stack.
+        You cannot erase someone else's stack.
+
+Once a stack is wiped you will need to run the corresponding **User** job
+to deploy the (now clean) stack.
 
 Keycloak
 ========

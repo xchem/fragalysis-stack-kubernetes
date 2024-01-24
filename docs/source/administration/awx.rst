@@ -57,7 +57,7 @@ Here we need to Duplicate each template that begins **Developer**. For each
     to the end of the new template name, Click this new template name to
     edit it
 *   Change the duplicated template's **NAME** by removing the ``*<HH:MM:SS``
-    from the end and add ``User (<user>)`` at the beginning.
+    from the end and insert ``User (<user>)`` at the beginning.
 *   Click the **PERMISSIONS** button at the top of the panel
 *   Click the **+** (Add) icon to add the user to the template
 *   In the **Please assign roles to the selected users/teams** section
