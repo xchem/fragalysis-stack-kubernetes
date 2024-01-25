@@ -44,7 +44,7 @@ spec:
       imagePullSecrets:
       - name: {{ all_image_preset_pullsecret_name }}
 {% endif %}
-          
+
       initContainers:
       - name: wait-for-database
         image: {{ busybox_image_registry }}/library/busybox:1.28.0
@@ -86,6 +86,8 @@ spec:
           value: redis://redis:6379/0
         - name: CELERY_RESULT_BACKEND
           value: redis://redis:6379/0
+        - name: DEPLOYMENT_MODE
+          value: '{{ stack_deployment_mode }}'
         - name: WEB_DJANGO_SUPERUSER_NAME
           value: admin
         - name: WEB_DJANGO_SUPERUSER_EMAIL

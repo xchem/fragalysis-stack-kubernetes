@@ -13,6 +13,9 @@ worker_replicas: 2
 stack_concurrency: 4
 worker_concurrency: 4
 
+# The deployment mode (one of 'production' or 'development')
+stack_deployment_mode: 'production'
+
 # Run the celery 'beat' Pod?
 enable_beat_pod: yes
 
