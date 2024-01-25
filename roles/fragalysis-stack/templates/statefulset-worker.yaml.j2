@@ -99,6 +99,8 @@ spec:
           value: redis://redis:6379/0
         - name: CELERY_RESULT_BACKEND
           value: redis://redis:6379/0
+        - name: DEPLOYMENT_MODE
+          value: '{{ stack_deployment_mode }}'
         - name: NEO4J_BOLT_URL
           value: bolt://neo4j:test@{{ graph_hostname }}:7687
         - name: NEO4J_QUERY
