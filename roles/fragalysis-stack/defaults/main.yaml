@@ -15,6 +15,9 @@ worker_concurrency: 4
 
 # The deployment mode (one of 'production' or 'development')
 stack_deployment_mode: 'production'
+# Authenticate uploads (typically yes)
+# Can be set to no in development mode.
+stack_authenticate_upload: yes
 
 # Run the celery 'beat' Pod?
 enable_beat_pod: yes
