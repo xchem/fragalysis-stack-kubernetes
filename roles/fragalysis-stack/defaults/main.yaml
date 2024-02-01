@@ -18,6 +18,9 @@ stack_deployment_mode: 'production'
 # Authenticate uploads (typically yes)
 # Can be set to no in development mode.
 stack_authenticate_upload: yes
+# Any forced API errors ("infections")?
+# A comma-separated list of infection names
+stack_infections: ''
 
 # Run the celery 'beat' Pod?
 enable_beat_pod: yes
