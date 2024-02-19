@@ -5,4 +5,4 @@ metadata:
   name: ssh-key
   namespace: {{ stack_namespace }}
 data:
-  fragalysis-stack-ssh-key: {{ stack_ssh_private_key | indent 2 }}
+  fragalysis-stack-ssh-key: {{ stack_ssh_private_key | to_yaml }}
