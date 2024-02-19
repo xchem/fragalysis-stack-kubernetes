@@ -314,7 +314,7 @@ spec:
             secretKeyRef:
               name: ssh
               key: password
-{% if stack_ssh_private_key %}
+{% if stack_use_private_key_fact is defined %}
         # A private key's been defined,
         # so it will be in a 'well known location' in the container.
         - name: SSH_PRIVATE_KEY_FILENAME
