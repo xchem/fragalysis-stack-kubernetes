@@ -380,7 +380,7 @@ spec:
         - name: log
           mountPath: /code/logs
 {% endif %}
-{% if stack_ssh_private_key %}
+{% if stack_use_private_key_fact is defined %}
         - name: ssh-key
           mountPath: /code/fragalysis-stack-ssh-key
           subPath: fragalysis-stack-ssh-key
@@ -389,7 +389,7 @@ spec:
       - name: media
         persistentVolumeClaim:
           claimName: media
-{% if stack_ssh_private_key %}
+{% if stack_use_private_key_fact is defined %}
       - name: ssh-key
         configMap:
           name: ssh-key
