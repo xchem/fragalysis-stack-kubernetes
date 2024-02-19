@@ -194,7 +194,7 @@
     definition:  "{{ lookup('template', 'configmap-ssh-key.yaml.j2') }}"
     wait: yes
   when:
-  - stack_use_private_key_fact | defined
+  - stack_use_private_key_fact is defined
 
 - name: Deploy stack
   k8s:
