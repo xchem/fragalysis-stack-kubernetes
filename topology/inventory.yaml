@@ -1,7 +1,5 @@
 ---
 all:
-  vars:
-    ansible_ssh_private_key_file: /home/wmu55374/.ssh/stfc-abc-1
   children:
     rke:
       children:
@@ -57,6 +55,15 @@ all:
             192.168.253.27:
     ubuntu:
       children:
+        rke:
+          hosts:
+            192.168.253.6:
+            192.168.253.49:
+            192.168.253.166:
+            192.168.253.114:
+            192.168.253.101:
+            192.168.253.201:
+            192.168.253.29:
         prod:
           hosts:
             192.168.253.103:
