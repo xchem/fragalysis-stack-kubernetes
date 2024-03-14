@@ -88,12 +88,12 @@
   - name: Set direction (production)
     set_fact:
       replicate_direction_fact: BtoA
-    when: replicator_stack_ns|string == 'production-stack'
+    when: replicator_stack_ns|string in ['v2-production-stack', 'production-stack']
 
   - name: Set direction (staging)
     set_fact:
       replicate_direction_fact: AtoB
-    when: replicator_stack_ns|string == 'staging-stack'
+    when: replicator_stack_ns|string in 'staging-stack'
 
   when: replicator_stack_ns|string|length > 0
 

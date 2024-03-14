@@ -27,7 +27,7 @@
     name: "{{ stack_namespace_fact }}"
   register: n_result
 
-- name: Assert namepsace exists
+- name: Assert namespace exists
   assert:
     that: n_result.resources|length == 1
 
