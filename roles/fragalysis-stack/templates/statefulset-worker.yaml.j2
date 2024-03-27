@@ -314,6 +314,12 @@ spec:
             secretKeyRef:
               name: ssh
               key: password
+{% if stack_use_private_key_fact is defined %}
+        # A private key's been defined,
+        # so it will be in a 'well known location' in the container.
+        - name: SSH_PRIVATE_KEY_FILENAME
+          value: '/code/fragalysis-stack-ssh-key'
+{% endif %}
         - name: SECURITY_CONNECTOR
           valueFrom:
             secretKeyRef:
@@ -351,10 +357,20 @@ spec:
         - name: log
           mountPath: /code/logs
 {% endif %}
+{% if stack_use_private_key_fact is defined %}
+        - name: ssh-key
+          mountPath: /code/fragalysis-stack-ssh-key
+          subPath: fragalysis-stack-ssh-key
+{% endif %}
       volumes:
       - name: media
         persistentVolumeClaim:
           claimName: media
+{% if stack_use_private_key_fact is defined %}
+      - name: ssh-key
+        configMap:
+          name: ssh-key
+{% endif %}
 
 {% if stack_log_vol_storageclass %}
   # Volume claim templates.

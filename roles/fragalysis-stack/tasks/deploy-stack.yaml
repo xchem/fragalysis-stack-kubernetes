@@ -110,7 +110,6 @@
       that:
       - stack_ssh_host is defined
       - stack_ssh_user is defined
-      - stack_ssh_password is defined
       - stack_security_connector is defined
 
   - name: Set ssh secret facts
@@ -182,6 +181,20 @@
   set_fact:
     stack_url: "{{ stack_hostname }}"
   when: not stack_is_for_developer|bool
+
+- name: Set stack private key fact
+  set_fact:
+    stack_use_private_key_fact: yes
+  when:
+  - stack_ssh_private_key|string|length != 0
+  - stack_ssh_password|string|length == 0
+
+- name: Deploy SSH Private Key
+  k8s:
+    definition: "{{ lookup('template', 'configmap-ssh-key.yaml.j2') }}"
+    wait: yes
+  when:
+  - stack_use_private_key_fact is defined
 
 - name: Deploy stack
   k8s:
