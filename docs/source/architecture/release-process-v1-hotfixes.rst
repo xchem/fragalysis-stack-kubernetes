@@ -68,3 +68,15 @@ Deploying a hot-fix
     recently built stack and hot-fix tag (e.g. ``docker.io/xchem/fragalysis-stack:2023.11.1-1``)
 -   Save the **StatefulSet** in order for the new image to be deployed.
 -   Check the stack's Pod deployment
+
+If you need to redeploy, for example if environment variables have changed,
+or you need to deploy new objects to support your change you can re-run the
+original playbook (that you wil have made changes to) using the kubernetes
+repository's ``v1-stack`` (or a tag made on it). Just ensure the
+**Production Fragalysis Stack (Legacy)** AWX Job Template uses the
+**fragalysis-stack-kubernetes (v1-stack)** Project or a variant of it, one that
+uses the ``v1-stack`` branch (or a tag made on it).
+
+.. warning::
+    You **MUST NOT UNDER ANY CIRCUMSTANCES** use the current playbooks
+    They are not compatible with the V1 stack.
