@@ -24,6 +24,7 @@ Reuse this branch as a base for all V1 hot-fixes as required.
 - Place that tag in the stack's ``build-main.yaml`` file (on its ``v1-hotfix`` branch)
 - Commit the changes
 - Tag the stack's ``v1-hotfix`` branch with a new tag (e.g. ``2023.11.1-1``)
+  Tags made on the stack's ``v1-hotfix`` branch will not be automatically deployed.
 
 The resultant stack image will be pushed to docker hub.
 
@@ -32,7 +33,7 @@ Now follow the instructions below in `Deploying a hot-fix`_.
 .. warning::
     To avoid confusion the tag for V1 hot-fixes on the f/e, backend and stack repositories
     **MUST** begin with the tag used for the last formal production release form that
-    repository. For the f/e is is ``2023.11.1``. For the b/e it is ``2023.09.1`` and for
+    repository. For the f/e it is ``2023.11.1``. For the b/e it is ``2023.09.1`` and for
     the stack it is ``2023.11.1``.
 
 ******************
@@ -45,14 +46,15 @@ Reuse this branch for all V1 hot-fixes as required.
 - Make back-end changes to a branch based off this and then tag it (eg. ``2023.09.1-2``)
 - Place that tag in the stack's ``build-main.yaml`` file (on its ``v1-hotfix`` branch)
 - Commit the changes to the stack repository
-- Tag the stack's ``v1-hotfix`` branch with a new tag (e.g. ``2023.11.1-2``)
+- Tag the stack's ``v1-hotfix`` branch with a new tag (e.g. ``2023.11.1-2``).
+  Tags made on the stack's ``v1-hotfix`` branch will not be automatically deployed.
 
 The resultant stack image will be pushed to docker hub.
 
 .. warning::
     To avoid confusion the tag for V1 hot-fixes on the f/e, backend and stack repositories
     **MUST** begin with the tag used for the last formal production release form that
-    repository. For the f/e is is ``2023.11.1``. For the b/e it is ``2023.09.1`` and for
+    repository. For the f/e it is ``2023.11.1``. For the b/e it is ``2023.09.1`` and for
     the stack it is ``2023.11.1``.
 
 Now follow the instructions below in `Deploying a hot-fix`_.
@@ -69,14 +71,17 @@ Deploying a hot-fix
 -   Save the **StatefulSet** in order for the new image to be deployed.
 -   Check the stack's Pod deployment
 
-If you need to redeploy, for example if environment variables have changed,
+If you need to redeploy the stack, for example if environment variables have changed,
 or you need to deploy new objects to support your change you can re-run the
-original playbook (that you wil have made changes to) using the kubernetes
-repository's ``v1-stack`` (or a tag made on it). Just ensure the
-**Production Fragalysis Stack (Legacy)** AWX Job Template uses the
-**fragalysis-stack-kubernetes (v1-stack)** Project or a variant of it, one that
-uses the ``v1-stack`` branch (or a tag made on it).
+original playbook (that you will have made changes to). Using the image tag
+you will have used to build the stack in the instructions above, replace
+the ``stack_image_tag`` value in the **Production Fragalysis Stack (Legacy)**
+AWX Job Template's **EXTRA VARIABLES** definition.
+
+Just ensure the **Production Fragalysis Stack (Legacy)** AWX Job Template uses the
+**fragalysis-stack-kubernetes (v1-stack)** Project or a variant of it. That Project
+uses the latest playbooks on the corresponding repository's ``v1-stack`` branch.
 
 .. warning::
-    You **MUST NOT UNDER ANY CIRCUMSTANCES** use the current playbooks
+    You **MUST NOT (UNDER ANY CIRCUMSTANCES)** use the current playbooks.
     They are not compatible with the V1 stack.
