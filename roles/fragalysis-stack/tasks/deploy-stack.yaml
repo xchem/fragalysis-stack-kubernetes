@@ -206,6 +206,12 @@
   - service-stack
   - ingress-stack
 
+- name: Deploy Metrics
+  k8s:
+    definition: "{{ lookup('template', 'servicemonitor-stack.yaml.j2') }}"
+    wait: yes
+  when: stack_deploy_metrics|bool
+
 - name: Deploy beat
   k8s:
     definition: "{{ lookup('template', 'deployment-beat.yaml.j2') }}"

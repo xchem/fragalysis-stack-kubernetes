@@ -236,6 +236,9 @@ stack_logging_framework_root_level: INFO
 # Wait for the neo4j graph to become ready before starting the stack?
 stack_wait_for_graph: yes
 
+# Metrics?
+stack_deploy_metrics: yes
+
 # ISPyB/SSH variables ---------------------------------------------------------
 # These are set from vars/sensitive.vault
 # and are defined here for clarity.
