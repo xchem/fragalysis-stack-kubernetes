@@ -5,6 +5,7 @@
     definition: "{{ lookup('template', 'pvc-redis.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
+  when: redis_vol_size_g | int > 0
 
 # Best practice ... wait for the PVC to bind.
 # e.g. wait until resources[0].status.phase == Bound (initially Pending)
@@ -18,7 +19,9 @@
   until: bind_result.resources[0].status.phase == 'Bound'
   delay: 5
   retries: "{{ (bind_timeout|int / 5)|int }}"
-  when: wait_for_bind|bool
+  when:
+  - redis_vol_size_g | int > 0
+  - wait_for_bind | bool
 
 # Now deploy redis and its service.
 

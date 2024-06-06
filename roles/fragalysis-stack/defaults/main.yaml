@@ -201,8 +201,9 @@ database_bu_use_rsync: no
 database_use_init_file: yes
 
 # The redis Pod
+# If the size is zero no volume is created and persistence is disabled
 redis_vol_storageclass: ' '
-redis_vol_size_g: 1
+redis_vol_size_g: 0
 
 # Squonk/2 material, unset by default.
 # User can provide UI, DM and AS API URLs.

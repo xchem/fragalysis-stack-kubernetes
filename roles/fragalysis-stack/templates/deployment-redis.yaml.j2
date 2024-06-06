@@ -85,17 +85,21 @@ spec:
           failureThreshold: 5
           successThreshold: 1
         volumeMounts:
+{% if redis_vol_size_g | int %}
         - name: data
           mountPath: /redis-master-data
+{% endif %}
         - name: config
           mountPath: /redis-master/redis.conf
           subPath: redis.conf
           readOnly: true
 
       volumes:
+{% if redis_vol_size_g | int %}
       - name: data
         persistentVolumeClaim:
           claimName: redis
+{% endif %}
       - name: config
         configMap:
           name: redis-conf

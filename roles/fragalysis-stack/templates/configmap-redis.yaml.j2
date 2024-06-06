@@ -17,13 +17,19 @@ data:
     logfile ""
     loglevel {{ redis_conf_loglevel }}
     # SNAPSHOTTING #####################################################################
+{% if redis_vol_size_g | int %}
     dir /redis-master-data
     save 3600 1 300 100 60 10000
     sanitize-dump-payload yes
+{% else %}
+    save ""
+{% endif %}
     # MEMORY MANAGEMENT ################################################################
     maxmemory {{ redis_conf_maxmemory }}
     maxmemory-policy allkeys-lru
     maxmemory-samples 10
     # APPEND ONLY MODE #################################################################
+{% if redis_vol_size_g | int %}
     appenddirname "append-only-files"
     appendonly yes
+{% endif %}
