@@ -13,7 +13,7 @@
 # (it may have been removed dur to redeployment)
 
 - name: Check Pod exists
-  kubernetes.core.k8s_info:
+  k8s_info:
     kind: Pod
     namespace: "{{ item.namespace }}"
     name: "{{ item.pod }}"
@@ -23,7 +23,7 @@
   block:
 
   - name: Touch target file
-    kubernetes.core.k8s_exec:
+    k8s_exec:
       namespace: "{{ item.namespace }}"
       pod: "{{ item.pod }}"
       command: touch {{ item.volume }}/blob.txt
@@ -31,7 +31,7 @@
     ignore_errors: True
 
   - name: Delete failed pod
-    kubernetes.core.k8s:
+    k8s:
       api_version: v1
       kind: Pod
       namespace: "{{ item.namespace }}"
@@ -49,7 +49,7 @@
     - command_status.rc is not defined or command_status.rc != 0
 
   - name: Remove target file
-    kubernetes.core.k8s_exec:
+    k8s_exec:
       namespace: "{{item.namespace }}"
       pod: "{{ item.pod }}"
       command: rm {{ item.volume }}/blob.txt
