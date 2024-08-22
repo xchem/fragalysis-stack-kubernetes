@@ -1,0 +1,60 @@
+---
+
+# Attempt to write a file to the volume to check if it is read-only.
+# If successful we then try and remove the file (which must work).
+# If not successful we add the item to a fact (that can be inspected by the caller)
+# and then (optionally) delete the pod.
+
+- name: Display target
+  debug:
+    var: item
+
+# Only try to check volumes on Pods that exist
+# (it may have been removed dur to redeployment)
+
+- name: Check Pod exists
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ item.namespace }}"
+    name: "{{ item.pod }}"
+  register: pod_result
+
+- name: Check Pod volume (if exists)
+  block:
+
+  - name: Touch target file
+    kubernetes.core.k8s_exec:
+      namespace: "{{ item.namespace }}"
+      pod: "{{ item.pod }}"
+      command: touch {{ item.volume }}/blob.txt
+    register: command_status
+    ignore_errors: True
+
+  - name: Delete failed pod
+    kubernetes.core.k8s:
+      api_version: v1
+      kind: Pod
+      namespace: "{{ item.namespace }}"
+      name: "{{ item.pod }}"
+      state: absent
+    when:
+    - command_status.rc is defined
+    - command_status.rc != 0
+    - delete_failed_pods | bool
+
+  - name: Add failure to failed_volumes list
+    set_fact:
+      failed_volumes: "{{ failed_volumes + [item] }}"
+    when:
+    - command_status.rc is not defined or command_status.rc != 0
+
+  - name: Remove target file
+    kubernetes.core.k8s_exec:
+      namespace: "{{item.namespace }}"
+      pod: "{{ item.pod }}"
+      command: rm {{ item.volume }}/blob.txt
+    when:
+    - command_status.rc is defined
+    - command_status.rc == 0
+
+  when: pod_result.resources | length > 0

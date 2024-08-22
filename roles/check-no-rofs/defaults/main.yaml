@@ -1,0 +1,85 @@
+---
+
+# If true, Pods that fail the ROFS check will be deleted.
+delete_failed_pods: no
+
+# The cluster to check.
+# This is a 'key' of the volumes map (see below)
+cluster: SetMe
+
+volumes:
+  # Developer cluster
+  dev:
+  # Databases
+  - namespace: stack-tibor-default
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: stack-tibor-default
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: stack-kalev-default
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: stack-matej-default
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: stack-alan-default
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: im-infra
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: im-infra-test
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: im-infra-integration-test
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  # Message queues
+  - namespace: im-infra
+    pod: rabbitmq-0
+    volume: /var/lib/rabbitmq/mnesia
+  - namespace: im-infra-test
+    pod: rabbitmq-0
+    volume: /var/lib/rabbitmq/mnesia
+  - namespace: im-infra-integration-test
+    pod: rabbitmq-0
+    volume: /var/lib/rabbitmq/mnesia
+  # Production cluster
+  prod:
+  # Databases
+  - namespace: production-stack
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: staging-stack
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: v2-production-stack
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: im-infra
+    pod: database-0
+    volume: /var/lib/postgresql/data
+  - namespace: discourse
+    pod: postgres-0
+    volume: /bitnami/postgresql
+  - namespace: staging-discourse
+    pod: postgres-0
+    volume: /bitnami/postgresql
+  # Message queues
+  - namespace: im-infra
+    pod: rabbitmq-0
+    volume: /var/lib/rabbitmq/mnesia
+  # Other
+  - namespace: discourse
+    pod: redis-0
+    volume: /bitnami
+  - namespace: discourse
+    pod: discourse-0
+    volume: /bitnami/discourse
+  - namespace: staging-discourse
+    pod: redis-0
+    volume: /bitnami
+  - namespace: staging-discourse
+    pod: discourse-0
+    volume: /bitnami/discourse
