@@ -9,6 +9,8 @@
 # It also appears that we need to set the PATH on thew remote server
 # to include ~/.local/bin. This is because the Ansible 10 installation
 # is in the user's home directory and the PATH is not set to include it.
+#
+# See https://wiki.crowncloud.net/?How_to_Install_Python_3_11_on_Ubuntu_20_04
 
 - hosts: 192.168.253.21
   vars:
