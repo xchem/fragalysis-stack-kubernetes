@@ -3,8 +3,8 @@
 # A play that can be used to check Pods in a given cluster for
 # read-only filesystem issues. For this to work we need an Ansible
 # that's more recent than the one on AWX. So we create a server
-# and install Ansible 10 on that machine and then simply run
-# 'ansible-playbook' on the remote server.
+# with a more recent Python and install Ansible 10 on that machine,
+# and then simply run 'ansible-playbook' on the remote server.
 #
 # It also appears that we need to set the PATH on thew remote server
 # to include ~/.local/bin. This is because the Ansible 10 installation
