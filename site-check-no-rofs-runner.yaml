@@ -10,18 +10,14 @@
 - hosts: 192.168.253.21
   tasks:
   - name: Run check-no-rofs (dev)
-    become: yes
-    become_user: wmu55374
-    become_method: su
-    become_flags: '--login'
-    command: ansible-playbook site-check-no-rofs.yaml -e cluster=dev
+    shell: source /home/wmu55374/.bashrc && ansible-playbook site-check-no-rofs.yaml -e cluster=dev
     environment:
       KUBECONFIG: ~/.kube/config-dev
+    args:
+      executable: /bin/bash
   - name: Run check-no-rofs (prod)
-    become: yes
-    become_user: wmu55374
-    become_method: su
-    become_flags: '--login'
-    command: ansible-playbook site-check-no-rofs.yaml -e cluster=prod
+    shell: source /home/wmu55374/.bashrc && ansible-playbook site-check-no-rofs.yaml -e cluster=prod
     environment:
       KUBECONFIG: ~/.kube/config-prod
+    args:
+      executable: /bin/bash
