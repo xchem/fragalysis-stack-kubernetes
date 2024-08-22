@@ -7,7 +7,7 @@
 #
 # You can use delete_failed_pods to also delete Pods that fail.
 
-- hosts: playbook-runner
+- hosts: 192.168.253.21
   vars:
     ansible_python_interpreter: /usr/local/bin/python3.11
   tasks:
