@@ -7,7 +7,7 @@
 #
 # You can use delete_failed_pods to also delete Pods that fail.
 
-- hosts: localhost
+- hosts: xch-bastion
   gather_facts: False
   tasks:
   - include_role:
