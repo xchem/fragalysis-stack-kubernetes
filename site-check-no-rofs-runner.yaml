@@ -8,6 +8,8 @@
 # You can use delete_failed_pods to also delete Pods that fail.
 
 - hosts: 192.168.253.21
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3.11
   tasks:
   - name: Run check-no-rofs (dev)
     shell: source /home/wmu55374/.bashrc && ansible-playbook site-check-no-rofs.yaml -e cluster=dev
