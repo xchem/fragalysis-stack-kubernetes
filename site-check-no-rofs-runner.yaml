@@ -18,14 +18,16 @@
   - name: ENV
     command: env
   - name: Run check-no-rofs (dev)
-    shell: source /home/wmu55374/.bashrc && ansible-playbook site-check-no-rofs.yaml -e cluster=dev
+    shell: ansible-playbook site-check-no-rofs.yaml -e cluster=dev
     environment:
       KUBECONFIG: ~/.kube/config-dev
+      PATH: /home/wmu55374/.local/bin:{{ ansible_env.PATH }}
     args:
       executable: /bin/bash
   - name: Run check-no-rofs (prod)
-    shell: source /home/wmu55374/.bashrc && ansible-playbook site-check-no-rofs.yaml -e cluster=prod
+    shell: ansible-playbook site-check-no-rofs.yaml -e cluster=prod
     environment:
       KUBECONFIG: ~/.kube/config-prod
+      PATH: /home/wmu55374/.local/bin:{{ ansible_env.PATH }}
     args:
       executable: /bin/bash
