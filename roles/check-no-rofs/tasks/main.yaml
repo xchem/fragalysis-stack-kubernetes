@@ -4,6 +4,10 @@
 # based on the cluster 'name'.
 # If there are failures (at the end) the playbook fails.
 
+- name: Display Ansible version
+  debug:
+    var: ansible_version.full
+
 - name: Check cluster name
   assert:
     that:
