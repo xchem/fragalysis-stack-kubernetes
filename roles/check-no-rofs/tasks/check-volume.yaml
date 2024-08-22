@@ -28,7 +28,7 @@
       pod: "{{ item.pod }}"
       command: touch {{ item.volume }}/blob.txt
     register: command_status
-    ignore_errors: True
+    ignore_errors: yes
 
   - name: Delete failed pod
     kubernetes.core.k8s:
