@@ -16,3 +16,7 @@ all:
     nfs_media:
       hosts:
         130.246.213.186:
+    # The Cluster's Ansible PLaybook runner
+    playbook-runner:
+      hosts:
+        192.168.253.21:
