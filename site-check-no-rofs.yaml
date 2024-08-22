@@ -7,8 +7,7 @@
 #
 # You can use delete_failed_pods to also delete Pods that fail.
 
-- hosts: 192.168.253.21
-  gather_facts: False
+- hosts: all
   tasks:
   - include_role:
       name: check-no-rofs
