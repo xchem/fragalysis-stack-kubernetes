@@ -15,7 +15,7 @@
     failed_volumes: []
 
 - name: Check volume
-  import_tasks: check-volume.yaml
+  include_tasks: check-volume.yaml
   loop: "{{ volumes[cluster] }}"
 
 - name: Handle failed volumes
