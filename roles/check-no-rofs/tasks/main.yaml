@@ -14,15 +14,6 @@
     - cluster != 'SetMe'
     - volumes[cluster] is defined
 
-- name: LS
-  command: ls
-
-- name: PWD
-  command: pwd
-
-- name: ENV
-  command: env
-
 - name: Reset failed volumes fact
   set_fact:
     failed_volumes: []
