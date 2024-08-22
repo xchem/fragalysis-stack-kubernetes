@@ -11,23 +11,17 @@
   vars:
     ansible_python_interpreter: /usr/local/bin/python3.11
   tasks:
-  - name: LS
-    command: ls
-  - name: PWD
-    command: pwd
-  - name: ENV
-    command: env
   - name: Run check-no-rofs (dev)
-    shell: ansible-playbook site-check-no-rofs.yaml -e cluster=dev
+    command: ansible-playbook site-check-no-rofs.yaml -e cluster=dev
     environment:
-      KUBECONFIG: ~/.kube/config-dev
+      KUBECONFIG: /home/wmu55374/.kube/config-dev
       PATH: /home/wmu55374/.local/bin:{{ ansible_env.PATH }}
     args:
-      executable: /bin/bash
+      chdir: fragalysis-stack-kubernetes
   - name: Run check-no-rofs (prod)
-    shell: ansible-playbook site-check-no-rofs.yaml -e cluster=prod
+    command: ansible-playbook site-check-no-rofs.yaml -e cluster=prod
     environment:
-      KUBECONFIG: ~/.kube/config-prod
+      KUBECONFIG: /home/wmu55374/.kube/config-prod
       PATH: /home/wmu55374/.local/bin:{{ ansible_env.PATH }}
     args:
-      executable: /bin/bash
+      chdir: fragalysis-stack-kubernetes
