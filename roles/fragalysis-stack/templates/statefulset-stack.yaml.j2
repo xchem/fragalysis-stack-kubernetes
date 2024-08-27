@@ -363,6 +363,10 @@ spec:
         - name: INFECTIONS
           value: '{{ stack_infections }}'
 {% endif %}
+{% if stack_target_warning_message %}
+        - name: TARGET_WARNING_MESSAGE
+          value: '{{ stack_target_warning_message }}'
+{% endif %}
         - name: SECURITY_CONNECTOR_CACHE_MINUTES
           value: '{{ stack_security_connector_cache_minutes }}'
         # The playbook date/time
