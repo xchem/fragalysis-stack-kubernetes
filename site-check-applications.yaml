@@ -1,0 +1,14 @@
+---
+
+# A play that can be used to check Pods in a given cluster for
+# read-only filesystem issues. The play uses a map of volumes
+# and the Pods that use them. The play will attempt to write
+# to the volume, reporting any that cannot be touched.
+#
+# You can use delete_failed_pods to also delete Pods that fail.
+
+- hosts: localhost
+  tasks:
+  - name: Check applications
+    include_role:
+      name: check-applications

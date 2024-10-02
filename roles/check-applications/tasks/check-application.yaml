@@ -1,0 +1,57 @@
+---
+
+# Attempt to write a file to the volume to check if it is read-only.
+# If successful we then try and remove the file (which must work).
+# If not successful we add the item to a fact (that can be inspected by the caller)
+# and then (optionally) delete the pod.
+
+- name: Display application
+  debug:
+    var: item
+
+# Only try to check volumes on Pods that exist
+# (it may have been removed dur to redeployment)
+
+- name: Check URI Response
+  ansible.builtin.uri:
+    url: "{{ item.url }}"
+    validate_certs: "{{ item.validate_certs | default(false) | bool}}"
+    return_content: true
+  register: url_result
+  ignore_errors: yes
+
+#- name: Display URI Response
+#    var: url_result
+##  debug:
+
+# We have to reset the service state fact,
+# this may have been set on a previous iteration.
+- name: Reset service state fact
+  set_fact:
+    fs_service_state: []
+
+# Is the URL a service state endpoint?
+# If so we inspect the service response to make sure
+# they're either OK or NOT_CONFIGURED
+- name: Get service state from response
+  when:
+  - item.type is defined
+  - item.type == 'fs-service-state'
+  block:
+
+  - name: Extract service name and state from response
+    set_fact:
+      fs_service_state: "{{ url_result.json | json_query('service_states[*].{name: name, state: state}') }}"
+
+  - name: Set status error if something's not OK and NOT_DEFINED
+    set_fact:
+      status_error: item
+    loop: "{{ fs_service_state }}"
+    loop_control:
+      loop_var: service_state
+    when: service_state.state not in ['OK', 'NOT_CONFIGURED']
+
+- name: Add failure to failed_applications list
+  set_fact:
+    failed_applications: "{{ failed_applications + [item] }}"
+  when: url_result.failed or status_error is defined

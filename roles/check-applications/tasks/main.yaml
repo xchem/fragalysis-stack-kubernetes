@@ -1,0 +1,56 @@
+---
+
+# Iterates through the list of applications (URLs).
+# If there are failures (at the end) the playbook fails.
+
+- name: Display Ansible version
+  debug:
+    var: ansible_version.full
+
+- name: Include sensitive variables
+  ansible.builtin.include_vars:
+    file: sensitive.yaml
+
+- name: Initialise failed applications fact
+  set_fact:
+    failed_applications: []
+
+- name: Check application
+  include_tasks: check-application.yaml
+  loop: "{{ applications }}"
+
+- name: Handle failed applications
+  when: failed_applications | length > 0
+  block:
+
+  - name: Display failed applications fact
+    debug:
+      var: failed_applications
+
+  - name: Alert slack channel
+    slack:
+      token: "{{ slack_token }}"
+      channel: 'cloud-admin'
+      prepend_hash: never
+      msg: "There are applications that are exhibiting errors"
+      username: 'Ansible on {{ inventory_hostname }}'
+      validate_certs: no
+      blocks:
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *Automated alert from the Ansible Application Checker*
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *The following applications are exhibiting errors:*
+            {% for app in failed_applications %}
+            - {{ app.name }} ({{ app.url }})
+            {% endfor %}
+    when: slack_token | length > 0
+
+  - name: Assert no failed applications
+    fail:
+      msg: "There are failed Applications. See the listed failed applications above."

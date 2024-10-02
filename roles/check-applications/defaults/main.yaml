@@ -1,0 +1,6 @@
+---
+applications:
+- url: https://fragalysis.diamond.ac.uk/
+  name: Production (V2) Stack
+- url: https://fragalysis-legacy.xchem.diamond.ac.uk/
+  name: Production (Legacy) Stack
