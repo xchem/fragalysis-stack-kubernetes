@@ -9,7 +9,7 @@
 
 - name: Include sensitive variables
   ansible.builtin.include_vars:
-    file: sensitive.yaml
+    file: sensitive.vault
 
 - name: Initialise failed applications fact
   set_fact:
