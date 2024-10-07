@@ -42,6 +42,7 @@
   - name: Extract service name and state from response
     set_fact:
       fs_service_state: "{{ url_result.json | json_query('service_states[*].{name: name, state: state}') }}"
+    when: url_result.json is defined
 
   - name: Set status error if something's not OK and NOT_DEFINED
     set_fact:
@@ -49,7 +50,7 @@
     loop: "{{ fs_service_state }}"
     loop_control:
       loop_var: service_state
-    when: service_state.state not in ['OK', 'NOT_CONFIGURED']
+    when: service_state is not defined or service_state.state not in ['OK', 'NOT_CONFIGURED']
 
 - name: Add failure to failed_applications list
   set_fact:
