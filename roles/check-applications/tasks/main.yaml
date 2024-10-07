@@ -11,6 +11,23 @@
   ansible.builtin.include_vars:
     file: sensitive.vault
 
+- name: Check failure file
+  ansible.builtin.stat:
+    path: "{{ application_error_filename }}"
+  register: ae_file
+
+- name: Get error file content
+  set_fact:
+    existing_error: "{{ lookup('ansible.builtin.file', application_error_filename) }}"
+  when:
+  - ae_file.stat.exists
+  - ae_file.stat.isreg
+
+- name: Display existing error
+  debug:
+    var: existing_error
+  when: existing_error is defined
+
 - name: Initialise failed applications fact
   set_fact:
     failed_applications: []
@@ -27,12 +44,13 @@
     debug:
       var: failed_applications
 
+  # If the error has changed, report the new error on Slack
+
   - name: Alert slack channel
     slack:
       token: "{{ slack_token }}"
       channel: 'cloud-admin'
       prepend_hash: never
-      msg: "There are applications that are exhibiting errors"
       username: 'Ansible on {{ inventory_hostname }}'
       validate_certs: no
       blocks:
@@ -49,8 +67,50 @@
             {% for app in failed_applications %}
             - {{ app.name }} ({{ app.url }})
             {% endfor %}
-    when: slack_token | length > 0
+    when:
+    - existing_error is not defined or existing_error != failed_applications
+    - slack_token | length > 0
 
-  - name: Assert no failed applications
+  - name: Write error file
+    ansible.builtin.copy:
+      content: "{{ failed_applications | to_nice_json }}"
+      dest: "{{ application_error_filename }}"
+      mode: '0644'
+
+  - name: Stop (failed applications)
     fail:
       msg: "There are failed Applications. See the listed failed applications above."
+
+# No application errors if we get here.
+# If there was an error file report that the error has now cleared
+# before removing the file.
+
+- name: Handle error recovery
+  when: existing_error is defined
+  block:
+
+  - name: Reassure slack channel (errors cleared)
+    slack:
+      token: "{{ slack_token }}"
+      channel: 'cloud-admin'
+      prepend_hash: never
+      username: 'Ansible on {{ inventory_hostname }}'
+      validate_certs: no
+      blocks:
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *Automated clearance from the Ansible Application Checker*
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *Applications errors have now cleared*
+    when:
+    - slack_token | length > 0
+
+  - name: Remove application error file
+    ansible.builtin.file:
+      path: "{{ application_error_filename }}"
+      state: absent
