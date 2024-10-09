@@ -106,7 +106,7 @@
         text:
           type: mrkdwn
           text: |
-            *Applications errors have now cleared*
+            *Application errors have now cleared*
     when:
     - slack_token | length > 0
 
