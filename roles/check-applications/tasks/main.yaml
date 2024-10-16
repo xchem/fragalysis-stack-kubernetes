@@ -154,6 +154,9 @@
           type: mrkdwn
           text: |
             *Automated HEARTBEAT from the Ansible Application Checker*
+            - This is a heartbeat message from the application checker
+            - There are no new errors, and nothing has cleared
+            - Exhibited errors are still in effect until cleared
     when: send_heartbeat is defined
 
   - name: Touch (reset) heartbeat file
