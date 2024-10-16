@@ -9,6 +9,8 @@
 
 - hosts: localhost
   gather_facts: no
+  vars:
+    ansible_remote_tmp: /tmp
   tasks:
   - name: Check applications
     include_role:
