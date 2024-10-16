@@ -82,6 +82,11 @@
       dest: "{{ application_error_filename }}"
       mode: '0644'
 
+  - name: Touch (reset) heartbeat file (on error)
+    ansible.builtin.file:
+      path: "{{ heartbeat_filename }}"
+      state: touch
+
 - name: Handle error recovery
   when:
   - existing_error is defined
@@ -112,6 +117,11 @@
     ansible.builtin.file:
       path: "{{ application_error_filename }}"
       state: absent
+
+  - name: Touch (reset) heartbeat file (on clearance)
+    ansible.builtin.file:
+      path: "{{ heartbeat_filename }}"
+      state: touch
 
 # Heartbeat (to Slack)
 # (if we've said nothing for the defined period)
