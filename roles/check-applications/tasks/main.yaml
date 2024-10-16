@@ -55,7 +55,6 @@
   - name: Alert slack channel
     slack:
       token: "{{ slack_token }}"
-      prepend_hash: never
       username: 'Ansible on {{ inventory_hostname }}'
       validate_certs: no
       blocks:
@@ -97,8 +96,6 @@
   - name: Issue error clearance message
     slack:
       token: "{{ slack_token }}"
-      prepend_hash: never
-      username: 'Ansible on {{ inventory_hostname }}'
       validate_certs: no
       blocks:
       - type: section
@@ -150,8 +147,6 @@
   - name: Issue heartbeat message
     slack:
       token: "{{ slack_token }}"
-      prepend_hash: never
-      username: 'Ansible on {{ inventory_hostname }}'
       validate_certs: no
       blocks:
       - type: section
