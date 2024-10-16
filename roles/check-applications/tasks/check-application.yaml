@@ -20,9 +20,9 @@
   register: url_result
   ignore_errors: yes
 
-#- name: Display URI Response
-#    var: url_result
-##  debug:
+- name: Display URI Response
+  debug:
+    var: url_result
 
 # We have to reset the service state fact,
 # this may have been set on a previous iteration.
