@@ -141,7 +141,7 @@
 
   - name: Determine if we need to send a heartbeat
     set_fact:
-      send_heartbeat: "{{ (now(utc=true) - hb_file.stat.ctime) | int('hours') > heartbeat_interval_hours }}"
+      send_heartbeat: "{{ (now(utc=true) - hb_file.stat.ctime | int) | int('hours') > heartbeat_interval_hours }}"
     when: hb_file.stat.exists
 
   - name: Issue heartbeat message
