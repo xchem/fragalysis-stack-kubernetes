@@ -30,6 +30,10 @@
   set_fact:
     fs_service_state: []
 
+- name: Reset service_error fact
+  set_fact:
+    status_error: {}
+
 # Is the URL a service state endpoint?
 # If so we inspect the service response to make sure
 # they're either OK or NOT_CONFIGURED
@@ -55,4 +59,4 @@
 - name: Add failure to failed_applications list
   set_fact:
     failed_applications: "{{ failed_applications + [item] }}"
-  when: url_result.failed or status_error is defined
+  when: url_result.failed or status_error | length > 0
