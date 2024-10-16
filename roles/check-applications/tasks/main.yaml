@@ -52,40 +52,42 @@
 
   # If the error has changed, report the new error on Slack
 
-  - name: Alert slack channel
-    slack:
-      token: "{{ slack_token }}"
-      username: 'Ansible on {{ inventory_hostname }}'
-      validate_certs: no
-      blocks:
-      - type: section
-        text:
-          type: mrkdwn
-          text: |
-            *Automated alert from the Ansible Application Checker*
-      - type: section
-        text:
-          type: mrkdwn
-          text: |
-            *The following applications are exhibiting errors:*
-            {% for app in failed_applications %}
-            - {{ app.name }} ({{ app.url }})
-            {% endfor %}
-    when:
-    - existing_error is not defined or existing_error != failed_applications
-    - slack_token | length > 0
+  - name: Alert (new error state)
+    when: existing_error is not defined or existing_error != failed_applications
+    block:
 
-  - name: Write error file
-    ansible.builtin.copy:
-      content: "{{ failed_applications | to_nice_json }}"
-      dest: "{{ application_error_filename }}"
-      mode: '0644'
+    - name: Alert slack channel (new error state)
+      slack:
+        token: "{{ slack_token }}"
+        username: 'Ansible on {{ inventory_hostname }}'
+        validate_certs: no
+        blocks:
+        - type: section
+          text:
+            type: mrkdwn
+            text: |
+              *Automated alert from the Ansible Application Checker*
+        - type: section
+          text:
+            type: mrkdwn
+            text: |
+              *The following applications are exhibiting errors:*
+              {% for app in failed_applications %}
+              - {{ app.name }} ({{ app.url }})
+              {% endfor %}
+      when: slack_token | length > 0
 
-  - name: Touch (reset) heartbeat file (on error)
+  - name: Touch (reset) heartbeat file (new error state)
     ansible.builtin.file:
       path: "{{ heartbeat_filename }}"
       state: touch
     when: slack_token | length > 0
+
+  - name: Write error file (new error state)
+    ansible.builtin.copy:
+      content: "{{ failed_applications | to_nice_json }}"
+      dest: "{{ application_error_filename }}"
+      mode: '0644'
 
 - name: Handle error recovery
   when:
