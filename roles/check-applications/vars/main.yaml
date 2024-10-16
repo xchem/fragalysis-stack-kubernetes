@@ -1,5 +1,5 @@
 ---
-application_error_filename: ./check-applications-error.txt
+application_error_filename: check-applications-error.txt
 
 heartbeat_interval_hours: 6
-heartbeat_filename: ./check-applications.heartbeat
+heartbeat_filename: check-applications.heartbeat

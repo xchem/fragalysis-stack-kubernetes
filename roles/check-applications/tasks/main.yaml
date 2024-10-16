@@ -139,10 +139,17 @@
       state: touch
     when: not hb_file.stat.exists
 
-#  - name: Determine if we need to send a heartbeat
-#    set_fact:
-#      send_heartbeat: "{{ (now(utc=true) - (hb_file.stat.ctime | int)) | int('hours') > heartbeat_interval_hours }}"
-#    when: hb_file.stat.exists
+  - name: Check for out-of-date heartbeat file
+    find:
+      paths: .
+      file_type: file
+      age: "{{ heartbeat_interval_hours }}m"
+      patterns: '{{ heartbeat_filename }}'
+    register: old_hb_file
+
+  - name: Display old heartbeat file
+    debug:
+      var: old_hb_file
 
   - name: Issue heartbeat message
     slack:
