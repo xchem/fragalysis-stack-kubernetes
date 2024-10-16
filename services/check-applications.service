@@ -4,9 +4,9 @@ After=multi-user.target
 
 [Service]
 Type=idle
-Environment="PATH=/home/wmu55374/git/dls-fragalysis-stack-kubernetes/venv/bin"
-ExecStart=/home/wmu55374/git/dls-fragalysis-stack-kubernetes/venv/bin/python services/check-applications.py
-WorkingDirectory=/home/wmu55374/git/dls-fragalysis-stack-kubernetes
+Environment="PATH=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin"
+ExecStart=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin/python services/check-applications.py
+WorkingDirectory=/home/wmu55374/git/fragalysis-stack-kubernetes
 Restart=always
 RestartSec=5s
 User=pi
