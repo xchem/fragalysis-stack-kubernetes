@@ -167,7 +167,7 @@
               - There are no new errors, and nothing has cleared
               - Exhibited errors are still in effect until cleared
 
-    - name: Touch (reset) heartbeat file
+    - name: Touch (old) heartbeat file
       ansible.builtin.file:
         path: "{{ heartbeat_filename }}"
         state: touch
