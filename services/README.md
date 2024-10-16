@@ -2,14 +2,14 @@
 A series of 'systemd' services and launch scripts, used primarily for the execution
 of automated (Ansible) tasks (within a pre-configured Python virtual environment)
 
-You will need to adjsut the service files to match your own environment
-(especially any `ExecStart` or `WorkingDirectory` directives).
+You will need to adjust the service files to match your own environment
+(especially any `Environment`, `ExecStart` or `WorkingDirectory` directives).
 
 ## Running ansible from a venv as a service
 The assumption is that you have installed a virtual environment on the control machine.
-From the environment install the project requirements (you may need to use sudo):-
+From the environment install the project requirements:-
 
-    sudo pip install -r requirements.txt
+    pip install -r services-requirements.txt
 
 With this done you now simply need to run the Python from the virtual environment
 to pickup your required packages. Running ansible is a little more involved
