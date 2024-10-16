@@ -2,6 +2,12 @@
 
 # Iterates through the list of applications (URLs).
 # If there are failures (at the end) the playbook fails.
+#
+# Errors are optionally sent to Slack and
+# are written to the {{ application_error_filename }} file.
+# A heartbeat file is created to ensure that slack messages
+# are sent at the defined interval to reassure the user the
+# playbook is still running.
 
 - name: Display Ansible version
   debug:
@@ -49,7 +55,6 @@
   - name: Alert slack channel
     slack:
       token: "{{ slack_token }}"
-      channel: 'cloud-admin'
       prepend_hash: never
       username: 'Ansible on {{ inventory_hostname }}'
       validate_certs: no
@@ -77,22 +82,15 @@
       dest: "{{ application_error_filename }}"
       mode: '0644'
 
-  - name: Stop (failed applications)
-    fail:
-      msg: "There are failed Applications. See the listed failed applications above."
-
-# No application errors if we get here.
-# If there was an error file report that the error has now cleared
-# before removing the file.
-
 - name: Handle error recovery
-  when: existing_error is defined
+  when:
+  - existing_error is defined
+  - failed_applications | length == 0
   block:
 
-  - name: Reassure slack channel (errors cleared)
+  - name: Issue error clearance message
     slack:
       token: "{{ slack_token }}"
-      channel: 'cloud-admin'
       prepend_hash: never
       username: 'Ansible on {{ inventory_hostname }}'
       validate_certs: no
@@ -114,3 +112,46 @@
     ansible.builtin.file:
       path: "{{ application_error_filename }}"
       state: absent
+
+# Heartbeat (to Slack)
+# (if we've said nothing for the defined period)
+
+- name: Heartbeat
+  when: slack_token | length > 0
+  blocks:
+
+  - name: Check heartbeat file
+    ansible.builtin.stat:
+      path: "{{ heartbeat_filename }}"
+    register: hb_file
+
+  - name: Touch heartbeat file
+    ansible.builtin.file:
+      path: "{{ heartbeat_filename }}"
+      state: touch
+    when: not hb_file.stat.exists
+
+  - name: Determine if we need to send a heartbeat
+    set_fact:
+      send_heartbeat: "{{ (now(utc=true) - hb_file.stat.ctime) | int('hours') > heartbeat_interval_hours }}"
+    when: hb_file.stat.exists
+
+  - name: Issue heartbeat message
+    slack:
+      token: "{{ slack_token }}"
+      prepend_hash: never
+      username: 'Ansible on {{ inventory_hostname }}'
+      validate_certs: no
+      blocks:
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *Automated HEARTBEAT from the Ansible Application Checker*
+    when: send_heartbeat is defined
+
+  - name: Touch (reset) heartbeat file
+    ansible.builtin.file:
+      path: "{{ heartbeat_filename }}"
+      state: touch
+    when: send_heartbeat is defined

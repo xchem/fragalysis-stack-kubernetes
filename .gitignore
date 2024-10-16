@@ -10,4 +10,5 @@ rancher/cluster-prep/ansible-awx-k8s-credentials/params.yaml
 rancher/cluster-prep/ansible-awx-k8s-credentials/tower_cli.cfg
 eks-relocation/cluster-issuer.yaml
 parameters.yaml
-application-error.txt
+*-error.txt
+*.heartbeat
