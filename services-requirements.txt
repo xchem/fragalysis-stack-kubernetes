@@ -1,0 +1,6 @@
+# The ansible that's expected to run playbooks as 'services'
+# See the 'services' diredtcory.
+ansible == 6.7.0
+jmespath == 1.0.1
+kubernetes == 23.6.0
+openshift == 0.13.2
