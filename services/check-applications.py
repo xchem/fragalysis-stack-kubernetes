@@ -17,9 +17,11 @@ _CMD = [
 ]
 
 # Default period between playbook runs...
-_PERIOD_MINUTES = 2
+# (which can be changed by providing a numeric (greater than 1) command line argument)
+_PERIOD_MINUTES = 1
 if len(sys.argv) > 1:
     _PERIOD_MINUTES = int(sys.argv[1])
+_PERIOD_MINUTES = max(_PERIOD_MINUTES, 1)
 
 # For this playbook we need a vault password file...
 if not os.path.exists("vault-pass-services.txt"):
@@ -32,5 +34,5 @@ while True:
     result = subprocess.run(_CMD, check=True)
     if result.returncode != 0:
         sys.exit(2)
-    print(f"+> Sleeping ({_PERIOD_MINUTES} minutes)...")
+    print(f"+> Sleeping ({_PERIOD_MINUTES})...")
     time.sleep(_PERIOD_MINUTES * 60)
