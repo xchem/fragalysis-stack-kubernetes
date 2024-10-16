@@ -2,24 +2,24 @@
 A series of 'systemd' services and launch scripts, used primarily for the execution
 of automated (Ansible) tasks (within a pre-configured Python virtual environment)
 
-You will need to adjust the service files to match your own environment
-(especially any `Environment`, `ExecStart`, `User`, and `WorkingDirectory` directives).
+You will probably need to adjust the service files to match your own environment
+(especially any `Environment`, `ExecStart`, and `WorkingDirectory` directives).
 
-## Running ansible from a venv as a service
+## Running ansible from a virtual environment as a service
 The assumption is that you have installed a virtual environment on the control machine.
-From the environment install the project requirements:-
+From the environment install the project services requirements, which may differ
+from the main project requirements:-
 
     pip install -r services-requirements.txt
 
-With this done you now simply need to run the Python from the virtual environment
-to pickup your required packages. Running ansible is a little more involved
-and so each service comes with a Python script to simplify things, which what the
-various `.service` files do.
+With this done you now simply need to run ansible using Python from the virtual environment.
+Running ansible is a little more involved and so each service comes with a Python script
+to simplify things, which is what the various `.service` files use.
 
 ## Installing services
-Edit the specific service file to match your needs and then install it. For example,
-you can install the the `check-applications` service with the following sequence of
-commands (assuming you're in the project root): -
+Firstly, edit the specific service file to match your needs and then install it.
+Then, as an example, you can install the the `check-applications` service with the
+following sequence of commands (assuming you're in the project root): -
 
     SERVICE=check-applications
 
@@ -33,6 +33,6 @@ You can inspect the status of the service with: -
 
     systemctl status ${SERVICE}
 
-And inspect detailed logs with: -
+And inspect any detailed logs with: -
 
-    sudo journalctl -u ${SERVICE}
+    sudo journalctl -u ${SERVICE} -f
