@@ -1,6 +1,6 @@
 **/.DS_Store
 .idea/
-**/vault-pass.txt
+**/vault-*.txt
 docs/build/
 awx-configuration/config-basic.yaml
 **/venv
@@ -11,4 +11,3 @@ rancher/cluster-prep/ansible-awx-k8s-credentials/tower_cli.cfg
 eks-relocation/cluster-issuer.yaml
 parameters.yaml
 application-error.txt
-
