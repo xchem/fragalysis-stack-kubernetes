@@ -9,6 +9,7 @@ ExecStart=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin/python service
 WorkingDirectory=/home/wmu55374/git/fragalysis-stack-kubernetes
 Restart=always
 RestartSec=120s
+StandardOutput=null
 
 [Install]
 WantedBy=multi-user.target
