@@ -33,7 +33,7 @@ You can inspect the status of the service with: -
 
     systemctl status ${SERVICE}
 
-And inspect any detailed logs (for services where their StandardOutput is not null)
-with: -
+And inspect any detailed logs (for services where either their `StandardOutput`
+or `StandardError` is not null) with: -
 
     sudo journalctl -u ${SERVICE} -f
