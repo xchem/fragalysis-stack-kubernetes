@@ -3,7 +3,7 @@ A series of 'systemd' services and launch scripts, used primarily for the execut
 of automated (Ansible) tasks (within a pre-configured Python virtual environment)
 
 You will need to adjust the service files to match your own environment
-(especially any `Environment`, `ExecStart` or `WorkingDirectory` directives).
+(especially any `Environment`, `ExecStart`, `User`, and `WorkingDirectory` directives).
 
 ## Running ansible from a venv as a service
 The assumption is that you have installed a virtual environment on the control machine.
@@ -17,10 +17,12 @@ and so each service comes with a Python script to simplify things, which what th
 various `.service` files do.
 
 ## Installing services
-Edit the specific service file to match your needs and then install it, with
-the following sequence of commands (assuming you're in the project root): -
+Edit the specific service file to match your needs and then install it. For example,
+you can install the the `check-applications` service with the following sequence of
+commands (assuming you're in the project root): -
 
     SERVICE=check-applications
+
     sudo cp services/${SERVICE}.service /lib/systemd/system
     sudo chmod 644 /lib/systemd/system/${SERVICE}.service
     sudo systemctl daemon-reload
@@ -30,3 +32,7 @@ the following sequence of commands (assuming you're in the project root): -
 You can inspect the status of the service with: -
 
     systemctl status ${SERVICE}
+
+And inspect detailed logs with: -
+
+    sudo journalctl -u ${SERVICE}
