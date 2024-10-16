@@ -77,11 +77,11 @@
               {% endfor %}
       when: slack_token | length > 0
 
-  - name: Touch (reset) heartbeat file (new error state)
-    ansible.builtin.file:
-      path: "{{ heartbeat_filename }}"
-      state: touch
-    when: slack_token | length > 0
+    - name: Touch (reset) heartbeat file (new error state)
+      ansible.builtin.file:
+        path: "{{ heartbeat_filename }}"
+        state: touch
+      when: slack_token | length > 0
 
   - name: Write error file (new error state)
     ansible.builtin.copy:
@@ -149,27 +149,25 @@
       patterns: '{{ heartbeat_filename }}'
     register: old_hb_file
 
-  - name: Display old heartbeat file
-    debug:
-      var: old_hb_file
-
   - name: Issue heartbeat message
-    slack:
-      token: "{{ slack_token }}"
-      validate_certs: no
-      blocks:
-      - type: section
-        text:
-          type: mrkdwn
-          text: |
-            *Automated HEARTBEAT from the Ansible Application Checker*
-            - This is a heartbeat message from the application checker
-            - There are no new errors, and nothing has cleared
-            - Exhibited errors are still in effect until cleared
-    when: send_heartbeat is defined
+    when: old_hb_file.matched > 0
+    block:
 
-  - name: Touch (reset) heartbeat file
-    ansible.builtin.file:
-      path: "{{ heartbeat_filename }}"
-      state: touch
-    when: send_heartbeat is defined
+    - name: Issue heartbeat message
+      slack:
+        token: "{{ slack_token }}"
+        validate_certs: no
+        blocks:
+        - type: section
+          text:
+            type: mrkdwn
+            text: |
+              *Automated HEARTBEAT from the Ansible Application Checker*
+              - This is a heartbeat message from the application checker
+              - There are no new errors, and nothing has cleared
+              - Exhibited errors are still in effect until cleared
+
+    - name: Touch (reset) heartbeat file
+      ansible.builtin.file:
+        path: "{{ heartbeat_filename }}"
+        state: touch
