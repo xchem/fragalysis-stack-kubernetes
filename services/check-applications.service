@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/home/wmu55374/git/dls-fragalysis-stack-kubernetes/venv/bin/python /home/pi/Code/monet/monet.py -t Europe/Madrid
+ExecStart=/home/wmu55374/git/dls-fragalysis-stack-kubernetes/venv/bin/python services/check-applications.py
 WorkingDirectory=/home/wmu55374/git/dls-fragalysis-stack-kubernetes
 Restart=always
 RestartSec=5s
