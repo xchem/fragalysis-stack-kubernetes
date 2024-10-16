@@ -3,13 +3,14 @@ Description=Ansible Check Applications Service
 After=multi-user.target
 
 [Service]
-Type=idle
-Environment="PATH=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin"
+Type=simple
+Environment="PATH=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin:/usr/bin"
+Environment="ANSIBLE_REMOTE_TEMP=/home/wmu55374/git/fragalysis-stack-kubernetes/tmp"
+Environment="HOME=/home/wmu55374"
 ExecStart=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin/python services/check-applications.py
 WorkingDirectory=/home/wmu55374/git/fragalysis-stack-kubernetes
 Restart=always
 RestartSec=120s
-User=wmu55374
 
 [Install]
 WantedBy=multi-user.target
