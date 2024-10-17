@@ -41,6 +41,7 @@
 - name: Check application
   include_tasks: check-application.yaml
   loop: "{{ applications }}"
+  no_log: yes
 
 - name: Handle failed applications
   when: failed_applications | length > 0

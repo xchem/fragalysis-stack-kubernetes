@@ -1,0 +1,17 @@
+---
+
+# Inspect the node's status.conditions.
+# To be Ready it must have a 'Ready' condition 'type' with a 'status' of 'True'.
+#
+# Expects (extends) the 'unready_nodes' fact (a list of node names).
+
+# Each node has a set of conditions (as part of the node 'status').
+# Each has a 'type' and a 'status' (True or False).
+# So a node is 'Ready' if there's a 'condition' with 'type' 'Ready' and 'status' 'True'.
+- name: Add the node to the unready list (if not Ready)
+  set_fact:
+    unready_nodes: "{{ unready_nodes + [item.metadata.name] }}"
+  when: "'True' not in item['status']['conditions'] | json_query('[?type==`Ready`].status')"
+  loop: "{{ item | json_query('status.conditions[?type==`Ready`].status') }}"
+  loop_control:
+    loop_var: condition

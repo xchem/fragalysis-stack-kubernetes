@@ -1,0 +1,10 @@
+---
+
+# A play that can be used to check Kubernetes Nodes in a given cluster.
+# Nodes that are not 'Ready' will be reported to the user.
+
+- hosts: localhost
+  connection: local
+  tasks:
+  - include_role:
+      name: check-nodes

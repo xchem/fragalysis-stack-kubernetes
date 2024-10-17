@@ -1,8 +1,6 @@
 ---
 
-# Iterates through the list of volumes
-# based on the cluster 'name'.
-# If there are failures (at the end) the playbook fails.
+# Finds all the nodes in the cluster and checks that they are 'Ready'.
 
 - name: Display Ansible version
   debug:
@@ -16,35 +14,37 @@
   assert:
     that:
     - cluster != 'SetMe'
-    - volumes[cluster] is defined
 
-- name: Reset failed volumes fact
+- name: Get node information
+  kubernetes.core.k8s_info:
+    kind: Node
+    api_key: "{{ k8s_auth[cluster].api_key }}"
+    host: "{{ k8s_auth[cluster].host }}"
+    validate_certs: "{{ k8s_auth[cluster].verify_ssl | default('no', true) }}"
+  register: node_result
+
+- name: Initialise unready nodes fact
   set_fact:
-    failed_volumes: []
+    unready_nodes: []
 
-- name: Check volumes
+- name: Check node
+  include_tasks: check-node.yaml
+  loop: "{{ node_result.resources }}"
+  no_log: yes
+
+# Handle unready nodes (always)
+# The user will see an alert for nodes that are not Ready
+# on every execution of this playbook (typically every 5 minutes).
+
+- name: Handle unready nodes
+  when: unready_nodes | length > 0
   block:
 
-  - name: Check volume
-    include_tasks: check-volume.yaml
-    loop: "{{ volumes[cluster] }}"
-    no_log: yes
-
-  module_defaults:
-    group/k8s:
-      api_key: "{{ k8s_auth[cluster].api_key }}"
-      host: "{{ k8s_auth[cluster].host }}"
-      validate_certs: "{{ k8s_auth[cluster].verify_ssl | default('no', true) }}"
-
-- name: Handle failed volumes
-  when: failed_volumes | length > 0
-  block:
-
-  - name: Display failed volumes fact
+  - name: Display unready_nodes fact
     debug:
-      var: failed_volumes
+      var: unready_nodes
 
-  - name: Alert slack channel (new error state)
+  - name: Alert slack channel (unready nodes)
     slack:
       token: "{{ slack_token }}"
       validate_certs: no
@@ -53,22 +53,15 @@
         text:
           type: mrkdwn
           text: |
-            *Automated alert from the Ansible ROFS Checker ({{ cluster | upper }} Cluster)*
+            *Automated alert from the Ansible Node Checker ({{ cluster | upper }} Cluster)*
       - type: section
         text:
           type: mrkdwn
           text: |
-            *The following {{ cluster | upper }} cluster Pods are exhibiting ROFS errors:*
-            {% for vol in failed_volumes %}
-            - {{ vol.pod }} (namespace={{ vol.namespace }}, volume={{ vol.volume }})
+            *The following {{ cluster | upper }} cluster nodes are not reported as READY:*
+            {% for node in unready_nodes %}
+            - {{ node }}
             {% endfor %}
-            *You can usually clear ROFS errors by bouncing (deleting) the affected Pod*
-    when: slack_token | length > 0
-
-  - name: Touch (reset) heartbeat file (error)
-    ansible.builtin.file:
-      path: "{{ heartbeat_filename }}"
-      state: touch
     when: slack_token | length > 0
 
 # Heartbeat (to Slack)
@@ -76,7 +69,7 @@
 
 - name: Heartbeat
   when:
-  - failed_volumes | length == 0
+  - unready_nodes | length == 0
   - slack_token | length > 0
   block:
 
@@ -112,12 +105,10 @@
           text:
             type: mrkdwn
             text: |
-              *Automated HEARTBEAT from the Ansible ROFS Checker*
+              *Automated HEARTBEAT from the Ansible Node Checker*
               - This is only a heartbeat message
               - It is sent to reassure you that the playbook is still running
               - It is sent after every {{ heartbeat_interval_hours }} hours of inactivity
-              - This message has no new errors, and does not imply anything has cleared
-              - Previously exhibited errors are still in effect until cleared
 
     - name: Touch (old) heartbeat file
       ansible.builtin.file:

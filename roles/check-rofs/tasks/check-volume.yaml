@@ -10,7 +10,7 @@
     var: item
 
 # Only try to check volumes on Pods that exist
-# (it may have been removed dur to redeployment)
+# (it may have been removed due to redeployment)
 
 - name: Check Pod exists
   kubernetes.core.k8s_info:

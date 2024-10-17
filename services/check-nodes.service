@@ -1,14 +1,14 @@
 [Unit]
-Description=Ansible Check No ROFS Issues
+Description=Ansible Check Cluster Nodes
 After=multi-user.target
 
 [Service]
 Type=simple
 Environment="PATH=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin:/usr/bin"
-ExecStart=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin/python services/check-rofs.py
+ExecStart=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin/python services/check-nodes.py
 WorkingDirectory=/home/wmu55374/git/fragalysis-stack-kubernetes
 Restart=always
-RestartSec=600s
+RestartSec=300s
 StandardOutput=null
 StandardError=null
 

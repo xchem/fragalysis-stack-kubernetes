@@ -1,0 +1,3 @@
+---
+heartbeat_interval_hours: 11
+heartbeat_filename: check-nodes.heartbeat

@@ -1,16 +1,11 @@
 ---
 
-# Attempt to write a file to the volume to check if it is read-only.
-# If successful we then try and remove the file (which must work).
-# If not successful we add the item to a fact (that can be inspected by the caller)
-# and then (optionally) delete the pod.
+# Attempt to access the application URL.
+# If it's a 'status' endpoint then inspect the status result.
 
 - name: Display application
   debug:
     var: item
-
-# Only try to check volumes on Pods that exist
-# (it may have been removed dur to redeployment)
 
 - name: Check URI Response
   ansible.builtin.uri:
