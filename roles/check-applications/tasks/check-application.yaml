@@ -2,14 +2,17 @@
 
 # Attempt to access the application URL.
 # If it's a 'status' endpoint then inspect the status result.
+#
+# The failed item is added to the failed_applications list
+# including any status errors.
 
 - name: Display application
   debug:
     var: item
 
-- name: Display application
+- name: Copy item (to item_response)
   set_fact:
-    check_item: "{{ item }}"
+    item_response: "{{ item }}"
 
 - name: Check URI Response
   ansible.builtin.uri:
@@ -56,22 +59,19 @@
       loop_var: service_state
     when: service_state is not defined or service_state.state not in ['OK', 'NOT_CONFIGURED']
 
-  - name: Display service errors
-    debug:
-      var: status_errors
+  - name: Record status errors
     when: status_errors | length > 0
+    block:
 
-  - name: Add status errors to item
-    set_fact:
-      check_item: "{{ check_item | combine({'status_errors': status_errors}) }}"
-    when: status_errors | length > 0
+    - name: Display service errors
+      debug:
+        var: status_errors
 
-  - name: Display item
-    debug:
-      var: check_item
-    when: status_errors | length > 0
+    - name: Add status errors to item response
+      set_fact:
+        item_response: "{{ item_response | combine({'status_errors': status_errors}) }}"
 
 - name: Add failure to failed_applications list
   set_fact:
-    failed_applications: "{{ failed_applications + [item] }}"
+    failed_applications: "{{ failed_applications + [item_response] }}"
   when: url_result.failed or status_errors | length > 0
