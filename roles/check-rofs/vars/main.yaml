@@ -1,5 +1,3 @@
 ---
-volume_error_filename: check-no-rofs-error.txt
-
-heartbeat_interval_hours: 6
-heartbeat_filename: check-no-rofs.heartbeat
+heartbeat_interval_hours: 8
+heartbeat_filename: check-rofs.heartbeat
