@@ -71,7 +71,7 @@
           text:
             type: mrkdwn
             text: |
-              *The following services are currently exhibiting errors:*
+              *The following applications are currently exhibiting errors:*
               {% for app in failed_applications %}
               - {{ app.name }} ({{ app.url }})
                 {% if app.status_errors is defined %}
