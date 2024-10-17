@@ -57,6 +57,11 @@
       var: status_errors
     when: status_errors | length > 0
 
+  - name: Add status errors to item
+    set_fact:
+      item: "{{ item | combine({'status_errors': status_errors}) }}"
+    when: status_errors | length > 0
+
 - name: Add failure to failed_applications list
   set_fact:
     failed_applications: "{{ failed_applications + [item] }}"
