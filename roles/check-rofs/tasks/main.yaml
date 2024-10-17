@@ -61,7 +61,7 @@
             {% for vol in failed_volumes %}
             - {{ vol.pod }} (namespace={{ vol.namespace }}, volume={{ vol.volume }})
             {% endfor %}
-            *You can usually clear ROFS errors by _bouncing_ (deleting) the affected Pod*
+            *You can usually clear ROFS errors by bouncing (deleting) the affected Pod*
     when: slack_token | length > 0
 
   - name: Touch (reset) heartbeat file (error)

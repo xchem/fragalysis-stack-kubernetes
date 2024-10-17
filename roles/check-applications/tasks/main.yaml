@@ -70,7 +70,7 @@
           text:
             type: mrkdwn
             text: |
-              *The following applications are exhibiting errors:*
+              *The following services are currently exhibiting errors:*
               {% for app in failed_applications %}
               - {{ app.name }} ({{ app.url }})
               {% endfor %}
@@ -108,7 +108,7 @@
         text:
           type: mrkdwn
           text: |
-            *Application errors have now cleared*
+            *Application service errors have now cleared*
     when: slack_token | length > 0
 
   - name: Remove application error file
@@ -166,7 +166,7 @@
               - It is sent to reassure you that the playbook is still running
               - It is sent after every {{ heartbeat_interval_hours }} hours of inactivity
               - There are no new errors, and nothing has cleared
-              - Previously exhibited errors are still in effect until cleared
+              - Previously exhibited errors are still in effect unless cleared
 
     - name: Touch (old) heartbeat file
       ansible.builtin.file:
