@@ -18,7 +18,32 @@
     - cluster != 'SetMe'
     - volumes[cluster] is defined
 
-- name: Reset failed volumes fact
+- name: Set heartbeat filename
+  set_fact:
+    heartbeat_filename: "check-rofs.heartbeat"
+
+- name: Set ROFS error filename
+  set_fact:
+    rofs_error_filename: "check-rofs-{{ cluster | lower }}-error.txt"
+
+- name: Check ROFS error file
+  ansible.builtin.stat:
+    path: "{{ rofs_error_filename }}"
+  register: re_file
+
+- name: Get ROFS error file content
+  set_fact:
+    existing_error: "{{ lookup('ansible.builtin.file', rofs_error_filename) }}"
+  when:
+  - re_file.stat.exists
+  - re_file.stat.isreg
+
+- name: Display existing ROFS error
+  debug:
+    var: existing_error
+  when: existing_error is defined
+
+- name: Initialise failed volumes fact
   set_fact:
     failed_volumes: []
 
@@ -37,7 +62,7 @@
       validate_certs: "{{ k8s_auth[cluster].verify_ssl | default('no', true) }}"
 
 - name: Handle failed volumes
-  when: failed_volumes | length > 0
+  when: existing_error is not defined or existing_error != failed_volumes
   block:
 
   - name: Display failed volumes fact
@@ -59,13 +84,61 @@
           type: mrkdwn
           text: |
             *The following {{ cluster | upper }} cluster Pods are exhibiting ROFS errors:*
+
             {% for vol in failed_volumes %}
             - {{ vol.pod }} (namespace={{ vol.namespace }}, volume={{ vol.volume }})
             {% endfor %}
+
             *You can usually clear ROFS errors by bouncing (deleting) the affected Pod*
-    when: slack_token | length > 0
+    when:
+    - not suppress_alerts | bool
+    - slack_token | length > 0
 
   - name: Touch (reset) heartbeat file (error)
+    ansible.builtin.file:
+      path: "{{ heartbeat_filename }}"
+      state: touch
+    when: slack_token | length > 0
+
+  - name: Write error file (new error state)
+    ansible.builtin.copy:
+      content: "{{ failed_volumes | to_nice_json }}"
+      dest: "{{ rofs_error_filename }}"
+      mode: '0644'
+
+# Handle the situation where errors have cleared?
+
+- name: Handle error recovery
+  when:
+  - existing_error is defined
+  - failed_volumes | length == 0
+  block:
+
+  - name: Issue error clearance message
+    slack:
+      token: "{{ slack_token }}"
+      validate_certs: no
+      blocks:
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *Automated clearance from the Ansible ROFS Checker*
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *All ROFS errors have now cleared*
+    when:
+    - not suppress_alerts | bool
+    - slack_token | length > 0
+
+  - name: Remove ROFS error file
+    ansible.builtin.file:
+      path: "{{ rofs_error_filename }}"
+      state: absent
+
+  - name: Touch (reset) heartbeat file (on clearance)
     ansible.builtin.file:
       path: "{{ heartbeat_filename }}"
       state: touch
@@ -75,9 +148,7 @@
 # (if we've said nothing for the defined period)
 
 - name: Heartbeat
-  when:
-  - failed_volumes | length == 0
-  - slack_token | length > 0
+  when: slack_token | length > 0
   block:
 
   - name: Check heartbeat file
@@ -116,6 +187,7 @@
               - This is only a heartbeat message
               - It is sent to reassure you that the playbook is still running
               - It is sent after every {{ heartbeat_interval_hours }} hours of inactivity
+      when: not suppress_alerts | bool
 
     - name: Touch (old) heartbeat file
       ansible.builtin.file:

@@ -1,3 +1,6 @@
 ---
 heartbeat_interval_hours: 8
-heartbeat_filename: check-rofs.heartbeat
+
+# A debug mechanism to allow the execution fo the playbook
+# without generating alerts.
+suppress_alerts: no

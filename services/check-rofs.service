@@ -8,7 +8,7 @@ Environment="PATH=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin:/usr/b
 ExecStart=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin/python services/check-rofs.py
 WorkingDirectory=/home/wmu55374/git/fragalysis-stack-kubernetes
 Restart=always
-RestartSec=600s
+RestartSec=300s
 StandardOutput=null
 StandardError=null
 

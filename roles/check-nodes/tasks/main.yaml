@@ -15,6 +15,31 @@
     that:
     - cluster != 'SetMe'
 
+- name: Set heartbeat filename
+  set_fact:
+    heartbeat_filename: "check-nodes.heartbeat"
+
+- name: Set node error filename
+  set_fact:
+    node_error_filename: "check-nodes-{{ cluster | lower }}-error.txt"
+
+- name: Check error file
+  ansible.builtin.stat:
+    path: "{{ node_error_filename }}"
+  register: ne_file
+
+- name: Get error file content
+  set_fact:
+    existing_error: "{{ lookup('ansible.builtin.file', node_error_filename) }}"
+  when:
+  - ne_file.stat.exists
+  - ne_file.stat.isreg
+
+- name: Display existing error
+  debug:
+    var: existing_error
+  when: existing_error is defined
+
 - name: Get node information
   kubernetes.core.k8s_info:
     kind: Node
@@ -32,12 +57,10 @@
   loop: "{{ node_result.resources }}"
   no_log: yes
 
-# Handle unready nodes (always)
-# The user will see an alert for nodes that are not Ready
-# on every execution of this playbook (typically every 5 minutes).
+# Handle unready nodes if there's no existing error or the error has changed.
 
 - name: Handle unready nodes
-  when: unready_nodes | length > 0
+  when: existing_error is not defined or existing_error != unready_nodes
   block:
 
   - name: Display unready_nodes fact
@@ -59,18 +82,69 @@
           type: mrkdwn
           text: |
             *The following {{ cluster | upper }} cluster nodes are not reported as READY:*
+
             {% for node in unready_nodes %}
             - {{ node }}
             {% endfor %}
+    when:
+    - not suppress_alerts | bool
+    - slack_token | length > 0
+
+  - name: Touch (reset) heartbeat file (new error state)
+    ansible.builtin.file:
+      path: "{{ heartbeat_filename }}"
+      state: touch
+    when: slack_token | length > 0
+
+  - name: Write error file (new error state)
+    ansible.builtin.copy:
+      content: "{{ unready_nodes | to_nice_json }}"
+      dest: "{{ node_error_filename }}"
+      mode: '0644'
+
+# Handle the situation where errors have cleared?
+
+- name: Handle error recovery
+  when:
+  - existing_error is defined
+  - unready_nodes | length == 0
+  block:
+
+  - name: Issue error clearance message
+    slack:
+      token: "{{ slack_token }}"
+      validate_certs: no
+      blocks:
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *Automated clearance from the Ansible Node Checker*
+      - type: section
+        text:
+          type: mrkdwn
+          text: |
+            *All nodes are now reporting as READY*
+    when:
+    - not suppress_alerts | bool
+    - slack_token | length > 0
+
+  - name: Remove application error file
+    ansible.builtin.file:
+      path: "{{ node_error_filename }}"
+      state: absent
+
+  - name: Touch (reset) heartbeat file (on clearance)
+    ansible.builtin.file:
+      path: "{{ heartbeat_filename }}"
+      state: touch
     when: slack_token | length > 0
 
 # Heartbeat (to Slack)
 # (if we've said nothing for the defined period)
 
 - name: Heartbeat
-  when:
-  - unready_nodes | length == 0
-  - slack_token | length > 0
+  when: slack_token | length > 0
   block:
 
   - name: Check heartbeat file
@@ -78,7 +152,7 @@
       path: "{{ heartbeat_filename }}"
     register: hb_file
 
-  - name: Touch heartbeat file (if not preset)
+  - name: Touch heartbeat file (if not present)
     ansible.builtin.file:
       path: "{{ heartbeat_filename }}"
       state: touch
@@ -109,6 +183,7 @@
               - This is only a heartbeat message
               - It is sent to reassure you that the playbook is still running
               - It is sent after every {{ heartbeat_interval_hours }} hours of inactivity
+      when: not suppress_alerts | bool
 
     - name: Touch (old) heartbeat file
       ansible.builtin.file:

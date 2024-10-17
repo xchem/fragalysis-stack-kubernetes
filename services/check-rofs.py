@@ -28,11 +28,11 @@ _PROD_CMD = [
 ]
 
 # Default period between playbook runs...
-# (which can be changed by providing a numeric (greater than 10) command line argument)
-_PERIOD_MINUTES = 10
+# (which can be changed by providing a numeric (greater than 5) command line argument)
+_PERIOD_MINUTES = 5
 if len(sys.argv) > 1:
     _PERIOD_MINUTES = int(sys.argv[1])
-_PERIOD_MINUTES = max(_PERIOD_MINUTES, 10)
+_PERIOD_MINUTES = max(_PERIOD_MINUTES, 5)
 
 # For this playbook we need a vault password file...
 if not os.path.exists("vault-pass-services.txt"):

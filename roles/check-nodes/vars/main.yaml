@@ -1,3 +1,6 @@
 ---
 heartbeat_interval_hours: 11
-heartbeat_filename: check-nodes.heartbeat
+
+# A debug mechanism to allow the execution fo the playbook
+# without generating alerts.
+suppress_alerts: no

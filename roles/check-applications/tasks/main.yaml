@@ -17,6 +17,14 @@
   ansible.builtin.include_vars:
     file: sensitive.vault
 
+- name: Set heartbeat filename
+  set_fact:
+    heartbeat_filename: "check-applications.heartbeat"
+
+- name: Set application error filename
+  set_fact:
+    application_error_filename: "check-applications-error.txt"
+
 - name: Check failure file
   ansible.builtin.stat:
     path: "{{ application_error_filename }}"
@@ -99,6 +107,8 @@
       dest: "{{ application_error_filename }}"
       mode: '0644'
 
+# Handle the situation where errors have cleared?
+
 - name: Handle error recovery
   when:
   - existing_error is defined
@@ -147,7 +157,7 @@
       path: "{{ heartbeat_filename }}"
     register: hb_file
 
-  - name: Touch heartbeat file
+  - name: Touch heartbeat file (if not present)
     ansible.builtin.file:
       path: "{{ heartbeat_filename }}"
       state: touch
