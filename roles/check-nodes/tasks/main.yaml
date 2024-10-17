@@ -60,49 +60,53 @@
 # Handle unready nodes if there's no existing error or the error has changed.
 
 - name: Handle unready nodes
-  when:
-  - unready_nodes | length > 0
-  - existing_error is not defined or existing_error != unready_nodes
+  when: unready_nodes | length > 0
   block:
 
   - name: Display unready_nodes fact
     debug:
       var: unready_nodes
 
-  - name: Alert slack channel (unready nodes)
-    slack:
-      token: "{{ slack_token }}"
-      validate_certs: no
-      blocks:
-      - type: section
-        text:
-          type: mrkdwn
-          text: |
-            *Automated alert from the Ansible Node Checker ({{ cluster | upper }} Cluster)*
-      - type: section
-        text:
-          type: mrkdwn
-          text: |
-            *The following {{ cluster | upper }} cluster nodes are not reported as READY:*
+  # If the error has changed, report the new error on Slack
 
-            {% for node in unready_nodes %}
-            - {{ node }}
-            {% endfor %}
-    when:
-    - not suppress_alerts | bool
-    - slack_token | length > 0
+  - name: Alert (new error state)
+    when: existing_error is not defined or existing_error != unready_nodes
+    block:
 
-  - name: Touch (reset) heartbeat file (new error state)
-    ansible.builtin.file:
-      path: "{{ heartbeat_filename }}"
-      state: touch
-    when: slack_token | length > 0
+    - name: Alert slack channel (unready nodes)
+      slack:
+        token: "{{ slack_token }}"
+        validate_certs: no
+        blocks:
+        - type: section
+          text:
+            type: mrkdwn
+            text: |
+              *Automated alert from the Ansible Node Checker ({{ cluster | upper }} Cluster)*
+        - type: section
+          text:
+            type: mrkdwn
+            text: |
+              *The following {{ cluster | upper }} cluster nodes are not reported as READY:*
 
-  - name: Write error file (new error state)
-    ansible.builtin.copy:
-      content: "{{ unready_nodes | to_nice_json }}"
-      dest: "{{ node_error_filename }}"
-      mode: '0644'
+              {% for node in unready_nodes %}
+              - {{ node }}
+              {% endfor %}
+      when:
+      - not suppress_alerts | bool
+      - slack_token | length > 0
+
+    - name: Touch (reset) heartbeat file (new error state)
+      ansible.builtin.file:
+        path: "{{ heartbeat_filename }}"
+        state: touch
+      when: slack_token | length > 0
+
+    - name: Write error file (new error state)
+      ansible.builtin.copy:
+        content: "{{ unready_nodes | to_nice_json }}"
+        dest: "{{ node_error_filename }}"
+        mode: '0644'
 
 # Handle the situation where errors have cleared?
 

@@ -101,11 +101,11 @@
         state: touch
       when: slack_token | length > 0
 
-  - name: Write error file (new error state)
-    ansible.builtin.copy:
-      content: "{{ failed_applications | to_nice_json }}"
-      dest: "{{ application_error_filename }}"
-      mode: '0644'
+    - name: Write error file (new error state)
+      ansible.builtin.copy:
+        content: "{{ failed_applications | to_nice_json }}"
+        dest: "{{ application_error_filename }}"
+        mode: '0644'
 
 # Handle the situation where errors have cleared?
 
