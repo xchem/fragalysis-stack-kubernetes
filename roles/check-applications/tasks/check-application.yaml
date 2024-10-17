@@ -25,9 +25,9 @@
   set_fact:
     fs_service_state: []
 
-- name: Reset service_error fact
+- name: Reset service_errors fact
   set_fact:
-    status_error: {}
+    status_errors: []
 
 # Is the URL a service state endpoint?
 # If so we inspect the service response to make sure
@@ -45,13 +45,18 @@
 
   - name: Set status error if something's not OK and NOT_DEFINED
     set_fact:
-      status_error: item
+      status_errors: "{{ status_errors + [{'name': service_state.name, 'state': service_state.state}] }}"
     loop: "{{ fs_service_state }}"
     loop_control:
       loop_var: service_state
     when: service_state is not defined or service_state.state not in ['OK', 'NOT_CONFIGURED']
 
+  - name: Display service errors
+    debug:
+      var: status_errors
+    when: status_errors | length > 0
+
 - name: Add failure to failed_applications list
   set_fact:
     failed_applications: "{{ failed_applications + [item] }}"
-  when: url_result.failed or status_error | length > 0
+  when: url_result.failed or status_errors | length > 0

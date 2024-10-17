@@ -3,3 +3,7 @@ application_error_filename: check-applications-error.txt
 
 heartbeat_interval_hours: 6
 heartbeat_filename: check-applications.heartbeat
+
+# A debug mechanism to allow the execution fo the playbook
+# without generating alerts.
+suppress_alerts: no

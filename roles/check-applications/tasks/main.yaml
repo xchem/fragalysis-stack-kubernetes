@@ -75,7 +75,9 @@
               {% for app in failed_applications %}
               - {{ app.name }} ({{ app.url }})
               {% endfor %}
-      when: slack_token | length > 0
+      when:
+      - not suppress_alerts | bool
+      - slack_token | length > 0
 
     - name: Touch (reset) heartbeat file (new error state)
       ansible.builtin.file:
@@ -110,7 +112,9 @@
           type: mrkdwn
           text: |
             *Application service errors have now cleared*
-    when: slack_token | length > 0
+    when:
+    - not suppress_alerts | bool
+    - slack_token | length > 0
 
   - name: Remove application error file
     ansible.builtin.file:
@@ -168,6 +172,7 @@
               - It is sent after every {{ heartbeat_interval_hours }} hours of inactivity
               - This message has no new errors, and does not imply anything has cleared
               - Previously exhibited errors are still in effect unless cleared
+      when: not suppress_alerts | bool
 
     - name: Touch (old) heartbeat file
       ansible.builtin.file:
