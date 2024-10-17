@@ -87,7 +87,7 @@
           text:
             type: mrkdwn
             text: |
-              *The following {{ cluster | upper }} cluster nodes are not reported as READY:*
+              *The following {{ cluster | upper }} nodes are not reporting as READY:*
 
               {% for node in unready_nodes %}
               - {{ node }}
@@ -125,12 +125,12 @@
         text:
           type: mrkdwn
           text: |
-            *Automated clearance from the Ansible Node Checker*
+            *Automated clearance from the Ansible Node Checker ({{ cluster | upper }} Cluster)*
       - type: section
         text:
           type: mrkdwn
           text: |
-            *All nodes are now reporting as READY*
+            *All {{ cluster | upper }} nodes are now reporting as READY*
     when:
     - not suppress_alerts | bool
     - slack_token | length > 0

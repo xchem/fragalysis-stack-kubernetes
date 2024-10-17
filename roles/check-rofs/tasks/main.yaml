@@ -129,7 +129,7 @@
         text:
           type: mrkdwn
           text: |
-            *Automated clearance from the Ansible ROFS Checker*
+            *Automated clearance from the Ansible ROFS Checker ({{ cluster | upper }} Cluster)*
       - type: section
         text:
           type: mrkdwn
