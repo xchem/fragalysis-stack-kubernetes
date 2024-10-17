@@ -59,7 +59,6 @@
     - name: Alert slack channel (new error state)
       slack:
         token: "{{ slack_token }}"
-        username: 'Ansible on {{ inventory_hostname }}'
         validate_certs: no
         blocks:
         - type: section

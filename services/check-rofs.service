@@ -1,0 +1,16 @@
+[Unit]
+Description=Ansible Check No ROFS Issues
+After=multi-user.target
+
+[Service]
+Type=simple
+Environment="PATH=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin:/usr/bin"
+ExecStart=/home/wmu55374/git/fragalysis-stack-kubernetes/venv/bin/python services/check-no-rofs.py
+WorkingDirectory=/home/wmu55374/git/fragalysis-stack-kubernetes
+Restart=always
+RestartSec=300s
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target

@@ -8,6 +8,7 @@
 # You can use delete_failed_pods to also delete Pods that fail.
 
 - hosts: localhost
+  connection: local
   tasks:
   - include_role:
-      name: check-no-rofs
+      name: check-rofs
