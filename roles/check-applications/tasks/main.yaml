@@ -76,7 +76,7 @@
               {% for app in failed_applications %}
               - {{ app.name }} ({{ app.url }})
                 {% if app.status_errors is defined %}
-                - *Internal Stack service failures:*
+                - *Service failures...*
                 {% for se in app.status_errors %}
                 - {{ se.name }}: {{ se.state }}
                 {% endfor %}
