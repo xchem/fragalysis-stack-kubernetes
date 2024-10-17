@@ -72,6 +72,7 @@
             type: mrkdwn
             text: |
               *The following applications are currently exhibiting errors:*
+
               {% for app in failed_applications %}
               - {{ app.name }} ({{ app.url }})
                 {% if app.status_errors is defined %}
@@ -80,6 +81,7 @@
                 - {{ se.name }}: {{ se.state }}
                 {% endfor %}
                 {% endif %}
+
               {% endfor %}
       when:
       - not suppress_alerts | bool
