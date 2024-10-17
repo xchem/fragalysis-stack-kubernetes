@@ -62,7 +62,9 @@
       validate_certs: "{{ k8s_auth[cluster].verify_ssl | default('no', true) }}"
 
 - name: Handle failed volumes
-  when: existing_error is not defined or existing_error != failed_volumes
+  when:
+  - failed_volumes | length > 0
+  - existing_error is not defined or existing_error != failed_volumes
   block:
 
   - name: Display failed volumes fact

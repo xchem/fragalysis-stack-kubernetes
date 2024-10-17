@@ -60,7 +60,9 @@
 # Handle unready nodes if there's no existing error or the error has changed.
 
 - name: Handle unready nodes
-  when: existing_error is not defined or existing_error != unready_nodes
+  when:
+  - unready_nodes | length > 0
+  - existing_error is not defined or existing_error != unready_nodes
   block:
 
   - name: Display unready_nodes fact
