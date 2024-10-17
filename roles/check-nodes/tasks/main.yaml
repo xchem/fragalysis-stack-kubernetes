@@ -92,6 +92,9 @@
               {% for node in unready_nodes %}
               - {{ node }}
               {% endfor %}
+
+              Visit the cloud console and inspect the corresponding node.
+              You may simply need to "Power On" the node.
       when:
       - not suppress_alerts | bool
       - slack_token | length > 0
