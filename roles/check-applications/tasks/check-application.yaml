@@ -10,6 +10,7 @@
 - name: Check URI Response
   ansible.builtin.uri:
     url: "{{ item.url }}"
+    timeout: 4
     validate_certs: "{{ item.validate_certs | default(false) | bool}}"
     return_content: true
   register: url_result
