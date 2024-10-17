@@ -115,7 +115,7 @@
               - This is only a heartbeat message
               - It is sent to reassure you that the playbook is still running
               - It is sent after every {{ heartbeat_interval_hours }} hours of inactivity
-              - There are no new errors, and nothing has cleared
+              - This message has no new errors, and does not imply anything has cleared
               - Previously exhibited errors are still in effect until cleared
 
     - name: Touch (old) heartbeat file
