@@ -1,5 +1,5 @@
 [Unit]
-Description=Ansible Check No ROFS Issues
+Description=Ansible Check ROFS
 After=multi-user.target
 
 [Service]

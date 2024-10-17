@@ -1,5 +1,5 @@
 [Unit]
-Description=Ansible Check Applications Service
+Description=Ansible Check Applications
 After=multi-user.target
 
 [Service]
