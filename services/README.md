@@ -37,3 +37,8 @@ And inspect any detailed logs (for services where either their `StandardOutput`
 or `StandardError` is not null) with: -
 
     sudo journalctl -u ${SERVICE} -f
+
+You can top and disable a service with the following commands: -
+
+    sudo systemctl stop ${SERVICE}
+    sudo systemctl disable ${SERVICE}
