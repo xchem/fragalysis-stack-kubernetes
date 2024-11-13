@@ -242,7 +242,7 @@ stack_logging_framework_root_level: INFO
 stack_wait_for_graph: yes
 
 # Metrics?
-stack_deploy_metrics: yes
+stack_deploy_metrics: no
 
 # ISPyB/SSH variables ---------------------------------------------------------
 # These are set from vars/sensitive.vault
