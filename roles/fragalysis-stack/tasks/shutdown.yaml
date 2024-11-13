@@ -60,12 +60,13 @@
 
   # To 'shutdown' we remove: -
   # - Database
+  # - Redis
   # - Stack
   # And then, delete...
   # - Database volume
   # - Media volume (optional)
 
-  - name: Shutdown stack and database
+  - name: Shutdown stack, database, and redis
     k8s:
       definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
       state: absent
@@ -75,6 +76,7 @@
     - statefulset-worker
     - deployment-beat
     - statefulset-database
+    - deployment-redis
 
   - name: Wait for database to disappear
     k8s_info:
