@@ -23,5 +23,6 @@ data:
         ALTER ROLE fragalysis SET default_transaction_isolation TO 'read committed';
         ALTER ROLE fragalysis SET timezone TO 'UTC';
         GRANT ALL PRIVILEGES ON DATABASE frag TO fragalysis;
+        ALTER DATABASE frag OWNER TO fragalysis;
     EOSQL
 {% endif %}
