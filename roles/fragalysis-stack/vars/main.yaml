@@ -70,8 +70,8 @@ database_cpu_request: 10m
 database_mem_request: 400Mi
 
 database_image_registry: docker.io
-database_image: library/postgres
-database_image_tag: '12.16'
+database_image: postgres
+database_image_tag: '15.8'
 database_port: 5432
 
 # Configuration of the DB server. Content written to the postgres-conf ConfigMap.
@@ -99,7 +99,7 @@ database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_
 database_create_users_and_databases: yes
 
 redis_image: redis
-redis_image_tag: '7.2.3-alpine3.18'
+redis_image_tag: '7.4.1-alpine3.20'
 # Redis configuration (ConfigMap) values
 redis_conf_loglevel: notice
 redis_conf_maxmemory: 256mb
