@@ -36,13 +36,21 @@
   loop:
   - namespace
   - serviceaccount
+
+- name: Creating PSP bindings '{{ stack_namespace }}'
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
   - role
   - rolebinding-stack-sa
+  when: stack_include_psp_bindings|bool
 
 - name: Relax {{ stack_namespace }} 'default' service account (for cert-manager)
   k8s:
     definition: "{{ lookup('template', 'rolebinding-default-sa.yaml.j2') }}"
     wait: yes
+  when: stack_include_psp_bindings|bool
 
 # Deploy a database?
 # Yes if the user hasn't set an explicit host
