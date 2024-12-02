@@ -86,3 +86,8 @@ wait_timeout: 600
 wait_for_bind: no
 # Volume binding timeout (seconds)
 bind_timeout: 120
+# Install prerequisite Python modules?
+# Normally required from early AWX, not expected when run from a control machine
+# (where modules are expected to have been installed) and not from more recent
+# AWX servers (live v23 onwards) where the modules are already present.
+install_prerequisite_python_modules: yes

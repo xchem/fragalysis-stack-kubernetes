@@ -1,6 +1,6 @@
 **/.DS_Store
 .idea/
-**/vault-pass.txt
+**/vault-pass*
 docs/build/
 awx-configuration/config-basic.yaml
 **/venv
