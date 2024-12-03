@@ -6,3 +6,9 @@ replicator_image_tag: stable
 # Debug?
 # i.e. do not delete the recovery Pod (when run as a Job)
 replicator_job_recovery_debug: no
+
+# Install prerequisite Python modules?
+# Normally required from early AWX, not expected when run from a control machine
+# (where modules are expected to have been installed) and not from more recent
+# AWX servers (live v23 onwards) where the modules are already present.
+install_prerequisite_python_modules: no

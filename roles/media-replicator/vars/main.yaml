@@ -25,3 +25,9 @@ replicator_cpu_limit: 1
 replicator_mem_limit: 128Mi
 replicator_cpu_request: 10m
 replicator_mem_request: 128Mi
+
+# Install prerequisite Python modules?
+# Normally required from early AWX, not expected when run from a control machine
+# (where modules are expected to have been installed) and not from more recent
+# AWX servers (live v23 onwards) where the modules are already present.
+install_prerequisite_python_modules: no

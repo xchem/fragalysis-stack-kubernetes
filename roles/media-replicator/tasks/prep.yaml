@@ -117,6 +117,7 @@
     - openshift==0.10.0
     - jmespath==0.9.4
     extra_args: --user
+  when: install_prerequisite_python_modules|bool
 
 # Collect and display freeze result
 
