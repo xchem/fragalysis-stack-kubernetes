@@ -36,6 +36,7 @@
       host: "{{ k8s_auth_host }}"
       api_key: "{{ k8s_auth_api_key }}"
       validate_certs: "{{ k8s_auth_verify_ssl|default('no', true) }}"
+      wait_timeout: "{{ wait_timeout | int }}"
 
   when: k8s_kubeconfig|string|length == 0
 
@@ -50,6 +51,7 @@
   module_defaults:
     group/k8s:
       kubeconfig: "{{ k8s_kubeconfig }}"
+      wait_timeout: "{{ wait_timeout | int }}"
 
   when: k8s_kubeconfig|string|length > 0
 
