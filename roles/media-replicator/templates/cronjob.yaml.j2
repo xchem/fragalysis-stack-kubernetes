@@ -28,19 +28,6 @@ spec:
         spec:
           serviceAccountName: {{ replicator_sa_name }}
 
-          # A 'preferred' (not guaranteed)
-          # node selection affinity...
-          affinity:
-            nodeAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 1
-                preference:
-                  matchExpressions:
-                  - key: purpose
-                    operator: In
-                    values:
-                    - {{ replicator_node_purpose }}
-
 {% if all_image_preset_pullsecret_name|string|length > 0 %}
           imagePullSecrets:
           - name: {{ all_image_preset_pullsecret_name }}
