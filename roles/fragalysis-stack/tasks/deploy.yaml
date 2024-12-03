@@ -41,13 +41,6 @@
   loop:
   - namespace
   - serviceaccount
-  - role
-  - rolebinding-stack-sa
-
-- name: Relax {{ stack_namespace }} 'default' service account (for cert-manager)
-  k8s:
-    definition: "{{ lookup('template', 'rolebinding-default-sa.yaml.j2') }}"
-    wait: yes
 
 # Deploy a database?
 # Yes if the user hasn't set an explicit host
@@ -58,12 +51,15 @@
   import_tasks: deploy-database.yaml
   when: database_host|string|length == 0
 
-# Now (optionally) deploy the stack
-
-- name: Deploy redis
-  import_tasks: deploy-redis.yaml
-  when: not stack_skip_deploy|bool
+# Now (optionally) deploy redis and the stack
 
 - name: Deploy the stack
-  import_tasks: deploy-stack.yaml
-  when: not stack_skip_deploy|bool
+  block:
+
+    - name: Deploy redis
+      import_tasks: deploy-redis.yaml
+
+    - name: Deploy the stack
+      import_tasks: deploy-stack.yaml
+
+  when: not stack_skip_deploy | bool
