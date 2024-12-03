@@ -56,10 +56,10 @@
 - name: Deploy the stack
   block:
 
-    - name: Deploy redis
-      import_tasks: deploy-redis.yaml
+  - name: Deploy redis
+    import_tasks: deploy-redis.yaml
 
-    - name: Deploy the stack
-      import_tasks: deploy-stack.yaml
+  - name: Deploy the stack
+    import_tasks: deploy-stack.yaml
 
   when: not stack_skip_deploy | bool
