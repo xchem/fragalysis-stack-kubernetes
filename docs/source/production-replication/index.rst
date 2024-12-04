@@ -25,7 +25,7 @@ Replicating to the Staging stack
 The staging stack can be instantiated from the current [#f1]_ Production data
 using a **Workflow Template** on the production AWX server.
 
--   **Staging Stack (Production Replica) [START]**
+-   **Staging Fragalysis Stack (Production Replica) [START]**
 
 This *workflow* executes a number of underlying Job Templates that run in the
 ``staging-stack`` namespace to: -
@@ -36,7 +36,7 @@ This *workflow* executes a number of underlying Job Templates that run in the
 4.  Recover the stack Media content (from its NFS backup)
 
 The user is expected to provide the stack image tag in the workflow's
-**EXTRA VARIABLES** parameter section. The **most important** variable 
+**EXTRA VARIABLES** parameter section. The **most important** variable
 is ``stack_image_tag``, which sets the image tag for the deployed stack.
 
 .. warning::
@@ -54,14 +54,12 @@ is ``stack_image_tag``, which sets the image tag for the deployed stack.
     preserved between stack instances.
 
 Once the stack is ready the user executes any tests they see fit and then,
-once this version of the stack is no longer needed, runs the **Stop**
-template on the AWX server: -
+once this version of the stack is no longer needed, you can wipe the stack
+using the following template on the AWX server: -
 
--  **Staging Stack (Production Replica) [STOP]**
+-  **Staging Stack [WIPE]**
 
-The stop template removes the stack, database and the database volume.
-The stack's media volume is left intact, which results in faster instantiation
-of subsequent stacks.
+The wipe template removes the stack, database and the database volume.
 
 ..  note::
     After the first staging instantiation you can expect subsequent stacks
