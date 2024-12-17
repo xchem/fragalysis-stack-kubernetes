@@ -41,86 +41,15 @@
     include_vars:
       file: sensitive.vault
 
-  # Assert namespace, a stateful set and database secrets exist...
-
   - name: Get expected namespace ({{ stack_namespace }})
     k8s_info:
       kind: Namespace
       name: "{{ stack_namespace }}"
-    register: result
+    register: ns_result
 
-  - name: Assert namespace exists
-    assert:
-      that: result.resources|length > 0
-      fail_msg: Namespace '{{ stack_namespace }}' does not exist
-
-  - name: Display ansible_date_time.iso8601_micro
-    debug:
-      var: ansible_date_time.iso8601_micro
-
-  # To 'shutdown' we remove: -
-  # - Database
-  # - Redis
-  # - Stack
-  # And then, delete...
-  # - Database volume
-  # - Media volume (optional)
-
-  - name: Shutdown stack, database, and redis
-    k8s:
-      definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-      state: absent
-      wait: yes
-    loop:
-    - statefulset-stack
-    - statefulset-worker
-    - deployment-beat
-    - statefulset-database
-    - deployment-redis
-
-  - name: Wait for database to disappear
-    k8s_info:
-      kind: Pod
-      name: database-0
-      namespace: "{{ stack_namespace }}"
-    register: db_result
-    until: db_result.resources|length == 0
-    delay: 5
-    retries: "{{ (wait_timeout|int / 5)|int }}"
-
-  - name: Wait for stack to disappear
-    k8s_info:
-      kind: Pod
-      name: stack-0
-      namespace: "{{ stack_namespace }}"
-    register: stack_result
-    until: stack_result.resources|length == 0
-    delay: 5
-    retries: "{{ (wait_timeout|int / 5)|int }}"
-
-  - name: Wait for worker to disappear
-    k8s_info:
-      kind: Pod
-      name: worker-0
-      namespace: "{{ stack_namespace }}"
-    register: worker_result
-    until: worker_result.resources|length == 0
-    delay: 5
-    retries: "{{ (wait_timeout|int / 5)|int }}"
-
-  - name: Remove database volume
-    k8s:
-      definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
-      state: absent
-      wait: yes
-    when: stack_shutdown_remove_database_volume|bool
-
-  - name: Remove media volume
-    k8s:
-      definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
-      state: absent
-      wait: yes
-    when: stack_shutdown_remove_media_volume|bool
+  - name: Shutdown (if namespace exists)
+    include_tasks: shutdown-stack.yaml
+    when: ns_result.resources | length > 0
 
   # Done.
 
