@@ -175,6 +175,12 @@ stack_skip_deploy: no
 # If set it is used to set the stack's PUBLIC_TAS environment variable.
 stack_public_tas: ''
 
+# Do we disable checks for proposal membership?
+# This defeats the security checks for proposal membership
+# by setting the Pod environment variable DISABLE_RESTRICT_PROPOSALS_TO_MEMBERSHIP.
+# This is not available when the stack_deployment_mode is 'production'
+stack_disable_restrict_proposals_to_membership: no
+
 # Variables controlling the deployed database image.
 # Define a database host if a pre-existing database is to be used.
 # If blank ('') a database will be created specifically for the stack.

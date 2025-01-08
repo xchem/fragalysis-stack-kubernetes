@@ -332,6 +332,10 @@ spec:
         - name: PUBLIC_TAS
           value: '{{ stack_public_tas }}'
 {% endif %}
+{% if stack_disable_restrict_proposals_to_membership|bool  %}
+        - name: DISABLE_RESTRICT_PROPOSALS_TO_MEMBERSHIP
+        - value: 'True'
+{% endif %}
 {% if not stack_authenticate_upload|bool %}
         - name: AUTHENTICATE_UPLOAD
           value: 'False'
