@@ -359,8 +359,10 @@ spec:
         - name: DISABLE_RESTRICT_PROPOSALS_TO_MEMBERSHIP
           value: 'True'
 {% endif %}
-{% if not stack_authenticate_upload|bool %}
         - name: AUTHENTICATE_UPLOAD
+{% if stack_authenticate_upload|bool %}
+          value: 'True'
+{% else %}
           value: 'False'
 {% endif %}
 {% if stack_infections %}
