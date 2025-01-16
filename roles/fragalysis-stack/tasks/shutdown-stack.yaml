@@ -4,6 +4,7 @@
 # - Database
 # - Redis
 # - Stack
+# - Django secret
 # And then, delete...
 # - Database volume
 # - Media volume (optional)
@@ -19,6 +20,7 @@
   - deployment-beat
   - statefulset-database
   - deployment-redis
+  - secret-django
 
 - name: Wait for database to disappear
   k8s_info:
