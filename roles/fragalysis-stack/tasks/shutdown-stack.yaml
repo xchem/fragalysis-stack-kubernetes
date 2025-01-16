@@ -9,6 +9,12 @@
 # - Database volume
 # - Media volume (optional)
 
+- name: Set django secret fact
+  # These facts are required to remove the secret...
+  set_fact:
+    stack_django_secret_key_fact: '{{ stack_django_secret_key }}'
+    stack_django_superuser_password_fact: '{{ stack_django_superuser_password }}'
+
 - name: Shutdown stack, database, and redis
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
