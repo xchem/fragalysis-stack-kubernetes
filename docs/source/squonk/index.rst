@@ -69,12 +69,22 @@ The **Job Override** is a JSON document that defines the Jobs that are to be off
 the Fragalysis Stack from the ``/api/job_override`` endpoint.
 
 By default a stack has no over-rides installed and the initial
-response will present the user with an empty list. New over-rides are loaded into
-Fragalysis by an authenticated user visiting the 
-``/api/job_override`` endpoint in a web browser. The user will be presented with the
-list of over-rides (which may be empty) and can paste the content of new one
-in the **Override** field of the ``POST`` dialogue at the bottom of the page
-(you mau need to scroll down to see it): -
+response will present the user with an empty list.
+
+New over-rides are loaded into Fragalysis by the django **admin** user.
+This user must login using the standard django admin page at ``/admin`` using the
+username ``admin`` and the password exposed to the stack Pod in the environment
+variable ``WEB_DJANGO_SUPERUSER_PASSWORD``. The origin of the password is the ``django``
+**Secret** deployed in the stack's **Namespace**.
+
+>   Changing the value of the environment variable has no effect once the database
+    has been created. The admin user is only created once, so changing the password
+    without resetting the django database will have no effect.
+
+When logged-in the admin user can visit the ``api/job_override`` endpoint in a web browser.
+The user will be presented with the list of over-rides (which may be empty) and can
+paste the content of new one in the **Override** field of the ``POST`` dialogue
+at the bottom of the page (you mau need to scroll down to see it): -
 
 ..  image:: ../images/squonk-job-override.png
     :width: 100%
@@ -124,6 +134,6 @@ same endpoint will return the state of the running Job.
 
     exposing-new-jobs
 
-.. _backend: https://github.com/xchem/fragalysis-backend  
+.. _backend: https://github.com/xchem/fragalysis-backend
 .. _rfc 1035: https://tools.ietf.org/html/rfc1035
 .. _squonk2: https://squonk.informaticsmatters.org
