@@ -140,7 +140,7 @@ stack_disable_logging_framework: no
 # Environment variables in the stack pod are only set up if the secret is defined.
 stack_oidc_rp_client_secret: ''
 stack_oidc_rp_client_id: fragalysis-local
-stack_oidc_keycloak_realm: https://keycloak.xchem-dev.diamond.ac.uk/auth/realms/fragalysis
+stack_oidc_keycloak_realm: https://keycloak.xchem-dev.diamond.ac.uk/auth/realms/xchem
 stack_oidc_renew_id_token_expiry_minutes: 210
 
 # Override method to also log user out from Keycloak as well as Django.
