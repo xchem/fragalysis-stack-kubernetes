@@ -14,5 +14,6 @@ Administration
     nfs-configuration
     backup-and-replication
     awx
+    deployment-variables
     related-repositories
     important-secrets
