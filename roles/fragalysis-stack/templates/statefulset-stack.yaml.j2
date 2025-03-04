@@ -359,6 +359,10 @@ spec:
         - name: DISABLE_RESTRICT_PROPOSALS_TO_MEMBERSHIP
           value: 'True'
 {% endif %}
+{% if stack_restricted_tas_users %}
+        - name: RESTRICTED_TAS_USERS
+          value: '{{ stack_restricted_tas_users }}'
+{% endif %}
         - name: AUTHENTICATE_UPLOAD
 {% if stack_authenticate_upload|bool %}
           value: 'True'

@@ -46,6 +46,12 @@ stack_mem_limit: 16Gi
 stack_cpu_request: 250m
 stack_mem_request: 16Gi
 
+# Inject proposals for specific users?
+# This DEBUG feature not available for production stacks.
+# The value is a comma-separated list of "user:project: pairs,
+# e.g. "user-1:lb32627-66,user2:lb32627-66"
+stack_restricted_tas_users:
+
 # The Django app's media directory.
 # To hold map and pdb target data, which
 # depending on deployed targets, should be at least 3Gi
