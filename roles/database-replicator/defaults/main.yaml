@@ -25,4 +25,4 @@ replicator_job_timeout_minutes: 15
 replicator_recovery_do_not_stop_on_error: no
 
 # Recover to a specific database (yes)
-replicator_job_recovery_database: frag
+replicator_recovery_database: frag
