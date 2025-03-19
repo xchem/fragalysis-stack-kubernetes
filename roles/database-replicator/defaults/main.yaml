@@ -23,3 +23,6 @@ replicator_job_timeout_minutes: 15
 # Do not stop if there's an error?
 # Default 'no' - i.e. if there's an error, stop.
 replicator_recovery_do_not_stop_on_error: no
+
+# Recover to a specific database (yes)
+replicator_job_recovery_database: frag
