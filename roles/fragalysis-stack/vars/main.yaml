@@ -71,7 +71,7 @@ worker_mem_request: 16Gi
 
 # Database Pod CPU and Memory resources
 database_cpu_limit: 4000m
-database_mem_limit: 2Gi
+database_mem_limit: 4Gi
 database_cpu_request: 10m
 database_mem_request: 400Mi
 
