@@ -1,10 +1,13 @@
 ---
 
-# To 'shutdown' we remove: -
+# To 'wipe' we remove: -
 # - Stack
+# - Redis
 # - Django secret
-# And then, delete: -
-# - Media volume (optional)
+# - Database
+# And then, unconditionally delete: -
+# - Database volume
+# - Media volume
 
 - name: Set django secret fact
   # These facts are required to remove the secret...
@@ -12,7 +15,7 @@
     stack_django_secret_key_fact: '{{ stack_django_secret_key }}'
     stack_django_superuser_password_fact: '{{ stack_django_superuser_password }}'
 
-- name: Shutdown stack
+- name: Shutdown stack, and redis
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     state: absent
@@ -21,6 +24,7 @@
   - statefulset-stack
   - statefulset-worker
   - deployment-beat
+  - deployment-redis
   - secret-django
 
 - name: Wait for stack to disappear
@@ -49,3 +53,28 @@
     state: absent
     wait: yes
   when: stack_shutdown_remove_media_volume|bool
+
+- name: Shutdown database
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    state: absent
+    wait: yes
+  loop:
+  - statefulset-database
+
+- name: Wait for database to disappear
+  k8s_info:
+    kind: Pod
+    name: database-0
+    namespace: "{{ stack_namespace }}"
+  register: db_result
+  until: db_result.resources|length == 0
+  delay: 5
+  retries: "{{ (wait_timeout|int / 5)|int }}"
+
+- name: Remove database volume
+  k8s:
+    definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
+    state: absent
+    wait: yes
+  when: stack_shutdown_remove_database_volume|bool

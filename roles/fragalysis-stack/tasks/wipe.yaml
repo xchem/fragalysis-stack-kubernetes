@@ -1,12 +1,15 @@
 ---
 
-# Tasks required to 'shutdown' a deployed version of Fragalysis.
-# This task removes the stack but leaves the database intact.
-# It is used as a precursor to a database recovery.
+# Tasks required to 'wipe' a deployed version of Fragalysis.
+# Rather than a full delete, which would simply require the removal of the
+# namespace, this play leaves the SSL certificate and (optionally)
+# the database (normally no) and media (normally yes) volumes.
+#
+# Designed for use predominantly for the Production cluster's staging stack.
 #
 # This playbook first ensures that the Fragalysis namespace exists
 # and that an existing deployment exists - the user is first supposed
-# to have deployed the stack before shutting it down.
+# to have deployed the stack before wiping it.
 
 - include_tasks: prep.yaml
 
