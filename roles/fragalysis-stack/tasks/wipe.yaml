@@ -47,8 +47,8 @@
       name: "{{ stack_namespace }}"
     register: ns_result
 
-  - name: Shutdown (if namespace exists)
-    include_tasks: shutdown-stack.yaml
+  - name: Wipe (if namespace exists)
+    include_tasks: wipe-stack.yaml
     when: ns_result.resources | length > 0
 
   # Done.
