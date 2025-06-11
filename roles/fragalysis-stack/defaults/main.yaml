@@ -250,6 +250,12 @@ stack_wait_for_graph: yes
 # Metrics?
 stack_deploy_metrics: no
 
+# URL format strings for documentation.
+# See the backend's settings.py for documentation.
+stack_documentation_url_format_string: ''
+fe_documentation_url_format_string: ''
+be_documentation_url_format_string: ''
+
 # ISPyB/SSH variables ---------------------------------------------------------
 # These are set from vars/sensitive.vault
 # and are defined here for clarity.

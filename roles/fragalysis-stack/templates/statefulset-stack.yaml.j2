@@ -377,6 +377,18 @@ spec:
         - name: TARGET_WARNING_MESSAGE
           value: '{{ stack_target_warning_message }}'
 {% endif %}
+{% if stack_documentation_url_format_string %}
+        - name: STACK_DOCUMENTATION_URL_FORMAT_STRING
+          value: '{{ stack_documentation_url_format_string }}'
+{% endif %}
+{% if fe_documentation_url_format_string %}
+        - name: FE_DOCUMENTATION_URL_FORMAT_STRING
+          value: '{{ fe_documentation_url_format_string }}'
+{% endif %}
+{% if be_documentation_url_format_string %}
+        - name: BE_DOCUMENTATION_URL_FORMAT_STRING
+          value: '{{ be_documentation_url_format_string }}'
+{% endif %}
         - name: SECURITY_CONNECTOR_CACHE_MINUTES
           value: '{{ stack_security_connector_cache_minutes }}'
         # The playbook date/time
