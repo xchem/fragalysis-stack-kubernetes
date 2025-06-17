@@ -121,7 +121,7 @@ spec:
         - name: NEO4J_BOLT_URL
           value: bolt://neo4j:test@{{ graph_hostname }}:7687
         - name: NEO4J_QUERY
-          value: {{ graph_hostname }}
+          value: '{{ graph_hostname }}''
         - name: NEO4J_AUTH
           value: 'neo4j/{{ graph_password }}'
         - name: STACK_CONCURRENCY
