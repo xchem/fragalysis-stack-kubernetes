@@ -201,9 +201,9 @@
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     wait: yes
   loop:
-  - statefulset-stack
   - service-stack
   - ingress-stack
+#  - statefulset-stack
 #  - statefulset-worker
 
 - name: Deploy Metrics
