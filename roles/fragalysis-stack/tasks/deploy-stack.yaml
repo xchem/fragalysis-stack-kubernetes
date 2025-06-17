@@ -202,9 +202,9 @@
     wait: yes
   loop:
   - statefulset-stack
-  - statefulset-worker
   - service-stack
   - ingress-stack
+#  - statefulset-worker
 
 - name: Deploy Metrics
   k8s:
