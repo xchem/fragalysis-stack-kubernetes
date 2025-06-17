@@ -17,7 +17,6 @@
 - name: Create stack media volume claim
   k8s:
     definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
-    wait: yes
     wait_timeout: "{{ wait_timeout }}"
   when: media_pvc_result.resources|length == 0
 
@@ -63,7 +62,6 @@
   - name: Write django secrets
     k8s:
       definition: "{{ lookup('template', 'secret-django.yaml.j2') }}"
-      wait: yes
 
   when: s_result.resources|length == 0
 
@@ -92,7 +90,6 @@
   - name: Write ISPyB secrets
     k8s:
       definition: "{{ lookup('template', 'secret-ispyb.yaml.j2') }}"
-      wait: yes
 
   when:
   - stack_ispyb_host is defined
@@ -122,7 +119,6 @@
   - name: Write ssh secrets
     k8s:
       definition: "{{ lookup('template', 'secret-ssh.yaml.j2') }}"
-      wait: yes
 
   when:
   - stack_ssh_host is defined
@@ -155,7 +151,6 @@
   - name: Write xchem secrets
     k8s:
       definition: "{{ lookup('template', 'secret-xchem.yaml.j2') }}"
-      wait: yes
 
   when:
   - stack_xchem_host is defined
@@ -192,36 +187,31 @@
 - name: Deploy SSH Private Key
   k8s:
     definition: "{{ lookup('template', 'configmap-ssh-key.yaml.j2') }}"
-    wait: yes
   when:
   - stack_use_private_key_fact is defined
 
 - name: Deploy stack
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-    wait: yes
   loop:
   - service-stack
   - ingress-stack
-#  - statefulset-stack
-#  - statefulset-worker
+  - statefulset-worker
+  - statefulset-stack
 
 - name: Deploy Metrics
   k8s:
     definition: "{{ lookup('template', 'servicemonitor-stack.yaml.j2') }}"
-    wait: yes
   when: stack_deploy_metrics|bool
 
 - name: Deploy beat
   k8s:
     definition: "{{ lookup('template', 'deployment-beat.yaml.j2') }}"
-    wait: yes
   when: enable_beat_pod|bool
 
 - name: Deploy nery
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-    wait: yes
   loop:
   - statefulset-nery
   - service-nery
