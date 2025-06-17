@@ -3,7 +3,6 @@
 - name: Create redis volume claim
   k8s:
     definition: "{{ lookup('template', 'pvc-redis.yaml.j2') }}"
-    wait: yes
     wait_timeout: "{{ wait_timeout }}"
   when: redis_vol_size_g | int > 0
 
@@ -28,7 +27,6 @@
 - name: Deploy redis
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-    wait: yes
   loop:
   - configmap-redis
   - deployment-redis

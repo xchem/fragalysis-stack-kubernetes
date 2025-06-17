@@ -16,7 +16,6 @@
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     state: absent
-    wait: yes
   loop:
   - statefulset-stack
   - statefulset-worker
@@ -47,5 +46,4 @@
   k8s:
     definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
     state: absent
-    wait: yes
   when: stack_shutdown_remove_media_volume|bool

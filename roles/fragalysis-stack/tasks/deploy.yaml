@@ -37,7 +37,6 @@
 - name: Creating namespace '{{ stack_namespace }}'
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
-    wait: yes
   loop:
   - namespace
   - serviceaccount
