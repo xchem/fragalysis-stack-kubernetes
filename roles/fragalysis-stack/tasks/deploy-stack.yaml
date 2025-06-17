@@ -194,10 +194,10 @@
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
   loop:
+  - statefulset-stack
+  - statefulset-worker
   - service-stack
   - ingress-stack
-  - statefulset-worker
-  - statefulset-stack
 
 - name: Deploy Metrics
   k8s:
