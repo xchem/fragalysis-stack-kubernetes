@@ -59,6 +59,10 @@
   loop:
   - statefulset-database
 
+- name: Pause before wait (8 Seconds)
+  pause:
+    seconds: 8
+
 - name: Wait for database to disappear
   k8s_info:
     kind: Pod
