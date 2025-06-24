@@ -230,11 +230,13 @@
 # to Pod 'stack-{{ stack_replicas - 1 }}'.
 # Here we wait for all of them, starting with instance 0...
 
-- name: Wait for each new stack to become Ready
-  include_tasks: wait-for-stack.yaml
-  vars:
-    stack_id: "{{ item }}"
-  loop: "{{ range(stack_replicas|int)|list }}"
+# Removed due to resilience issues (24 Jun 2025)
+#
+#- name: Wait for each new stack to become Ready
+#  include_tasks: wait-for-stack.yaml
+#  vars:
+#    stack_id: "{{ item }}"
+#  loop: "{{ range(stack_replicas|int)|list }}"
 
 # Display helpful usage/diagnostic information.
 # Repeat the stack URL as it may have been lost in
