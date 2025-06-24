@@ -30,14 +30,12 @@
   k8s:
     definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
     state: absent
-    wait: true
   when: stack_shutdown_remove_media_volume|bool
 
 - name: Shutdown database
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     state: absent
-    wait: true
   loop:
   - statefulset-database
 
@@ -45,5 +43,4 @@
   k8s:
     definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
     state: absent
-    wait: true
   when: stack_shutdown_remove_database_volume|bool
