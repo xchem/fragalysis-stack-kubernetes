@@ -26,6 +26,10 @@
   - deployment-redis
   - secret-django
 
+- name: Pause before wait (4 Seconds)
+  pause:
+    seconds: 4
+
 - name: Wait for stack to disappear
   k8s_info:
     kind: Pod
@@ -33,8 +37,12 @@
     namespace: "{{ stack_namespace }}"
   register: stack_result
   until: stack_result.resources|length == 0
-  delay: 5
-  retries: "{{ (wait_timeout|int / 5)|int }}"
+  delay: 8
+  retries: "{{ (wait_timeout|int / 8)|int }}"
+
+- name: Pause before wait (4 Seconds)
+  pause:
+    seconds: 4
 
 - name: Wait for worker to disappear
   k8s_info:
@@ -43,8 +51,8 @@
     namespace: "{{ stack_namespace }}"
   register: worker_result
   until: worker_result.resources|length == 0
-  delay: 5
-  retries: "{{ (wait_timeout|int / 5)|int }}"
+  delay: 8
+  retries: "{{ (wait_timeout|int / 8)|int }}"
 
 - name: Remove media volume
   k8s:
@@ -59,9 +67,9 @@
   loop:
   - statefulset-database
 
-- name: Pause before wait (8 Seconds)
+- name: Pause before wait (4 Seconds)
   pause:
-    seconds: 8
+    seconds: 4
 
 - name: Wait for database to disappear
   k8s_info:
@@ -70,8 +78,8 @@
     namespace: "{{ stack_namespace }}"
   register: db_result
   until: db_result.resources|length == 0
-  delay: 5
-  retries: "{{ (wait_timeout|int / 5)|int }}"
+  delay: 8
+  retries: "{{ (wait_timeout|int / 8)|int }}"
 
 - name: Remove database volume
   k8s:

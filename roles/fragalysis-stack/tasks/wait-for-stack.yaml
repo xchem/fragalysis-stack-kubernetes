@@ -40,8 +40,8 @@
     and s_result.resources[0].status.containerStatuses is defined
     and s_result.resources[0].status.containerStatuses|length == 1
     and not s_result.resources[0].status.containerStatuses[0].ready
-  delay: 5
-  retries: "{{ (wait_timeout|int / 5)|int }}"
+  delay: 8
+  retries: "{{ (wait_timeout|int / 8)|int }}"
   when:
   - stack_wait_for_termination is defined
   - stack_wait_for_termination|bool

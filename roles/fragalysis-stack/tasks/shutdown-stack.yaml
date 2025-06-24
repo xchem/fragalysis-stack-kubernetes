@@ -22,6 +22,10 @@
   - deployment-beat
   - secret-django
 
+- name: Pre-wait pause (4s)
+  pause:
+    seconds: 4
+
 - name: Wait for stack to disappear
   k8s_info:
     kind: Pod
@@ -29,8 +33,8 @@
     namespace: "{{ stack_namespace }}"
   register: stack_result
   until: stack_result.resources|length == 0
-  delay: 5
-  retries: "{{ (wait_timeout|int / 5)|int }}"
+  delay: 8
+  retries: "{{ (wait_timeout|int / 8)|int }}"
 
 - name: Wait for worker to disappear
   k8s_info:
@@ -39,8 +43,8 @@
     namespace: "{{ stack_namespace }}"
   register: worker_result
   until: worker_result.resources|length == 0
-  delay: 5
-  retries: "{{ (wait_timeout|int / 5)|int }}"
+  delay: 8
+  retries: "{{ (wait_timeout|int / 8|int }}"
 
 - name: Remove media volume
   k8s:
