@@ -25,6 +25,10 @@
   - stack_wait_for_termination is defined
   - stack_wait_for_termination|bool
 
+- name: Pause before wait (4 Seconds)
+  pause:
+    seconds: 4
+
 - name: Wait for stack-{{ stack_id }} to become un-Ready
   k8s_info:
     kind: Pod
@@ -44,6 +48,10 @@
   - p_result.resources|length > 0
 
 # Now wait for ready...
+
+- name: Pause before wait (4 Seconds)
+  pause:
+    seconds: 4
 
 - name: Wait for stack-{{ stack_id }} to become Ready
   k8s_info:
