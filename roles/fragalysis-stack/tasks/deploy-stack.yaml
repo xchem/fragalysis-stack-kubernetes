@@ -238,6 +238,17 @@
 #    stack_id: "{{ item }}"
 #  loop: "{{ range(stack_replicas|int)|list }}"
 
+# Wait for a response from the stack's URL
+- name: Wait for Stack Landing Page
+  uri:
+    url: "https://{{ stack_url }}/viewer/react/landing/"
+    follow_redirects: none
+    method: GET
+  register: _result
+  until: _result.status == 200
+  retries: 120 # 120 * 5 seconds = 10 minutes
+  delay: 5 # Every 5 seconds
+
 # Display helpful usage/diagnostic information.
 # Repeat the stack URL as it may have been lost in
 # the repeated log from the prior task.
