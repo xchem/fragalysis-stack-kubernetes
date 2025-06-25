@@ -33,6 +33,7 @@
 - name: Create database volume claim
   k8s:
     definition: "{{ lookup('template', 'pvc-database.yaml.j2') }}"
+    wait: yes
     wait_timeout: "{{ wait_timeout }}"
 
 # Best practice ... wait for the PVC to bind.
@@ -91,6 +92,7 @@
 - name: Write database secrets
   k8s:
     definition: "{{ lookup('template', 'secret-database.yaml.j2') }}"
+    wait: yes
   when: s_result.resources|length == 0
 
 - name: Set database secret facts (from secrets)
@@ -106,11 +108,28 @@
 - name: Deploy database
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
   loop:
   - configmap-postgres-conf
   - configmap-postgres-init
   - statefulset-database
   - service-database
+
+- name: Wait for database to become ReadyAdd commentMore actions
+  k8s_info:
+    kind: Pod
+    name: database-0
+    namespace: "{{ stack_namespace }}"
+  register: db_result
+  until: >-
+    db_result.resources is defined
+    and db_result.resources|length == 1
+    and db_result.resources[0].status is defined
+    and db_result.resources[0].status.containerStatuses is defined
+    and db_result.resources[0].status.containerStatuses|length == 1
+    and db_result.resources[0].status.containerStatuses[0].ready
+  delay: 10
+  retries: "{{ (wait_timeout|int / 10)|int }}"
 
 # Database (backups) ----------------------------------------------------------
 
@@ -152,11 +171,13 @@
   - name: Write backup rsync secrets
     k8s:
       definition: "{{ lookup('template', 'secret-backup-rsync.yaml.j2') }}"
+      wait: yes
     when: database_bu_use_rsync|bool
 
   - name: Deploy hourly backup
     k8s:
       definition: "{{ lookup('template', 'cronjob-postgres-backup.yaml.j2') }}"
+      wait: yes
       wait_timeout: "{{ wait_timeout }}"
 
   when: database_bu_state|string == 'present'

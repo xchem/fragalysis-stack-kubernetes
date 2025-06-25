@@ -16,15 +16,12 @@
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
     state: absent
+    wait: yes
   loop:
   - statefulset-stack
   - statefulset-worker
   - deployment-beat
   - secret-django
-
-- name: Pre-wait pause (4s)
-  pause:
-    seconds: 4
 
 - name: Wait for stack to disappear
   k8s_info:
@@ -50,4 +47,5 @@
   k8s:
     definition: "{{ lookup('template', 'pvc-media.yaml.j2') }}"
     state: absent
+    wait: yes
   when: stack_shutdown_remove_media_volume|bool
