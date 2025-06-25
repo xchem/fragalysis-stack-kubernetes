@@ -1,81 +1,99 @@
+######################
+Installing AWX (Basic)
+######################
+
+.. note:: Allow 1 hour to complete this task,
+          which involves installation of the operator and an AWX server instance
+
+Installed versions (at the time of writing): -
+
+- Operator **2.19.1**
+- AWX **24.6.1**
+
+Installation and configuration of the AWX server is achieved using the
+kubernetes `AWX operator`_. Clone the project and follow the **Basic Installation**
+section of the guide.
+
+With the operator installed you will need to create an AWX server using a Kubernetes
+**Kustomization**. This will rely on also creating secrets used to configure the AWX
+server, secrets that define the AWX URL, its database and username and passwords.
+
+Here we use the infrastructure database previously configured.
+
+The ``Kustomization.yaml`` file (located in the root of the clone repository) will
+probably look like this::
+
+    ---
+    apiVersion: kustomize.config.k8s.io/v1beta1
+    kind: Kustomization
+
+    resources:
+    - awx-im-infra-secrets.yaml
+    - awx-im-infra.yaml
+    namespace: awx
+
+inm our case the **Kustomization** defines two resources::
+
+    awx-im-infra-secrets.yaml
+    awx-im-infra.yaml
+
+Our ``awx-im-infra-secrets.yaml`` defines two Kubernetes **Secrets**, named:-
+
+*   ``awx-im-infra-postgres-configuration``
+*   ``awx-im-infra-secret-key``
+
+The first provides the following secrets::
+
+    database (awx)
+    host (database.im-infra.svc)
+    password (****)
+    port (5432)
+    ssimode (prefer)
+    target_session_attrs`` (read-write)
+    type (unmanaged)
+    username (awx)
+
+And the second provides::
+
+    secret_key
+
+The ``awx-im-infra.yaml`` resource defines an **AWX** (custom resource) and probably
+looks like this::
+
+    ipv6_disabled: true
+    control_plane_priority_class: im-application-high
+    secret_key_secret: awx-im-infra-secret-key
+    postgres_configuration_secret: awx-im-infra-postgres-configuration
+    service_type: ClusterIP
+    ingress_type: ingress
+    ingress_class_name: nginx
+    ingress_tls_secret: awx-im-infra-tls
+    ingress_annotations: |
+      cert-manager.io/cluster-issuer: letsencrypt-nginx-production
+    hostname: awx.xchem.diamond.ac.uk
+
+With the **Kustomization** and resources defined, create the AWX server::
+
+    kubectl apply -k .
+
 #######################
 Configuring AWX (Basic)
 #######################
 
-.. note:: Allow 5 minutes to complete this task,
+.. note:: Allow several hours to complete this task,
           which involves configuring and checking the AWX application server
 
-Configuration of the AWX server is achieved with a parameter file
-in the Informatics Matters `DLS Kubernetes`_ GitHub repository and the
-Ansible Galaxy `AWX Composer`_ Role .
-
-Clone the project into the working directory you created while following the
-:doc:`infrastructure-installation` guide::
-
-    $ cd <working directory>
-    $ git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
-    $ cd dls-fragalysis-stack-kubernetes
-    $ git checkout tags/2020.38
-    $ pip install -r requirements.txt
-    $ ansible-galaxy install -r role-requirements.yaml
-
-..  note::
-    Try to use the latest tag that's available. At the time of writing it was
-    ``tags/2020.38``.
-
-The demo configuration will create the following objects: -
+With an AWX server running you now have to configure it, which will require at least
+some of the following objects:
 
 *   An organisation
 *   Credentials
 *   A team
-*   A demo user
+*   Users
 *   Projects
 *   Job Templates
-
-Start by copying the ``config-basic-template.yaml`` file to ``config-basic.yaml``
-(which is protected from being committed) and then review it and provide
-values for all fo the ``SetMe`` instances in the file.
-
-The file defines a ``tower`` variable, used by our `AWX Composer`_
-Ansible Galaxy role.
-
-.. warning::
-    Before configuring the AWX server you will need an AWS user's
-    access credentials (typically for S3 access) and credentials for the
-    Kubernetes cluster. Providing values for these will result in the
-    **Composer** creating ``aws (SELF)`` and ``k8s (SELF)`` credentials in the
-    AWX server that playbooks rely on in order to deploy the Fraglaysis Stack.
-    The AWS user account permissions that are required will ultimately depend
-    on the container images that you intend to deploy. For example, if you
-    expect to use AWS S3 as a source for Fragalysis Graph and Media the
-    container we run to do this will require the AWS account to have the
-    ``AmazonS3ReadOnlyAccess`` permission.
-
-You will have to provide suitable environment variables for the *built-in*
-credentials::
-
-    $ export AWS_ACCESS_KEY_ID=00000000
-    $ export AWS_SECRET_ACCESS_KEY=00000000
-
-    $ export K8S_AUTH_HOST=https://1.2.3.4:6443
-    $ export K8S_AUTH_API_KEY=kubeconfig-user-abc:00000000
-    $ export K8S_AUTH_VERIFY_SSL=no
-
-You can now configure the AWX application server
-using the infrastructure playbook and the ``config-basic.yaml`` file.
-From the root of your clone of the `dls kubernetes`_ repository run::
-
-    $ ansible localhost \
-        -m include_role -a name=informaticsmatters.awx_composer \
-        -e @awx-configuration/config-basic.yaml
-
-Once complete you should be able to login to the AWX server and
-navigate to the Templates page and see all the available Job Templates,
-illustrated in the following example screenshot.
-
-The Job Templates you see will depend on the configuration you've applied.
+*   Workflows
 
 ..  image:: ../../images/awx-production-templates.png
 
-.. _dls kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
-.. _awx composer: https://github.com/InformaticsMatters/ansible-role-awx-composer
+.. _awx operator: https://github.com/ansible/awx-operator
