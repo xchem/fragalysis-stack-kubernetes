@@ -1,0 +1,14 @@
+---
+
+- name: Check the namespace
+  assert:
+    that:
+    - taa_namespace | string | length > 0
+
+# Bye bye...
+
+- name: Deleting namespace '{{ taa_namespace }}'
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'namespace.yaml.j2') }}"
+    wait: yes

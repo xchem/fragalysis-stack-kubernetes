@@ -1,0 +1,15 @@
+---
+
+taa_memcached_image_registry: docker.io
+taa_memcached_image: memcached
+taa_memcached_image_tag: 1.6.38-alpine3.21
+
+# General variables -----------------------------------------------------------
+
+# General timeout, used within the k8s module for wait duration
+wait_timeout: 600
+# Install prerequisite Python modules?
+# Normally required from early AWX, not expected when run from a control machine
+# (where modules are expected to have been installed) and not from more recent
+# AWX servers (live v23 onwards) where the modules are already present.
+install_prerequisite_python_modules: no

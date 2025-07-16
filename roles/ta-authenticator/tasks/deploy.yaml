@@ -1,0 +1,59 @@
+---
+
+- name: Include sensitive variables
+  include_vars:
+    file: sensitive.vault
+
+# Create the namespace (project) and other key bits.
+# Everything, except the graph at the moment goes into
+# a dedicated namespace. When done we simply delete the namespace.
+
+- name: Check the namespace
+  assert:
+    that:
+    - taa_namespace | string | length > 0
+
+- name: Creating namespace '{{ taa_namespace }}'
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - namespace
+  - serviceaccount
+
+- name: Deploy SSH Private Key
+  k8s:
+    definition: "{{ lookup('template', 'configmap-ssh-key.yaml.j2') }}"
+    wait: yes
+  when:
+  - taa_ssh_private_key | string | length != 0
+
+- name: Check query key secret
+  k8s_info:
+    kind: Secret
+    api_version: v1
+    namespace: "{{ taa_namespace }}"
+    name: query-key
+  register: s_result
+
+- name: Set (new) query key secret
+  block:
+
+  - name: Set query key secret fact (new)
+    set_fact:
+      taa_query_key_fact: "{{ '' | to_uuid }}"
+
+  - name: Write query key secret
+    k8s:
+      definition: "{{ lookup('template', 'secret.yaml.j2') }}"
+      wait: yes
+
+  when: s_result.resources|length == 0
+
+- name: Deploy authenticator
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    wait: yes
+  loop:
+  - deployment
+  - service
