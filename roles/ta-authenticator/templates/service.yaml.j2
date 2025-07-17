@@ -2,13 +2,14 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: ta-authenticator
+  name: auth
   namespace: {{ taa_namespace }}
   labels:
-    name: ta-authenticator
+    name: auth
 spec:
   selector:
     name: ta-authenticator
   ports:
   - name: http
     port: 80
+    targetPort: http

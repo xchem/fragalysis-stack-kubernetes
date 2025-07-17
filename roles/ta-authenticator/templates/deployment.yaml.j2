@@ -65,8 +65,8 @@ spec:
           value: '/home/taa/fragalysis-stack-ssh-key'
 {% endif %}
         ports:
-        - name:
-          containerPort: 8080
+        - containerPort: 8080
+          name: http
         resources:
           limits:
             cpu: 1
