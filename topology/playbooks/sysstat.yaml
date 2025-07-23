@@ -32,7 +32,7 @@
     - name: Ensure sysstat configuration file is present
       ansible.builtin.file:
         path: /etc/default/sysstat
-        state: file
+        state: touch
 
     - name: Configure sysstat (enabled)
       ansible.builtin.lineinfile:
