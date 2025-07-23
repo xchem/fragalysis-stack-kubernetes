@@ -1,5 +1,7 @@
 ---
 
+# Install sysstat with a default history of 28 days and interval of 2 minutes
+#
 # You might run this play on a single host with: -
 #
 #   ansible-playbook playbooks/sysstat.yaml \
@@ -17,6 +19,7 @@
   vars:
     sysstat_state: present
     sysstat_history: 28
+    sysstat_oncalendar: '*:00/02'
 
   tasks:
   - name: Install sysstat tool
@@ -45,6 +48,12 @@
         path: /etc/default/sysstat
         regexp: '^HISTORY='
         line: HISTORY={{ sysstat_history }}
+
+    - name: Set sysstat Timer OnCalendar (interval)
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/system/sysstat.service.wants/sysstat-collect.timer
+        regexp: '^OnCalendar='
+        line: OnCalendar={{ sysstat_oncalendar }}
 
     - name: Start sysstat
       ansible.builtin.service:
