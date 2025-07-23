@@ -18,8 +18,8 @@
   become: true
   vars:
     sysstat_state: present
-    sysstat_history: 28
-    sysstat_oncalendar: '*:00/02'
+    sysstat_history: 7
+    sysstat_oncalendar: '*:00/10'
 
   tasks:
   - name: Install sysstat tool

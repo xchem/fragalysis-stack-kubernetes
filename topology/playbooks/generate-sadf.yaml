@@ -1,0 +1,25 @@
+---
+
+# Collects yesterday's sadf data
+
+- name: Run sadf to get graphical sysstats data
+  hosts: all
+  become: true
+  vars:
+    look_back: -1
+
+  tasks:
+  - name: Get day ({{ look_back }})
+    set_fact:
+      day: "{{ '%d'|strftime(ansible_date_time.epoch|int + look_back|int * 86400) }}"
+
+  - name: Generate CPU SVG ({{ day }})
+    ansible.builtin.command:
+      cmd: sadf -g /var/log/sysstat/sa{{ day }} > /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
+      creates: /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
+
+  - name: Fetch the generated file
+    ansible.builtin.fetch:
+      src: /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
+      dest: /tmp/
+      flat: yes
