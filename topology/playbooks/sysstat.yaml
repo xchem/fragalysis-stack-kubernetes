@@ -2,15 +2,17 @@
 
 # Install sysstat with a default history of 7 days and interval of 2 minutes
 #
+# You might want to run this on all our 'xch_' (kubernetes) nodes: -
+#
+#   ansible-playbook playbooks/sysstat.yaml --limit xch_*
+#
 # You might run this play on a single host with: -
 #
-#   ansible-playbook playbooks/sysstat.yaml \
-#       --limit 192.168.253.132
+#   ansible-playbook playbooks/sysstat.yaml --limit 192.168.253.132
 #
-# And remove it with: -
+# And remove the utility with: -
 #
-#   ansible-playbook playbooks/sysstat.yaml \
-#       --limit 192.168.253.132 \
+#   ansible-playbook playbooks/sysstat.yaml --limit 192.168.253.132 \
 #       --extra-vars sysstat_state=absent
 
 - name: sysstat utility management
