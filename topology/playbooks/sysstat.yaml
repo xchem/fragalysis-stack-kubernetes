@@ -29,22 +29,22 @@
       ansible.builtin.apt:
         name: sysstat
 
-#    - name: Create sysstat configuration
-#      ansible.builtin.file:
-#        path: /etc/default/sysstat
-#        state: file
-#
-#    - name: Configure sysstat (enabled)
-#      ansible.builtin.lineinfile:
-#        path: /etc/default/sysstat
-#        regexp: '^ENABLED='
-#        line: ENABLED="true"
-#
-#    - name: Configure sysstat (history)
-#      ansible.builtin.lineinfile:
-#        path: /etc/default/sysstat
-#        regexp: '^HISTORY='
-#        line: HISTORY={{ sysstat_history }}
+    - name: Ensure sysstat configuration file is present
+      ansible.builtin.file:
+        path: /etc/default/sysstat
+        state: file
+
+    - name: Configure sysstat (enabled)
+      ansible.builtin.lineinfile:
+        path: /etc/default/sysstat
+        regexp: '^ENABLED='
+        line: ENABLED="true"
+
+    - name: Configure sysstat (history)
+      ansible.builtin.lineinfile:
+        path: /etc/default/sysstat
+        regexp: '^HISTORY='
+        line: HISTORY={{ sysstat_history }}
 
     - name: Start sysstat
       ansible.builtin.service:
