@@ -58,9 +58,7 @@
     - name: Start sysstat
       ansible.builtin.service:
         name: sysstat
-        enabled: true
-        state: started
-      when: sysstat_state == 'present'
+        state: reloaded
 
   - name: Remove sysstat tool
     when: sysstat_state != 'present'
