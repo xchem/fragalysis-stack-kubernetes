@@ -1,0 +1,29 @@
+---
+- name: sysstat utility management
+  vars:
+    sysstat_state: present
+
+  tasks:
+  - name: Install sysstat tool
+    when: sysstat_state == 'present'
+    block:
+
+    - name: Install sysstat
+      ansible.builtin.apt:
+        name: sysstat
+
+    - name: Start sysstat
+      ansible.builtin.service:
+        name: sysstat
+        enabled: true
+        state: started
+      when: sysstat_state == 'present'
+
+  - name: Remove sysstat tool
+    when: sysstat_state != 'present'
+    block:
+
+    - name: Remove sysstat
+      ansible.builtin.apt:
+        name: sysstat
+        state: absent
