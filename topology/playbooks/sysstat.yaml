@@ -49,13 +49,19 @@
         regexp: '^HISTORY='
         line: HISTORY={{ sysstat_history }}
 
+    - name: Start sysstat
+      ansible.builtin.service:
+        name: sysstat
+        enabled: true
+        state: started
+
     - name: Set sysstat Timer OnCalendar (interval)
       ansible.builtin.lineinfile:
         path: /etc/systemd/system/sysstat.service.wants/sysstat-collect.timer
         regexp: '^OnCalendar='
         line: OnCalendar={{ sysstat_oncalendar }}
 
-    - name: Start sysstat
+    - name: Reload sysstat
       ansible.builtin.service:
         name: sysstat
         state: reloaded
