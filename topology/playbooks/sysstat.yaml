@@ -1,6 +1,6 @@
 ---
 
-# Install sysstat with a default history of 28 days and interval of 10 minutes
+# Install sysstat with a default history of 28 days and interval of 2 minutes
 #
 # You might run this play on a single host with: -
 #
@@ -19,7 +19,7 @@
   vars:
     sysstat_state: present
     sysstat_history: 28
-    sysstat_oncalendar: '*:00/10'
+    sysstat_oncalendar: '*:00/02'
 
   tasks:
   - name: Install sysstat tool
@@ -60,18 +60,15 @@
         path: /etc/systemd/system/sysstat.service.wants/sysstat-collect.timer
         regexp: '^OnCalendar='
         line: OnCalendar={{ sysstat_oncalendar }}
-      when: sysstat_oncalendar != '*:00/10'
 
     - name: Reload systemd
-      ansible.builtin.systemd_service:
+      ansible.builtin.systemd:
         daemon_reload: true
-      when: sysstat_oncalendar != '*:00/10'
 
     - name: Restart sysstat
       ansible.builtin.service:
         name: sysstat
         state: restarted
-      when: sysstat_oncalendar != '*:00/10'
 
   - name: Remove sysstat tool
     when: sysstat_state != 'present'
