@@ -1,12 +1,14 @@
 ---
 
-# Collects yesterday's sadf data
+# Collects sadf data for a particular day (yesterday)
+# and pulls the files back to the host machine's /tmp/svg directory.
+# If you want
 
 - name: Run sadf to get graphical sysstats data
   hosts: all
-  become: true
   vars:
     look_back: -1
+    local_dir: /tmp/svg
 
   tasks:
   - name: Get day ({{ look_back }})
@@ -14,12 +16,29 @@
       day: "{{ '%d'|strftime(ansible_date_time.epoch|int + look_back|int * 86400) }}"
 
   - name: Generate CPU SVG ({{ day }})
-    ansible.builtin.command:
+    ansible.builtin.shell:
       cmd: sadf -g /var/log/sysstat/sa{{ day }} > /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
-      creates: /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
+    become: true
 
-  - name: Fetch the generated file
+  - name: Generate Memory SVG ({{ day }})
+    ansible.builtin.shell:
+      cmd: sadf -g /var/log/sysstat/sa{{ day }} -- -r > /tmp/{{ ansible_hostname }}-mem{{ day }}.svg
+    become: true
+
+  - name: Ensure local directory
+    ansible.builtin.file:
+      path: "{{ local_dir }}"
+      state: directory
+    delegate_to: localhost
+
+  - name: Fetch the generated CPU file
     ansible.builtin.fetch:
       src: /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
-      dest: /tmp/
+      dest: "{{ local_dir }}/"
+      flat: yes
+
+  - name: Fetch the generated Memory file
+    ansible.builtin.fetch:
+      src: /tmp/{{ ansible_hostname }}-mem{{ day }}.svg
+      dest: "{{ local_dir }}/"
       flat: yes

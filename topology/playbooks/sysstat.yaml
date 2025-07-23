@@ -1,6 +1,6 @@
 ---
 
-# Install sysstat with a default history of 28 days and interval of 2 minutes
+# Install sysstat with a default history of 7 days and interval of 2 minutes
 #
 # You might run this play on a single host with: -
 #
@@ -19,7 +19,7 @@
   vars:
     sysstat_state: present
     sysstat_history: 7
-    sysstat_oncalendar: '*:00/10'
+    sysstat_oncalendar: '*:00/02'
 
   tasks:
   - name: Install sysstat tool
