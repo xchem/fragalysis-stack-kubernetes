@@ -1,7 +1,15 @@
 ---
+
+# You might run this play on a single host with: -
+#
+#   ansible-playbook playbooks/sysstat.yaml --limit 192.168.253.132
+
 - name: sysstat utility management
+  hosts: all
+  become: true
   vars:
     sysstat_state: present
+    sysstat_history: 28
 
   tasks:
   - name: Install sysstat tool
@@ -11,6 +19,18 @@
     - name: Install sysstat
       ansible.builtin.apt:
         name: sysstat
+
+    - name: Configure sysstat (enabled)
+      ansible.builtin.lineinfile:
+        path: /etc/default/sysstat
+        regexp: '^ENABLED='
+        line: ENABLED="true"
+
+    - name: Configure sysstat (history)
+      ansible.builtin.lineinfile:
+        path: /etc/default/sysstat
+        regexp: '^HISTORY='
+        line: HISTORY={{ sysstat_history }}
 
     - name: Start sysstat
       ansible.builtin.service:
