@@ -2,7 +2,11 @@
 
 # Collects sadf data for a particular day (yesterday)
 # and pulls the files back to the host machine's /tmp/svg directory.
-# If you want
+#
+# To pull these back to your host you could use 'scp': -
+#
+#   mkdir svg
+#   scp xch-bastion:/tmp/svg/*.svg svg
 
 - name: Run sadf to get graphical sysstats data
   hosts: all
