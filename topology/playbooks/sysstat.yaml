@@ -16,6 +16,8 @@
     when: sysstat_state == 'present'
     block:
 
+    # Installation tasks
+
     - name: Install sysstat
       ansible.builtin.apt:
         name: sysstat
@@ -43,7 +45,14 @@
     when: sysstat_state != 'present'
     block:
 
+    # Removal tasks
+
     - name: Remove sysstat
       ansible.builtin.apt:
         name: sysstat
+        state: absent
+
+    - name: Remove sysstat configuration
+      ansible.builtin.file:
+        path: /etc/default/sysstat
         state: absent
