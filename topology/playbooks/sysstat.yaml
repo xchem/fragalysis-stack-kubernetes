@@ -2,7 +2,14 @@
 
 # You might run this play on a single host with: -
 #
-#   ansible-playbook playbooks/sysstat.yaml --limit 192.168.253.132
+#   ansible-playbook playbooks/sysstat.yaml \
+#       --limit 192.168.253.132
+#
+# And remove it with: -
+#
+#   ansible-playbook playbooks/sysstat.yaml \
+#       --limit 192.168.253.132 \
+#       --extra-vars sysstat_state=absent
 
 - name: sysstat utility management
   hosts: all
@@ -22,17 +29,22 @@
       ansible.builtin.apt:
         name: sysstat
 
-    - name: Configure sysstat (enabled)
-      ansible.builtin.lineinfile:
-        path: /etc/default/sysstat
-        regexp: '^ENABLED='
-        line: ENABLED="true"
-
-    - name: Configure sysstat (history)
-      ansible.builtin.lineinfile:
-        path: /etc/default/sysstat
-        regexp: '^HISTORY='
-        line: HISTORY={{ sysstat_history }}
+#    - name: Create sysstat configuration
+#      ansible.builtin.file:
+#        path: /etc/default/sysstat
+#        state: file
+#
+#    - name: Configure sysstat (enabled)
+#      ansible.builtin.lineinfile:
+#        path: /etc/default/sysstat
+#        regexp: '^ENABLED='
+#        line: ENABLED="true"
+#
+#    - name: Configure sysstat (history)
+#      ansible.builtin.lineinfile:
+#        path: /etc/default/sysstat
+#        regexp: '^HISTORY='
+#        line: HISTORY={{ sysstat_history }}
 
     - name: Start sysstat
       ansible.builtin.service:
