@@ -16,4 +16,3 @@ taa_image_pull_policy:
 
 # Number of processes and concurrency within a process
 taa_workers: 1
-taa_concurrency: 1

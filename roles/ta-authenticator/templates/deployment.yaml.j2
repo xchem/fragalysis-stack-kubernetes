@@ -66,8 +66,6 @@ spec:
 {% endif %}
         - name: WORKERS
           value: '{{ taa_workers }}'
-        - name: CONCURRENCY
-          value: '{{ taa_concurrency }}'
         ports:
         - containerPort: 8080
           name: http
