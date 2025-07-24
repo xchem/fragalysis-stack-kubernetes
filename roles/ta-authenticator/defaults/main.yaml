@@ -13,3 +13,7 @@ taa_image_tag: '0.1.0'
 # Image pull policy?
 # If not set it's automatic.
 taa_image_pull_policy:
+
+# Number of processes and concurrency within a process
+taa_workers: 1
+taa_concurrency: 1
