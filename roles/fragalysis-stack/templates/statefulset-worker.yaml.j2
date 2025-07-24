@@ -238,30 +238,10 @@ spec:
           value: '{{ stack_mcule_api_key }}'
         - name: SENDGRID_API_KEY
           value: '{{ stack_sendgrid_api_key }}'
-{% if stack_ispyb_host_fact is defined %}
-        # Extracted from ispyb secrets...
-        #
-        - name: ISPYB_USER
-          valueFrom:
-            secretKeyRef:
-              name: ispyb
-              key: user
-        - name: ISPYB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ispyb
-              key: password
-        - name: ISPYB_HOST
-          valueFrom:
-            secretKeyRef:
-              name: ispyb
-              key: host
-        - name: ISPYB_PORT
-          valueFrom:
-            secretKeyRef:
-              name: ispyb
-              key: port
-{% endif %}
+        - name: TA_AUTH_SERVICE
+          value: '{{ stack_ta_auth_service }}'
+        - name: TA_AUTH_QUERY_KEY
+          value: '{{ stack_ta_auth_query_key }}'
 {% if stack_xchem_host_fact is defined %}
         # Extracted from xchem secrets...
         #
@@ -296,35 +276,6 @@ spec:
           value: 'yes'
 {% else %}
           value: 'no'
-{% endif %}
-{% if stack_ssh_host_fact is defined %}
-        # SSH material
-        - name: SSH_HOST
-          valueFrom:
-            secretKeyRef:
-              name: ssh
-              key: host
-        - name: SSH_USER
-          valueFrom:
-            secretKeyRef:
-              name: ssh
-              key: user
-        - name: SSH_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ssh
-              key: password
-{% if stack_use_private_key_fact is defined %}
-        # A private key's been defined,
-        # so it will be in a 'well known location' in the container.
-        - name: SSH_PRIVATE_KEY_FILENAME
-          value: '/code/fragalysis-stack-ssh-key'
-{% endif %}
-        - name: SECURITY_CONNECTOR
-          valueFrom:
-            secretKeyRef:
-              name: ssh
-              key: security_connector
 {% endif %}
         - name: LOGGING_FRAMEWORK_ROOT_LEVEL
           value: '{{ stack_logging_framework_root_level }}'

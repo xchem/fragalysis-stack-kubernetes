@@ -256,24 +256,12 @@ stack_documentation_url_format_string: ''
 fe_documentation_url_format_string: ''
 be_documentation_url_format_string: ''
 
-# ISPyB/SSH variables ---------------------------------------------------------
+# Target Access Authentication variables -----------------------------------------------
 # These are set from vars/sensitive.vault
 # and are defined here for clarity.
 
-stack_ispyb_user: ''
-stack_ispyb_password: ''
-stack_ispyb_host: ''
-stack_ispyb_port: 4306
-
-# If a private key is defined it will be used in preference to a password.
-stack_ssh_host: ''
-stack_ssh_user: ''
-stack_ssh_password: ''
-stack_ssh_private_key: ''
-
-# Connector type.
-# One of 'ssh_ispyb' or 'ispyb'
-stack_security_connector: ssh_ispyb
+stack_ta_auth_service: ''
+stack_ta_auth_query_key: ''
 
 # AWX Credentials -------------------------------------------------------------
 # The following variables can be provided by AWX credentials,
