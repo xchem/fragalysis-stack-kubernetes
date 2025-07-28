@@ -1,0 +1,85 @@
+---
+
+# Runs 'sar' to get a CPU average for a particular day
+# and appends the average line (the last line of output)
+# into a cpu summary file for the host as a CSV record.
+# The first column of the line will be the data in the form "2025-07-27"
+# and the remaining 6 average values are: -
+#
+#    %user     %nice   %system   %iowait    %steal     %idle
+#
+# To generate stats the day before yesterday...
+#
+#   ansible-playbook playbooks/generate-sadf.yaml --extra-vars look_back=-2
+#
+# To pull these back to your host you could use 'scp': -
+#
+#   mkdir csv
+#   scp xch-bastion:/tmp/csv/*.scv csv
+
+- name: Run 'sar' to get CPU average for a given prior day
+  hosts: all
+  vars:
+    look_back: -1
+    local_dir: /tmp/csv
+    clean_start: false
+
+  tasks:
+  - name: Get day ({{ look_back }})
+    set_fact:
+      day: "{{ '%d'|strftime(ansible_date_time.epoch|int + look_back|int * 86400) }}"
+      date: "{{ '%Y-%m-%d'|strftime(ansible_date_time.epoch|int + look_back|int * 86400) }}"
+
+  - name: Get summary file
+    set_fact:
+      summary_file: /tmp/{{ ansible_hostname }}-sar-cpu.csv
+
+  - name: Remove summary file ({{ summary_file }})
+    ansible.builtin.file:
+      path: "{{ summary_file }}"
+      state: absent
+    become: true
+    when: clean_start | bool
+
+  - name: Touch summary file ({{ summary_file }})
+    ansible.builtin.file:
+      path: "{{ summary_file }}"
+      state: touch
+      mode: u=rw,g=r,o=r
+      owner: root
+      group: root
+    become: true
+
+  - name: Get CPU Average ({{ day }})
+    ansible.builtin.shell:
+      cmd: >-
+        sar -f /var/log/sysstat/sa{{ day }}
+        | tail -1
+        | tr -s " "
+        | cut -d" " -f 3-8
+        | tr " " ","
+    become: true
+    register: results
+
+  - name: Display captured average
+    debug:
+      var: results.stdout
+
+  - name: Put line in file
+    ansible.builtin.lineinfile:
+      path: "{{ summary_file }}"
+      regexp: "^{{ date }},"
+      line: "{{ date }},{{ results.stdout }}"
+    become: true
+
+  - name: Ensure local directory
+    ansible.builtin.file:
+      path: "{{ local_dir }}"
+      state: directory
+    delegate_to: localhost
+
+  - name: Fetch the generated CPU file
+    ansible.builtin.fetch:
+      src: "{{ summary_file }}"
+      dest: "{{ local_dir }}/"
+      flat: yes

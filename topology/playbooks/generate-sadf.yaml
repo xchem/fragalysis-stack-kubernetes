@@ -2,6 +2,7 @@
 
 # Collects sadf data for a particular day (yesterday)
 # and pulls the files back to the host machine's /tmp/svg directory.
+#
 # To generate stats the day before yesterday...
 #
 #   ansible-playbook playbooks/generate-sadf.yaml --extra-vars look_back=-2
