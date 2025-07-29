@@ -8,7 +8,7 @@ taa_namespace: ta-authenticator
 # The Target Access Authenticator image you want to deploy.
 taa_image_registry: docker.io
 taa_image: xchem/fragalysis-ispyb-target-access-authenticator
-taa_image_tag: '0.1.0'
+taa_image_tag: '1.0.0'
 
 # Image pull policy?
 # If not set it's automatic.
