@@ -2,7 +2,7 @@
 
 taa_memcached_image_registry: docker.io
 taa_memcached_image: memcached
-taa_memcached_image_tag: 1.6.38-alpine3.21
+taa_memcached_image_tag: 1.6.38-alpine3.22
 
 # General variables -----------------------------------------------------------
 
