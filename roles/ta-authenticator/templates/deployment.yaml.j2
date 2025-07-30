@@ -27,8 +27,18 @@ spec:
       - name: memcached
         image: {{ taa_memcached_image_registry }}/{{ taa_memcached_image }}:{{ taa_memcached_image_tag }}
         imagePullPolicy: IfNotPresent
+        args:
+        - '-v'
+        - '--memory-limit={{ taa_memcached_memory_limit_mb }}'
         ports:
         - containerPort: 11211
+        resources:
+          limits:
+            cpu: {{ taa_memcached_cpu_limit }}
+            memory: {{ taa_memcached_memory_limit }}
+          requests:
+            cpu: {{ taa_memcached_cpu_request }}
+            memory: {{ taa_memcached_memory_request }}
 
       - name: ta-authenticator
         image: {{ taa_image_registry }}/{{ taa_image }}:{{ taa_image_tag }}
@@ -71,11 +81,11 @@ spec:
           name: http
         resources:
           limits:
-            cpu: 1
-            memory: 512Mi
+            cpu: {{ taa_cpu_limit }}
+            memory: {{ taa_memory_limit }}
           requests:
-            cpu: 0.1
-            memory: 256Mi
+            cpu: {{ taa_cpu_request }}
+            memory: {{ taa_memory_request }}
         livenessProbe:
           tcpSocket:
             port: http
