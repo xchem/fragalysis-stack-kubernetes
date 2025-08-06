@@ -32,18 +32,19 @@
 
   - name: Get summary file
     set_fact:
-      summary_file: /tmp/{{ ansible_hostname }}-sar-cpu.csv
+      summary_file: "{{ ansible_hostname }}-sar-cpu.csv"
+      summary_path_and_file: /tmp/{{ ansible_hostname }}-sar-cpu.csv
 
-  - name: Remove summary file ({{ summary_file }})
+  - name: Remove summary file ({{ summary_path_and_file }})
     ansible.builtin.file:
-      path: "{{ summary_file }}"
+      path: "{{ summary_path_and_file }}"
       state: absent
     become: true
     when: clean_start | bool
 
-  - name: Touch summary file ({{ summary_file }})
+  - name: Touch summary file ({{ summary_path_and_file }})
     ansible.builtin.file:
-      path: "{{ summary_file }}"
+      path: "{{ summary_path_and_file }}"
       state: touch
       mode: u=rw,g=r,o=r
       owner: root
@@ -67,7 +68,7 @@
 
   - name: Put line in file
     ansible.builtin.lineinfile:
-      path: "{{ summary_file }}"
+      path: "{{ summary_path_and_file }}"
       regexp: "^{{ date }},"
       line: "{{ date }},{{ results.stdout }}"
     become: true
@@ -78,8 +79,8 @@
       state: directory
     delegate_to: localhost
 
-  - name: Fetch the generated CPU file
+  - name: Fetch the generated CPU file ({{ local_dir }}/{{ summary_file }})
     ansible.builtin.fetch:
-      src: "{{ summary_file }}"
+      src: "{{ summary_path_and_file }}"
       dest: "{{ local_dir }}/"
       flat: yes
