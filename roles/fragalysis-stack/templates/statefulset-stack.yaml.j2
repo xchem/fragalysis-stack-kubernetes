@@ -302,6 +302,10 @@ spec:
           value: '{{ stack_enable_service_status }}'
         - name: LOGGING_FRAMEWORK_ROOT_LEVEL
           value: '{{ stack_logging_framework_root_level }}'
+        - name: TAS_REGEX
+          value: '{{ stack_tas_regex }}'
+        - name: TAS_REGEX_ERROR_MSG
+          value: '{{ stack_tas_regex_error_msg }}'
 {% if stack_public_tas %}
         - name: PUBLIC_TAS
           value: '{{ stack_public_tas }}'
