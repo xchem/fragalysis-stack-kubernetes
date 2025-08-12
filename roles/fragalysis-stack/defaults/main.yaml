@@ -259,7 +259,7 @@ be_documentation_url_format_string: ''
 # The acceptable TAS string format
 stack_tas_regex: '^(lb\d{5})(-(\d+)){0,1}$'
 stack_tas_regex_error_msg: >-
-  Must begin 'lb' followed by 5 digits, optionally followed by a hyphen and a number.
+  Must begin "lb" followed by 5 digits, optionally followed by a hyphen and a number.
 
 # Target Access Authentication variables -----------------------------------------------
 # These are set from vars/sensitive.vault
