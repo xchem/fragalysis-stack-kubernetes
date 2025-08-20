@@ -4,11 +4,6 @@ all:
     ansible_ssh_user: xchem
     ansible_ssh_private_key_file: ~/.ssh/openstack-xchem-1
   children:
-    fragmentation:
-      hosts:
-        192.168.253.252:
-          ansible_ssh_user: gse84885
-          ansible_ssh_private_key_file: ~/.ssh/stfc-tim-1
     rke:
       children:
         rke_ctrl:
