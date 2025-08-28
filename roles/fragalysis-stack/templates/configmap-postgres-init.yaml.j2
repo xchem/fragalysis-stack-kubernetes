@@ -16,7 +16,7 @@ data:
 {% if database_create_users_and_databases %}
         psql -v ON_ERROR_STOP=1 --username "admin" --dbname "admin" <<-EOSQL
         -- Configure a user and database for Fragalysys
-        CREATE USER fragalysis;
+        CREATE USER fragalysis SUPERUSER;
         ALTER USER fragalysis WITH PASSWORD '{{ stack_db_user_password_fact }}';
         CREATE DATABASE frag;
         ALTER ROLE fragalysis SET client_encoding TO 'utf8';
