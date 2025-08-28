@@ -76,8 +76,8 @@ database_cpu_request: 10m
 database_mem_request: 400Mi
 
 database_image_registry: docker.io
-database_image: postgres
-database_image_tag: '15.8'
+database_image: informaticsmatters/rdkit-cartridge-debian
+database_image_tag: Release_2024_03_6
 database_port: 5432
 
 # Configuration of the DB server. Content written to the postgres-conf ConfigMap.
