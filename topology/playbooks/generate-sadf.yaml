@@ -3,9 +3,9 @@
 # Collects sadf data for a particular day (yesterday)
 # and pulls the files back to the host machine's /tmp/svg directory.
 #
-# To generate stats the day before yesterday...
+# To generate stats for DEV cluster the day before yesterday...
 #
-#   ansible-playbook playbooks/generate-sadf.yaml --extra-vars look_back=-2
+#   ansible-playbook playbooks/generate-sadf.yaml --limit xch_dev --extra-vars look_back=-2
 #
 # To pull these back to your host you could use 'scp': -
 #
