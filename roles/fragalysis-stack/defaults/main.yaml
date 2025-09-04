@@ -13,7 +13,12 @@ worker_replicas: 2
 stack_concurrency: 4
 worker_concurrency: 4
 
-# A waring message - issued by teh front-end if set.
+# A 'see also' message - issued by the front-end if set.
+# Used to populate the stack's SEE_ALSO_MESSAGE environment variable,
+# and typically used to to redirect the user to the production stack.
+stack_see_also_message: ''
+
+# A waring message - issued by the front-end if set.
 # Used to populate the stack's TARGET_WARNING_MESSAGE environment variable.
 stack_target_warning_message: ''
 

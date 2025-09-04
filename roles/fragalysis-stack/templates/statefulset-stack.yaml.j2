@@ -332,6 +332,10 @@ spec:
         - name: TARGET_WARNING_MESSAGE
           value: '{{ stack_target_warning_message }}'
 {% endif %}
+{% if stack_see_also_message %}
+        - name: SEE_ALSO_MESSAGE
+          value: '{{ stack_see_also_message }}'
+{% endif %}
 {% if stack_documentation_url_format_string %}
         - name: STACK_DOCUMENTATION_URL_FORMAT_STRING
           value: '{{ stack_documentation_url_format_string }}'
