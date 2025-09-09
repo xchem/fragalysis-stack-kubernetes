@@ -14,6 +14,14 @@ applications like an AWX ansible playbook server, Squonk, Discourse or a Graph D
 The relocation uses playbooks already employed by the original AWX server but also
 requires some manual effort.
 
+.. note::
+    These instructions, valid at the time they were written, do refer to components
+    whose versions may no longer be appropriate. For example we refer to Kubernetes 1.23
+    which today (September 2025) is no longer supported. The instructions themselves
+    (the process, the actions) are still relevant but if you attempt to repeat These
+    instructions you must check the prevailing software versions. For example,
+    today we use Kubernetes 1.31, and a custom xchem Keycloak (26.0.5).
+
 Before you begin you will need: -
 
 *   A compatible AWS EKS kubernetes cluster (i.e. Kubernetes 1.23)
