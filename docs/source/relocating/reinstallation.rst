@@ -65,7 +65,7 @@ for our needs::
         informaticsmatters.com/purpose-worker: 'yes'
         informaticsmatters.com/purpose-application: 'yes'
 
-This file can be found in the `dls-fragalysis-stack-kubernetes`_ repository
+This file can be found in the `fragalysis-stack-kubernetes`_ repository
 (as ``eks-relocation/cluster.yaml``).
 
 .. note::
@@ -405,12 +405,12 @@ Production Stack
 ================
 
 From this point we rely on Ansible playbooks that are provided in the
-the Informatics Matters `dls-fragalysis-stack-kubernetes`_ repository,
-so you will need to clone the recommended version now::
+the `fragalysis-stack-kubernetes`_ repository,
+so you will need to clone a recommended version now::
 
-    git clone https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes.git
-    cd dls-fragalysis-stack-kubernetes
-    git checkout 2023.17
+    git clone https://github.com/xchem/fragalysis-stack-kubernetes.git
+    cd fragalysis-stack-kubernetes
+    git checkout 2025.23
 
 Deploy the database
 -------------------
@@ -421,10 +421,11 @@ You will find a ``parameters.template.yaml`` in the ``eks-relocation`` directory
 You can use this to create a ``parameters.yaml`` file in the project root
 (which is protected by the ``.gitignore``).
 
-Create a ``parameters.yaml`` and populate it with the following::
+Create a ``parameters.yaml`` and populate it with the following (always check with
+the installation you are relocating to ensure the parameters are compatible)::
 
     ---
-    database_image_tag: '12.2'
+    database_image_tag: '15.8'
     database_vol_size_g: 18
     database_vol_storageclass: gp2
     database_root_user: postgres
@@ -462,11 +463,11 @@ Copy the backup from your AWS S3 bucket onto your control machine
 and then write it into the database **Pod**::
 
     aws s3 cp \
-        s3://im-fragalysis/production-stack-db/backup-2023-10-16T12\:51\:01Z-dumpall.sql.gz \
-        ./dumpall.sql.gz
+        s3:///nw-xch-prod-v2-production-stack-backup/backup-2023-10-16T12\:51\:01Z-frag.sql.gz \
+        ./frag.sql.gz
 
-    kubectl cp ./dumpall.sql.gz \
-        database-0:/tmp/dumpall.sql.gz \
+    kubectl cp ./frag.sql.gz \
+        database-0:/tmp/frag.sql.gz \
         -n production-stack
 
 This is likely to be a large file, so it may take a while to copy into the **Pod**.
@@ -475,8 +476,8 @@ Once done you can shell into the **Pod**, and decompress and load the backup::
 
     kubectl exec -it database-0 -n production-stack -- bash
     cd /tmp
-    gzip -d dumpall.sql.gz
-    psql -q -U postgres -f dumpall.sql template1
+    gzip -d frag.sql.gz
+    psql -X -U postgres frag -f frag.sql
 
 This is likely to be a large file, so it may take a while to load.
 
@@ -517,7 +518,7 @@ Remember to check that the ``stack_media_vol_size_g`` suits your needs.
 .. note::
     A number of crucial Ansible variables and values are also encrypted in the file
     ``roles/fragalysis-stack/vars/sensitive.vault``, and includes configuration
-    values (suitable for the production stack) for ISPyB, SSH, and others.
+    values.
 
     You can view the sensitive file, without permanently decrypting, using the command
     ``ansible-vault view roles/fragalysis-stack/vars/sensitive.vault``.
@@ -561,7 +562,7 @@ Expect the copy to take a while, probably 20 to 30 minutes per 150Gi.
 .. _adding a service account: https://docs.cloud.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengaddingserviceaccttoken.htm
 .. _ansible-infrastructure: https://github.com/InformaticsMatters/ansible-infrastructure
 .. _ansible-vault: https://docs.ansible.com/ansible/latest/vault_guide/index.html
-.. _dls-fragalysis-stack-kubernetes: https://github.com/InformaticsMatters/dls-fragalysis-stack-kubernetes
+.. _fragalysis-stack-kubernetes: https://github.com/xchem/fragalysis-stack-kubernetes
 .. _poetry: https://python-poetry.org
 .. _letsencrypt: https://letsencrypt.org
 .. _eksctl: https://eksctl.io/getting-started
