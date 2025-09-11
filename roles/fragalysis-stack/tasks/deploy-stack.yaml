@@ -175,6 +175,7 @@
   uri:
     url: "https://{{ stack_url }}/viewer/react/landing/"
     follow_redirects: none
+    validate_certs: "{{ stack_validate_hostname_certificate | bool }}"
     method: GET
   register: _result
   until: _result.status == 200
