@@ -1,9 +1,5 @@
-# The ansible that's expected in our AWX installation.
-# Run the playbook with this and there's more chance it'll work
-# when run from within our AWX instance.
-ansible == 2.9.13
-ansible-tower-cli == 3.3.9
+ansible == 9.13.0
 jmespath == 0.10.0
-kubernetes == 10.0.1
-openshift == 0.10.1
-awscli == 1.18.140
+kubernetes == 32.0.1
+openshift == 0.13.2
+awscli == 1.42.28
