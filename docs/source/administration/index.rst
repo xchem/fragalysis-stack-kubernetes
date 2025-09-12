@@ -18,3 +18,4 @@ Administration
     deployment-variables
     related-repositories
     important-secrets
+    data-recovery
