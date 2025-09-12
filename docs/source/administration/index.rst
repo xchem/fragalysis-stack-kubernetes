@@ -12,7 +12,8 @@ Administration
     cloud-stfc
     rancher
     nfs-configuration
-    backup-and-replication
+    backups
+    stack-replication
     awx
     deployment-variables
     related-repositories
