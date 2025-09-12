@@ -30,11 +30,6 @@ stack_authenticate_upload: yes
 # Any forced API errors ("infections")?
 # A comma-separated list of infection names
 stack_infections: ''
-# The cache time for the chosen security connector.
-# Results obtained via the chosen security connector for each user
-# are kept for this period of time (to improve response time).
-# This can be set this to any value integer with '0' resulting in no caching.
-stack_security_connector_cache_minutes: 2
 
 # Run the celery 'beat' Pod?
 enable_beat_pod: yes
