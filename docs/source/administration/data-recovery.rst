@@ -17,6 +17,12 @@ This section does not cover the creation of the underlying clusters
 or the installation of the original applications. This section is simply about
 restoring data to a pre-existing installation.
 
+.. epigraph::
+
+    You can read detailed documentation relating to the provisioning of a cluster,
+    and installation of the key applications by referring to our
+    :doc:`installation guide <../installation/index>`.
+
 **************
 Stack database
 **************
@@ -84,13 +90,24 @@ Be prepared for the recovery of the media volume to take significant time.
 With 240Gi of files to transfer (September 2025), at about 50-60MiB/s
 expect recovery to take about an hour.
 
-.. _bandr-ansible: https://github.com/InformaticsMatters/bandr-ansible
-
 ************************
 Infrastructure databases
 ************************
 
-TBD
+As the infrastructure database server contains multiple databases we currently rely
+on the `pg_dumpall` utility in order to get a complete copy of the server.
+backups are performed every day, and are kept for a numebr of days,
+perfomed by a **CronJob** operating ion the corresponding ``im-infra`` **Namespaces**.
+
+Backups are located in an Echo S3 bucket: -
+
+-   Development cluster: ``/im-infra-backup``
+-   Prodcution cluster: ``/im-infra-production-backup``
+
+Armed with the prevailing Postgress admin user and password, recovery can be
+performed manually via a Pod shell or using an AWX playbook. We test recovery using
+the ``site-recovery.yaml`` playbook (version **2024.1**) from our `bandr-ansible`_
+respository.
 
 **************
 Rancher server
@@ -102,4 +119,5 @@ recovery of data on a docker installation using their own instructions::
 
 -   See `restore-docker-installed-rancher`_
 
+.. _bandr-ansible: https://github.com/InformaticsMatters/bandr-ansible
 .. _restore-docker-installed-rancher: https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-docker-installed-rancher

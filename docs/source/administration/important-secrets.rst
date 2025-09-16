@@ -62,7 +62,7 @@ using a **Secret** object. You should find the following **Secrets**, amongst ot
 
 the origin of these secrets will either be found in the corresponding AWX Job Template
 (in the ``EXTRA VARIABLES`` section) or in this repository's
-``roles/fragalysis-stack/vars/sensitive.vault`` file (an `Ansible Vault`_` file).
+``roles/fragalysis-stack/vars/sensitive.vault`` file (an `ansible vault`_ file).
 
 .. _ansible vault: https://docs.ansible.com/ansible/latest/user_guide/vault.html
 .. _access token: https://docs.docker.com/docker-hub/access-tokens
