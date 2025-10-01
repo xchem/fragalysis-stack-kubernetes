@@ -188,11 +188,21 @@ database_vol_storageclass: ' '
 
 # Database backups
 database_bu_state: absent
-database_bu_image_tag: 'stable'
+database_bu_image_tag: '15.7'
 database_bu_vol_storageclass: ' '
 database_bu_vol_size_g: 4
+# Hourly backups every hour at 51 minutes past the hour
 database_bu_hourly_schedule: '51 * * * *'
-database_bu_hourly_history: 24
+database_bu_hourly_count: 24
+# Daily backup collection at 00:21
+database_bu_daily_schedule: '21 0 * * *'
+database_bu_daily_count: 7
+# Weekly backup collection on Sundays at 00:31
+database_bu_weekly_schedule: '31 0 * * 0'
+database_bu_weekly_count: 4
+# Monthly backup collection on the 8th of every Month at 00:41
+database_bu_monthly_schedule: '41 0 8 * *'
+database_bu_monthly_count: 12
 # Set the following to rsync the backups to a central server.
 # If set you must define: -
 #   stack_backup_rsync_host
@@ -201,6 +211,23 @@ database_bu_hourly_history: 24
 #   stack_backup_rsync_pass
 # (found in vars/sensitive.vault)
 database_bu_use_rsync: no
+# rclone configuration.
+# rclone is used to copy backups to an S3 bucket
+# if 'database_bu_rclone_bucket_and_path' is set
+# If set you must define: -
+#   database_bu_rclone_s3_endpoint
+#   database_bu_rclone_s3_provider
+#   database_bu_rclone_s3_access_key_id
+#   database_bu_rclone_s3_secret_access_key
+#   database_bu_rclone_s3_default_region
+# (found in vars/sensitive.vault)
+database_bu_rclone_bucket_and_path: ''
+database_bu_rclone_s3_endpoint: ''
+database_bu_rclone_s3_provider: ''
+database_bu_rclone_s3_access_key_id: ''
+database_bu_rclone_s3_secret_access_key: ''
+database_bu_rclone_s3_default_region: ''
+
 # Populate the DB init file?
 # Typically set to 'no' when the DB is to be used for recovery.
 database_use_init_file: yes
