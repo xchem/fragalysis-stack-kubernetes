@@ -115,7 +115,7 @@
   - statefulset-database
   - service-database
 
-- name: Wait for database to become ReadyAdd commentMore actions
+- name: Wait for database to become Ready
   k8s_info:
     kind: Pod
     name: database-0
@@ -136,14 +136,14 @@
 - name: Database backup
   block:
 
-  - name: Get {{ database_bu_vol_storageclass }} StorageClass
+  - name: Get {{ database_bu_vol_storageclass }} backup StorageClass
     k8s_info:
       kind: StorageClass
       name: "{{ database_bu_vol_storageclass }}"
     register: sc_result
     when: database_bu_vol_storageclass != " "
 
-  - name: Assert {{ database_bu_vol_storageclass }} StorageClass
+  - name: Assert {{ database_bu_vol_storageclass }} backup StorageClass
     assert:
       that: sc_result.resources|length == 1
       fail_msg: The {{ database_bu_vol_storageclass }} StorageClass must be available on the cluster
