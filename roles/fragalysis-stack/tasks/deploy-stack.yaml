@@ -187,7 +187,7 @@
     definition: "{{ lookup('template', 'cronjob-media-backup.yaml.j2') }}"
     wait: yes
     wait_timeout: "{{ wait_timeout }}"
-  when: media_bu_rclone_bucket|string|length > 0
+  when: media_bu_state|string == 'present'
 
 # Display helpful usage/diagnostic information.
 # Repeat the stack URL as it may have been lost in
