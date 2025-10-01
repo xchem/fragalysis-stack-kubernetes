@@ -168,18 +168,6 @@
     retries: "{{ (bind_timeout|int / 5)|int }}"
     when: wait_for_bind|bool
 
-  - name: Write backup rsync secrets
-    k8s:
-      definition: "{{ lookup('template', 'secret-backup-rsync.yaml.j2') }}"
-      wait: yes
-    when: database_bu_use_rsync|bool
-
-  - name: Write backup rclone secrets
-    k8s:
-      definition: "{{ lookup('template', 'secret-backup-rclone.yaml.j2') }}"
-      wait: yes
-    when: database_bu_rclone_bucket_and_path|string|length > 0
-
   - name: Deploy backup CronJobs
     k8s:
       definition: "{{ lookup('template', 'cronjob-postgres-backup.yaml.j2') }}"

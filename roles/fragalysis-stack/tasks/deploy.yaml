@@ -42,6 +42,21 @@
   - namespace
   - serviceaccount
 
+# Some common secrets
+
+- name: Write backup rsync secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-backup-rsync.yaml.j2') }}"
+    wait: yes
+  when: database_bu_use_rsync|bool
+
+- name: Write backup rclone secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-backup-rclone.yaml.j2') }}"
+    wait: yes
+  when: (database_bu_rclone_bucket_and_path|string|length > 0) or
+        (media_bu_rclone_bucket|string|length > 0)
+
 # Deploy a database?
 # Yes if the user hasn't set an explicit host
 # If the user defines a database_host they must provide

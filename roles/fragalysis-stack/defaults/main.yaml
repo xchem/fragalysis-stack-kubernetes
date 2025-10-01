@@ -228,6 +228,11 @@ database_bu_rclone_s3_access_key_id: ''
 database_bu_rclone_s3_secret_access_key: ''
 database_bu_rclone_s3_default_region: ''
 
+# Media backups?
+media_bu_image_tag: 3.1.0
+media_bu_rclone_bucket: ''
+media_bu_schedule: '4 3 * * * '
+
 # Populate the DB init file?
 # Typically set to 'no' when the DB is to be used for recovery.
 database_use_init_file: yes
