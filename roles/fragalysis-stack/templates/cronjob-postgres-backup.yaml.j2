@@ -185,7 +185,7 @@ spec:
               value: hourly
             - name: BACKUP_PRIOR_COUNT
               value: '{{ database_bu_hourly_count }}'
-           volumeMounts:
+            volumeMounts:
             - name: backup-data
               mountPath: /backup
 
@@ -254,7 +254,7 @@ spec:
               value: daily
             - name: BACKUP_PRIOR_COUNT
               value: '{{ database_bu_daily_count }}'
-           volumeMounts:
+            volumeMounts:
             - name: backup-data
               mountPath: /backup
 
@@ -323,7 +323,7 @@ spec:
               value: weekly
             - name: BACKUP_PRIOR_COUNT
               value: '{{ database_bu_weekly_count }}'
-           volumeMounts:
+            volumeMounts:
             - name: backup-data
               mountPath: /backup
 
