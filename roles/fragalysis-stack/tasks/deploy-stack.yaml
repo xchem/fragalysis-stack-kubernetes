@@ -177,6 +177,7 @@
     follow_redirects: none
     validate_certs: "{{ stack_validate_hostname_certificate | bool }}"
     method: GET
+  ignore_errors: true
   register: _result
   until: _result.status == 200
   retries: 120 # 120 * 5 seconds = 10 minutes
