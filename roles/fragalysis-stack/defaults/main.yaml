@@ -230,7 +230,7 @@ database_bu_rclone_s3_default_region: ''
 
 # Media backups?
 media_bu_state: absent
-media_bu_image_tag: '3.1.0'
+media_bu_image_tag: '3.1.1'
 media_bu_rclone_bucket: ''
 media_bu_schedule: '4 3 * * * '
 
