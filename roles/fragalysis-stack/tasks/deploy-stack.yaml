@@ -142,6 +142,13 @@
     wait: yes
   when: enable_beat_pod|bool
 
+- name: Deploy media backup CronJob
+  k8s:
+    definition: "{{ lookup('template', 'cronjob-media-backup.yaml.j2') }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout }}"
+  when: media_bu_state|string == 'present'
+
 - name: Deploy nery
   k8s:
     definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
@@ -171,28 +178,21 @@
   loop: "{{ range(stack_replicas|int)|list }}"
 
 # Wait for a response from the stack's URL
-- name: Wait for Stack Landing Page
-  uri:
-    url: "https://{{ stack_url }}/viewer/react/landing/"
-    follow_redirects: none
-    validate_certs: "{{ stack_validate_hostname_certificate | bool }}"
-    method: GET
-    status_code:
-    - 200
-    - 503
-  register: _result
-  ignore_errors: yes
-  ignore_unreachable: yes
-  until: _result.status == 200
-  retries: 120 # 120 * 5 seconds = 10 minutes
-  delay: 5 # Every 5 seconds
-
-- name: Deploy media backup CronJob
-  k8s:
-    definition: "{{ lookup('template', 'cronjob-media-backup.yaml.j2') }}"
-    wait: yes
-    wait_timeout: "{{ wait_timeout }}"
-  when: media_bu_state|string == 'present'
+#- name: Wait for Stack Landing Page
+#  uri:
+#    url: "https://{{ stack_url }}/viewer/react/landing/"
+#    follow_redirects: none
+#    validate_certs: "{{ stack_validate_hostname_certificate | bool }}"
+#    method: GET
+#    status_code:
+#    - 200
+#    - 503
+#  register: _result
+#  ignore_errors: yes
+#  ignore_unreachable: true
+#  until: _result.status == 200
+#  retries: 120 # 120 * 5 seconds = 10 minutes
+#  delay: 5 # Every 5 seconds
 
 # Display helpful usage/diagnostic information.
 # Repeat the stack URL as it may have been lost in
