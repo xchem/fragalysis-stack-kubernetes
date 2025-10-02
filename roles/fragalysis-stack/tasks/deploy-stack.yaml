@@ -177,6 +177,10 @@
     stack_id: "{{ item }}"
   loop: "{{ range(stack_replicas|int)|list }}"
 
+# ABC: For some reason the following results in 'weird' failures of the play-book.
+#      The suspicion is that there prevailing network issues may be the underlying
+#      cause. For now (Oct 2025) I've commented out the offending lines.
+#
 # Wait for a response from the stack's URL
 #- name: Wait for Stack Landing Page
 #  uri:
