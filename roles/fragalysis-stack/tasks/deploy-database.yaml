@@ -140,6 +140,7 @@
     k8s_info:
       kind: StorageClass
       name: "{{ database_bu_vol_storageclass }}"
+      wait: yes
     register: sc_result
     when: database_bu_vol_storageclass != " "
 
