@@ -136,19 +136,19 @@
 - name: Database backup
   block:
 
-  - name: Get {{ database_bu_vol_storageclass }} backup StorageClass
-    k8s_info:
-      kind: StorageClass
-      name: "{{ database_bu_vol_storageclass }}"
-      wait: yes
-    register: sc_result
-    when: database_bu_vol_storageclass != " "
+#  - name: Get {{ database_bu_vol_storageclass }} backup StorageClass
+#    k8s_info:
+#      kind: StorageClass
+#      name: "{{ database_bu_vol_storageclass }}"
+#      wait: yes
+#    register: sc_result
+#    when: database_bu_vol_storageclass != " "
 
-  - name: Assert {{ database_bu_vol_storageclass }} backup StorageClass
-    assert:
-      that: sc_result.resources|length == 1
-      fail_msg: The {{ database_bu_vol_storageclass }} StorageClass must be available on the cluster
-    when: database_bu_vol_storageclass != " "
+#  - name: Assert {{ database_bu_vol_storageclass }} backup StorageClass
+#    assert:
+#      that: sc_result.resources|length == 1
+#      fail_msg: The {{ database_bu_vol_storageclass }} StorageClass must be available on the cluster
+#    when: database_bu_vol_storageclass != " "
 
   - name: Create postgres backup volume claim ({{ database_bu_vol_storageclass }})
     k8s:
