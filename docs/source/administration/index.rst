@@ -13,6 +13,7 @@ Administration
     rancher
     nfs-configuration
     backups
+    off-cluster-backup-locations
     stack-replication
     awx
     deployment-variables
