@@ -1,0 +1,19 @@
+---
+
+# Update a deployed stack version.
+# Here we rely on everything having already been deployed,
+# all we do is the simplest that has to be done - and that
+# is to alter the stack application...
+
+- name: Deploy stack
+  k8s:
+    definition: "{{ lookup('template', item) }}"
+    host: "{{ k8s_auth_host }}"
+    api_key: "{{ k8s_auth_api_key }}"
+    validate_certs: "{{ k8s_auth_verify_ssl|default('no', true) }}"
+    wait: yes
+    wait_timeout: "{{ wait_timeout | int }}"
+  loop:
+  - statefulset-stack.yaml.j2
+  - statefulset-worker.yaml.j2
+  - deployment-beat.yaml.j2
