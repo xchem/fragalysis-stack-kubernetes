@@ -5,6 +5,8 @@
 # all we do is the simplest that has to be done - and that
 # is to alter the stack application...
 
+- include_tasks: prep.yaml
+
 - name: Include sensitive variables
   include_vars:
     file: sensitive.vault
