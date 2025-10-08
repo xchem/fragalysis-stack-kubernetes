@@ -2,7 +2,7 @@
 
 # Update a deployed stack version.
 # Here we rely on everything having already been deployed,
-# all we do is the simplest that has to be done - and that
+# all we do is the simplest (fastest) that has to be done - and that
 # is to alter the stack application...
 
 - include_tasks: prep.yaml
