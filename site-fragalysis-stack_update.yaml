@@ -4,4 +4,4 @@
   tasks:
   - include_role:
       name: fragalysis-stack
-      tasks_from: update-stack.yaml
+      tasks_from: update.yaml
