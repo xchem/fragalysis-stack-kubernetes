@@ -5,6 +5,11 @@
 # all we do is the simplest that has to be done - and that
 # is to alter the stack application...
 
+- name: Include sensitive variables
+  include_vars:
+    file: sensitive.vault
+  when: stack_include_sensitive|bool
+
 - name: Deploy stack
   k8s:
     definition: "{{ lookup('template', item) }}"
