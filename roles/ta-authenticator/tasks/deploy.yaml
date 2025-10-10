@@ -28,22 +28,18 @@
   when:
   - taa_ssh_private_key | string | length != 0
 
-- name: Check query key secret
+- name: Check keys secret
   k8s_info:
     kind: Secret
     api_version: v1
     namespace: "{{ taa_namespace }}"
-    name: query-key
+    name: keys
   register: s_result
 
-- name: Set (new) query key secret
+- name: Set (new) keys secret
   block:
 
-  - name: Set query key secret fact (new)
-    set_fact:
-      taa_query_key_fact: "{{ '' | to_uuid }}"
-
-  - name: Write query key secret
+  - name: Write keys secret
     k8s:
       definition: "{{ lookup('template', 'secret.yaml.j2') }}"
       wait: yes
@@ -52,8 +48,17 @@
 
 - name: Deploy authenticator
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - deployment
-  - service
+  - deployment.yaml.j2
+  - service-auth.yaml.j2
+
+- name: Deploy authenticator stats Ingress
+  k8s:
+    definition: "{{ lookup('template', item) }}"
+    wait: yes
+  loop:
+  - service-stats.yaml.j2
+  - ingress-stats.yaml.j2
+  when: taa_stats_url | string | length > 0
