@@ -18,9 +18,9 @@ GitHub account.
 *   ansible-role-infrastructure-data
 *   ansible-role-infrastructure-user
 *   bandr
-*   dls-fragalysis-stack-kubernetes
 *   docker-neo4j
 *   docker-neo4j-ansible
+*   docker-rdkit
 *   docker-volume-replicator
 *   trigger-awx
 
@@ -45,7 +45,13 @@ GitHub account.
 *   fragalysis-api
 *   fragalysis-backend
 *   fragalysis-frontend
+*   fragalysis-keycloak
+*   fragalysis-package
+*   fragalysis-ispyb-target-access-authenticator
+*   fragalysis-mock-target-access-authenticator
+*   fragalysis-rdkit-cartridge-pgvector-debian
 *   fragalysis-stack
+*   fragalysis-stack-kubernetes
 
 **********************
 3rd Party Repositories
