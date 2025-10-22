@@ -18,10 +18,9 @@ requirements (for Python and Ansible): -
 
     pip install --upgrade pip
     pip install -r requirements.txt
-    ansible-galaxy install -r requirements.yaml --force
-    ansible-galaxy collection install -r collection-requirements.yaml --force
 
-Create a service account (and access token), that can be used to manufacture `KUBECONFIG` files providing users (and AWX) access to the cluster.
+Create a service account (and access token), that can be used to manufacture
+`KUBECONFIG` files providing users (and AWX) access to the cluster.
 This is a one-off task.
 
 See the README in `cluster-prep`.

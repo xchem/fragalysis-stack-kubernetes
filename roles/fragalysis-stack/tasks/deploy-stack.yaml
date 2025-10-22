@@ -123,12 +123,12 @@
 
 - name: Deploy stack
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
   loop:
-  - statefulset-stack
-  - statefulset-worker
-  - service-stack
-  - ingress-stack
+  - statefulset-stack.yaml.j2
+  - statefulset-worker.yaml.j2
+  - service-stack.yaml.j2
+  - ingress-stack.yaml.j2
 
 - name: Deploy Metrics
   k8s:
@@ -151,11 +151,11 @@
 
 - name: Deploy nery
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - statefulset-nery
-  - service-nery
+  - statefulset-nery.yaml.j2
+  - service-nery.yaml.j2
   when: stack_deploy_nery|bool
 
 - name: Display stack URL

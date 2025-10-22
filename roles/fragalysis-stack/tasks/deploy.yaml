@@ -36,11 +36,11 @@
 
 - name: Creating namespace '{{ stack_namespace }}'
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - namespace
-  - serviceaccount
+  - namespace.yaml.j2
+  - serviceaccount.yaml.j2
 
 # Some common secrets
 

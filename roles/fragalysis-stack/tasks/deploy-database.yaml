@@ -107,13 +107,13 @@
 
 - name: Deploy database
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - configmap-postgres-conf
-  - configmap-postgres-init
-  - statefulset-database
-  - service-database
+  - configmap-postgres-conf.yaml.j2
+  - configmap-postgres-init.yaml.j2
+  - statefulset-database.yaml.j2
+  - service-database.yaml.j2
 
 - name: Wait for database to become Ready
   k8s_info:

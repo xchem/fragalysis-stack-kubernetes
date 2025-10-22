@@ -27,12 +27,12 @@
 
 - name: Deploy redis
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     wait: yes
   loop:
-  - configmap-redis
-  - deployment-redis
-  - service-redis
+  - configmap-redis.yaml.j2
+  - deployment-redis.yaml.j2
+  - service-redis.yaml.j2
 
 - name: Wait for redis to become ReadyAdd commentMore actions
   k8s_info:
