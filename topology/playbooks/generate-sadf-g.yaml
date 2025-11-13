@@ -1,36 +1,36 @@
 ---
 
 # Collects sadf data for a particular day (yesterday)
-# and pulls the files back to the host machine's /tmp/csv directory.
+# and pulls the files back to the host machine's /tmp/svg directory.
 #
 # To generate stats for DEV cluster the day before yesterday...
 #
-#   ansible-playbook playbooks/generate-sadf-g.yaml --limit xch_dev --extra-vars look_back=-2
+#   ansible-playbook playbooks/generate-sadf.yaml --limit xch_dev --extra-vars look_back=-2
 #
 # To pull these back to your host you could use 'scp': -
 #
-#   mkdir csv
-#   scp xch-bastion:/tmp/csv/*.svg csv
+#   mkdir svg
+#   scp xch-bastion:/tmp/svg/*.svg svg
 
-- name: Run sadf to get graphical sysstats data
+- name: Run sadf to get sysstats data
   hosts: all
   vars:
     look_back: -1
-    local_dir: /tmp/csv
+    local_dir: /tmp/svg
 
   tasks:
   - name: Get day ({{ look_back }})
     set_fact:
       day: "{{ '%d'|strftime(ansible_date_time.epoch|int + look_back|int * 86400) }}"
 
-  - name: Generate CPU CSV ({{ day }})
+  - name: Generate CPU SVG ({{ day }})
     ansible.builtin.shell:
-      cmd: sadf -p /var/log/sysstat/sa{{ day }} > /tmp/{{ ansible_hostname }}-cpu{{ day }}.csv
+      cmd: sadf -g /var/log/sysstat/sa{{ day }} > /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
     become: true
 
-  - name: Generate Memory CSV ({{ day }})
+  - name: Generate Memory SVG ({{ day }})
     ansible.builtin.shell:
-      cmd: sadf -p /var/log/sysstat/sa{{ day }} -- -r > /tmp/{{ ansible_hostname }}-mem{{ day }}.csv
+      cmd: sadf -g /var/log/sysstat/sa{{ day }} -- -r > /tmp/{{ ansible_hostname }}-mem{{ day }}.svg
     become: true
 
   - name: Ensure local directory
@@ -41,12 +41,12 @@
 
   - name: Fetch the generated CPU file
     ansible.builtin.fetch:
-      src: /tmp/{{ ansible_hostname }}-cpu{{ day }}.csv
+      src: /tmp/{{ ansible_hostname }}-cpu{{ day }}.svg
       dest: "{{ local_dir }}/"
       flat: yes
 
   - name: Fetch the generated Memory file
     ansible.builtin.fetch:
-      src: /tmp/{{ ansible_hostname }}-mem{{ day }}.csv
+      src: /tmp/{{ ansible_hostname }}-mem{{ day }}.svg
       dest: "{{ local_dir }}/"
       flat: yes
