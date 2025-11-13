@@ -15,7 +15,7 @@
 # To pull these back to your host you could use 'scp': -
 #
 #   mkdir csv
-#   scp xch-bastion:/tmp/csv/*.scv csv
+#   scp xch-bastion:/tmp/csv/*.csv csv
 
 - name: Run 'sar' to get CPU average for a given prior day
   hosts: all

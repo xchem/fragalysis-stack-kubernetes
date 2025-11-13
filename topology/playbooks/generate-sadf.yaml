@@ -5,12 +5,12 @@
 #
 # To generate stats for DEV cluster the day before yesterday...
 #
-#   ansible-playbook playbooks/generate-sadf-g.yaml --limit xch_dev --extra-vars look_back=-2
+#   ansible-playbook playbooks/generate-sadf.yaml --limit xch_dev --extra-vars look_back=-2
 #
 # To pull these back to your host you could use 'scp': -
 #
 #   mkdir csv
-#   scp xch-bastion:/tmp/csv/*.svg csv
+#   scp xch-bastion:/tmp/csv/*.csv csv
 
 - name: Run sadf to get graphical sysstats data
   hosts: all
