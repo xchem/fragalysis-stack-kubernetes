@@ -9,8 +9,9 @@
 - name: Run sadf to get raw sysstats data (for yesterday)
   hosts: all
   vars:
-    aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-    aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+    s3_region: ""
+    s3_aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+    s3_aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
 
   tasks:
   - name: Get yesterday's date
@@ -25,13 +26,14 @@
   - name: Save the generated CPU file ({{ yesterday }})
     aws_s3:
       bucket: "{{ s3_bucket }}"
-      object: "{{ s3_bucket }}/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv"
+      encrypt: no
       src: /tmp/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv
+      object: "{{ ansible_hostname }}-cpu-{{ yesterday }}.csv"
       mode: put
-      aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
-      region: ""
       s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
 
   - name: Generate Memory CSV ({{ yesterday }})
     ansible.builtin.shell:
@@ -41,10 +43,11 @@
   - name: Save the generated Memory file ({{ yesterday }})
     aws_s3:
       bucket: "{{ s3_bucket }}"
-      object: "{{ s3_bucket }}/{{ ansible_hostname }}-mem-{{ yesterday }}.csv"
+      encrypt: no
       src: /tmp/{{ ansible_hostname }}-mem-{{ yesterday }}.csv
+      object: "{{ ansible_hostname }}-mem-{{ yesterday }}.csv"
       mode: put
-      aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
-      region: ""
       s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
