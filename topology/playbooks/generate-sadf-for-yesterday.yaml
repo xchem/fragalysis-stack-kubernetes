@@ -1,6 +1,10 @@
 ---
 
-# Collects sadf data for yesterday and puts the files onto an S3 bucket.
+# Collect raw sadf data for yesterday and puts the resultant files into an S3 bucket.
+# Files are named after the ansible host and include the date:-
+#
+#   nw-xch-dummy-xchem-2404-worker1-cpu-2025-11-18.csv
+#   nw-xch-dummy-xchem-2404-worker1-mem-2025-11-18.csv
 #
 # To generate stats for DEV cluster...
 #
