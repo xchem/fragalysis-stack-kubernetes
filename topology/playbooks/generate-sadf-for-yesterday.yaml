@@ -9,6 +9,7 @@
 - name: Run sadf to get raw sysstats data (for yesterday)
   hosts: all
   vars:
+    s3_path: sysstats
     aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
     aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
 
@@ -24,8 +25,8 @@
 
   - name: Save the generated CPU file ({{ yesterday }})
     aws_s3:
-      bucket: "{{ s3_bucket }}"
-      object: "{{ ansible_hostname }}-cpu-{{ yesterday }}.csv"
+      bucket: ""
+      object: "{{ s3_path }}/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv"
       src: /tmp/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv
       mode: put
       aws_access_key: "{{ aws_access_key }}"
@@ -40,8 +41,8 @@
 
   - name: Save the generated Memory file ({{ yesterday }})
     aws_s3:
-      bucket: "{{ s3_bucket }}"
-      object: "{{ ansible_hostname }}-mem-{{ yesterday }}.csv"
+      bucket: ""
+      object: "{{ s3_path }}/{{ ansible_hostname }}-mem-{{ yesterday }}.csv"
       src: /tmp/{{ ansible_hostname }}-mem-{{ yesterday }}.csv
       mode: put
       aws_access_key: "{{ aws_access_key }}"
