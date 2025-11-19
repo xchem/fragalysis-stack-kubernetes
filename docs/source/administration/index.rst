@@ -20,3 +20,4 @@ Administration
     related-repositories
     important-secrets
     data-recovery
+    performance-considerations
