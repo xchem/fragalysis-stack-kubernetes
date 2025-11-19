@@ -20,7 +20,7 @@
   tasks:
   - name: Get yesterday's date
     set_fact:
-      yesterday: "{{ '%Y-%m-%d' | strftime(ansible_date_time.epoch | int + look_back | int * 86400) }}"
+      yesterday: "{{ '%Y-%m-%d' | strftime(ansible_date_time.epoch | int - 86400) }}"
 
   - name: Generate CPU CSV ({{ yesterday }})
     ansible.builtin.shell:
