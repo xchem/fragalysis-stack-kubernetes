@@ -1,21 +1,13 @@
 ---
 
-# Collects sadf data for yesterday
-# and pull the files back to the host machine's /tmp/csv directory.
+# Collects sadf data for yesterday and puts the files onto an S3 bucket.
 #
 # To generate stats for DEV cluster...
 #
 #   ansible-playbook playbooks/generate-sadf-for-yesterday.yaml --limit xch_dev
-#
-# To pull these back to your host you could use 'scp': -
-#
-#   mkdir csv
-#   scp xch-bastion:/tmp/csv/*.csv csv
 
-- name: Run sadf to get raw sysstats data
+- name: Run sadf to get raw sysstats data (for yesterday)
   hosts: all
-  vars:
-    local_dir: /tmp/csv
 
   tasks:
   - name: Get yesterday's date
@@ -27,25 +19,23 @@
       cmd: sadf -1 -p > /tmp/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv
     become: true
 
+  - name: Save the generated CPU file ({{ yesterday }})
+    aws_s3:
+      bucket: "{{ s3_bucket }}"
+      object: "{{ ansible_hostname }}-cpu-{{ yesterday }}.csv"
+      src: /tmp/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv
+      mode: put
+      s3_url: "{{ s3_url }}"
+
   - name: Generate Memory CSV ({{ yesterday }})
     ansible.builtin.shell:
       cmd: sadf -1 -p -- -r > /tmp/{{ ansible_hostname }}-mem-{{ yesterday }}.csv
     become: true
 
-  - name: Ensure local directory ({{ local_dir }})
-    ansible.builtin.file:
-      path: "{{ local_dir }}"
-      state: directory
-    delegate_to: localhost
-
-  - name: Fetch the generated CPU file ({{ yesterday }})
-    ansible.builtin.fetch:
-      src: /tmp/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv
-      dest: "{{ local_dir }}/"
-      flat: yes
-
-  - name: Fetch the generated Memory file ({{ yesterday }})
-    ansible.builtin.fetch:
+  - name: Save the generated Memory file ({{ yesterday }})
+    aws_s3:
+      bucket: "{{ s3_bucket }}"
+      object: "{{ ansible_hostname }}-mem-{{ yesterday }}.csv"
       src: /tmp/{{ ansible_hostname }}-mem-{{ yesterday }}.csv
-      dest: "{{ local_dir }}/"
-      flat: yes
+      mode: put
+      s3_url: "{{ s3_url }}"
