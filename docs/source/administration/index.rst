@@ -21,3 +21,4 @@ Administration
     important-secrets
     data-recovery
     performance-considerations
+    sysstats-performance-monitoring
