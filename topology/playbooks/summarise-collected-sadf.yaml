@@ -113,3 +113,7 @@
       aws_access_key: "{{ s3_aws_access_key }}"
       aws_secret_key: "{{ s3_aws_secret_key }}"
       region: "{{ s3_region }}"
+
+  - name: Display summary file content
+    ansible.builtin.debug:
+      var: lookup('ansible.builtin.file', "/tmp/{{ summary_file }}")
