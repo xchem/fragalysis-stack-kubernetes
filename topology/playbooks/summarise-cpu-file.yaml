@@ -70,7 +70,7 @@
     summary_avg:  "{{ '{:0.3f}'.format(average | float * nproc | float) }}"
     summary_max:  "{{ '{:0.3f}'.format(maximum | float * nproc | float) }}"
 
-- name: Accumulate
+- name: Add to other machines
   set_fact:
     nproc_used_avg: "{{ nproc_used_avg | float + summary_avg | float }}"
     nproc_used_max: "{{ nproc_used_max | float + summary_max | float }}"
