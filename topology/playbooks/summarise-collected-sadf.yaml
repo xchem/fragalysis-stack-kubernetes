@@ -132,4 +132,4 @@
 
   - name: Display summary file content
     ansible.builtin.debug:
-      msg: "{{ command_output.stdout }}"
+      msg: "{{ summary_content.stdout }}"

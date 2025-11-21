@@ -67,7 +67,7 @@
 
 - name: Summarise
   set_fact:
-    summary_avg:  "{{ '{:0.3f}'.format(average | float) }}"
+    summary_avg:  "{{ '{:0.0f}'.format(average | float) | int }}"
     summary_max:  "{{ maximum }}"
 
 - name: Accumulate
@@ -84,6 +84,6 @@
   debug:
     msg: This contribution = {{ summary_max }} Running total = {{ mem_kb_used_max }}
 
-- name: Display running total nproc
+- name: Display running total memory
   debug:
     msg: This contribution = {{ memtotal_kb }} Running total = {{ mem_kb_total }}
