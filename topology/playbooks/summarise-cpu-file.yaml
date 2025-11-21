@@ -14,11 +14,11 @@
   debug:
     var: s3_key
 
-- name: Get the name of nproc file
+- name: Get the name of nproc file (for this machine)
   set_fact:
     nproc_key: "{{ s3_key | regex_replace('^(?P<prefix>.+)-cpu[.]csv$', '\\g<prefix>-nproc.txt') }}"
 
-- name: Retrieve the nproc file
+- name: Retrieve the nproc file (for this machine)
   ansible.builtin.aws_s3:
     bucket: "{{ s3_bucket }}"
     object: "{{ nproc_key }}"
@@ -29,11 +29,11 @@
     aws_secret_key: "{{ s3_aws_secret_key }}"
     region: "{{ s3_region }}"
 
-- name: Get this nproc
+- name: Get nproc (for this machine)
   set_fact:
      nproc: "{{ lookup('file', '/tmp/nproc.txt') }}"
 
-- name: Display this nproc
+- name: Display nproc (for this machine)
   debug:
     msg: nproc = {{ nproc }}
 

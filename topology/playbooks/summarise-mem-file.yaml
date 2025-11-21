@@ -1,0 +1,89 @@
+---
+
+# Summarises the collected data in a given Memory file.
+# The file has been extracted from S3 and its name is in 's3_key'
+#
+# Expected variables: -
+#
+#   - s3_key
+#   - mem_kb_used_avg
+#   - mem_kb_used_max
+#   - mem_kb_total
+
+- name: Display Memory file name
+  debug:
+    var: s3_key
+
+- name: Get the name of Memory file (for this machine)
+  set_fact:
+    memtotal_kb_key: "{{ s3_key | regex_replace('^(?P<prefix>.+)-mem[.]csv$', '\\g<prefix>-memtotal-kb.txt') }}"
+
+- name: Retrieve the Memory file
+  ansible.builtin.aws_s3:
+    bucket: "{{ s3_bucket }}"
+    object: "{{ memtotal_kb_key }}"
+    dest: /tmp/memtotal-kb.txt
+    mode: get
+    s3_url: "{{ s3_url }}"
+    aws_access_key: "{{ s3_aws_access_key }}"
+    aws_secret_key: "{{ s3_aws_secret_key }}"
+    region: "{{ s3_region }}"
+
+- name: Get total memory (for this machine)
+  set_fact:
+     memtotal_kb: "{{ lookup('file', '/tmp/memtotal-kb.txt') }}"
+
+- name: Display total Memory (for this machine)
+  debug:
+    msg: memtotal_kb = {{ memtotal_kb }}
+
+- name: Retrieve the generated Memory file ({{ yesterday }})
+  ansible.builtin.aws_s3:
+    bucket: "{{ s3_bucket }}"
+    object: "{{ s3_key }}"
+    dest: /tmp/mem.csv
+    mode: get
+    s3_url: "{{ s3_url }}"
+    aws_access_key: "{{ s3_aws_access_key }}"
+    aws_secret_key: "{{ s3_aws_secret_key }}"
+    region: "{{ s3_region }}"
+
+- name: Collect kbmemused
+  set_fact:
+    kbmemused_values: "{{ lookup('file', '/tmp/mem.csv').splitlines()
+                     | select('search', '\\skbmemused\\s')
+                     | map('split')
+                     | map('last')
+                     | map('int') }}"
+
+- name: Sum Memory for the day
+  set_fact:
+    kbmemused_total: "{{ kbmemused_values | sum }}"
+
+- name: Average and maximum for the day
+  set_fact:
+     average: "{{ kbmemused_total | int / (kbmemused_values | length) }}"
+     maximum: "{{ kbmemused_values | max }}"
+
+- name: Summarise
+  set_fact:
+    summary_avg:  "{{ '{:0.3f}'.format(average | float) }}"
+    summary_max:  "{{ maximum }}"
+
+- name: Accumulate
+  set_fact:
+    mem_kb_used_avg: "{{ mem_kb_used_avg | float + summary_avg | float }}"
+    mem_kb_used_max: "{{ mem_kb_used_max | float + summary_max | float }}"
+    mem_kb_total: "{{ mem_kb_total | int + memtotal_kb | int }}"
+
+- name: Display running total average
+  debug:
+    msg: This contribution = {{ summary_avg }} Running total = {{ mem_kb_used_avg }}
+
+- name: Display running total maximum
+  debug:
+    msg: This contribution = {{ summary_max }} Running total = {{ mem_kb_used_max }}
+
+- name: Display running total nproc
+  debug:
+    msg: This contribution = {{ memtotal_kb }} Running total = {{ mem_kb_total }}

@@ -50,6 +50,15 @@
     - s3_key | ansible.builtin.regex_search(yesterday)
     - s3_key | ansible.builtin.regex_search('-cpu[.]csv')
 
+  - name: Process yesterday's Memory files
+    include_tasks: summarise-mem-file.yaml
+    with_items: "{{ objects.s3_keys }}"
+    loop_control:
+      loop_var: s3_key
+    when:
+    - s3_key | ansible.builtin.regex_search(yesterday)
+    - s3_key | ansible.builtin.regex_search('-mem[.]csv')
+
   - name: Display totals
     ansible.builtin.debug:
       msg: >-
@@ -57,6 +66,9 @@
         nproc_used_avg = {{ nproc_used_avg }}
         nproc_used_max = {{ nproc_used_max }}
         nproc_total = {{ nproc_total }}
+        mem_kb_used_avg = {{ mem_kb_used_avg }}
+        mem_kb_used_max = {{ mem_kb_used_max }}
+        mem_kb_total = {{ mem_kb_total }}
 
   # We now update the "summary file" (summary.csv),
   # and add the following columns:
@@ -114,6 +126,10 @@
       aws_secret_key: "{{ s3_aws_secret_key }}"
       region: "{{ s3_region }}"
 
+  - name: Read summary file
+    command: cat /tmp/{{ summary_file }}
+    register: summary_content
+
   - name: Display summary file content
     ansible.builtin.debug:
-      var: lookup('ansible.builtin.file', "/tmp/{{ summary_file }}")
+      msg: "{{ command_output.stdout }}"
