@@ -1,10 +1,22 @@
 ---
 
 # Collect raw sadf data for yesterday and puts the resultant files into an S3 bucket.
+#
+# Expected variables: -
+#
+#   - s3_bucket
+#   - s3_url
+#
 # Files are named after the ansible host and include the date:-
 #
-#   nw-xch-dummy-xchem-2404-worker1-cpu-2025-11-18.csv
-#   nw-xch-dummy-xchem-2404-worker1-mem-2025-11-18.csv
+#   2025-11-18-nw-xch-dummy-xchem-2404-worker1-cpu.csv
+#   2025-11-18-nw-xch-dummy-xchem-2404-worker1-mem.csv
+#
+# For each machine the capacity is also written to two files.
+# This is used to summarise the data in a separate playbook: -
+#
+#   2025-11-18-nw-xch-dummy-xchem-2404-worker1-nproc.txt
+#   2025-11-18-nw-xch-dummy-xchem-2404-worker1-memtotal-kb.txt
 #
 # To generate stats for DEV cluster...
 #
@@ -18,21 +30,57 @@
     s3_aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
 
   tasks:
-  - name: Get yesterday's date
+  - name: Get facts
     set_fact:
       yesterday: "{{ '%Y-%m-%d' | strftime(ansible_date_time.epoch | int - 86400) }}"
+      nproc: "{{ hostvars[inventory_hostname].ansible_processor_nproc }}"
+      memtotal_kb: "{{ hostvars[inventory_hostname].ansible_memtotal_mb | int * 1024 }}"
+
+  - name: Write CPU limit (nproc)
+    copy:
+      dest: /tmp/nproc.txt
+      content: "{{ nproc }}"
+
+  - name: Save the CPU limit ({{ yesterday }})
+    ansible.builtin.aws_s3:
+      bucket: "{{ s3_bucket }}"
+      encrypt: no
+      src: /tmp/nproc.txt
+      object: "{{ yesterday }}-{{ ansible_hostname }}-nproc.txt"
+      mode: put
+      s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
+
+  - name: Write Total Memory (memtotal-kb)
+    copy:
+      dest: /tmp/memtotal-kb.txt
+      content: "{{ memtotal_kb }}"
+
+  - name: Save the Memory limit ({{ yesterday }})
+    ansible.builtin.aws_s3:
+      bucket: "{{ s3_bucket }}"
+      encrypt: no
+      src: /tmp/memtotal-kb.txt
+      object: "{{ yesterday }}-{{ ansible_hostname }}-memtotal-kb.txt"
+      mode: put
+      s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
 
   - name: Generate CPU CSV ({{ yesterday }})
     ansible.builtin.shell:
-      cmd: sadf -1 -p > /tmp/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv
+      cmd: sadf -1 -p > /tmp/{{ yesterday }}-{{ ansible_hostname }}-cpu.csv
     become: true
 
   - name: Save the generated CPU file ({{ yesterday }})
-    aws_s3:
+    ansible.builtin.aws_s3:
       bucket: "{{ s3_bucket }}"
       encrypt: no
-      src: /tmp/{{ ansible_hostname }}-cpu-{{ yesterday }}.csv
-      object: "{{ ansible_hostname }}-cpu-{{ yesterday }}.csv"
+      src: /tmp/{{ yesterday }}-{{ ansible_hostname }}-cpu.csv
+      object: "{{ yesterday }}-{{ ansible_hostname }}-cpu.csv"
       mode: put
       s3_url: "{{ s3_url }}"
       aws_access_key: "{{ s3_aws_access_key }}"
@@ -41,15 +89,15 @@
 
   - name: Generate Memory CSV ({{ yesterday }})
     ansible.builtin.shell:
-      cmd: sadf -1 -p -- -r > /tmp/{{ ansible_hostname }}-mem-{{ yesterday }}.csv
+      cmd: sadf -1 -p -- -r > /tmp/{{ yesterday }}-{{ ansible_hostname }}-mem.csv
     become: true
 
   - name: Save the generated Memory file ({{ yesterday }})
-    aws_s3:
+    ansible.builtin.aws_s3:
       bucket: "{{ s3_bucket }}"
       encrypt: no
-      src: /tmp/{{ ansible_hostname }}-mem-{{ yesterday }}.csv
-      object: "{{ ansible_hostname }}-mem-{{ yesterday }}.csv"
+      src: /tmp/{{ yesterday }}-{{ ansible_hostname }}-mem.csv
+      object: "{{ yesterday }}-{{ ansible_hostname }}-mem.csv"
       mode: put
       s3_url: "{{ s3_url }}"
       aws_access_key: "{{ s3_aws_access_key }}"

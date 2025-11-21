@@ -1,0 +1,51 @@
+---
+
+# Used in conjunction with "generate-sadf-for-yesterday".
+# This playbook retrieves collected files and calculates
+# 'average' and 'maximum' values for the day (across all machines).
+#
+# Expected variables: -
+#
+#   - s3_bucket
+#   - s3_url
+
+- name: Summarise collected sadf data (for yesterday)
+  hosts: localhost
+  vars:
+    s3_region: ""
+    s3_aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+    s3_aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+
+  tasks:
+  - name: Get yesterday's date
+    ansible.builtin.set_fact:
+      yesterday: "{{ '%Y-%m-%d' | strftime(ansible_date_time.epoch | int - 86400) }}"
+
+  - name: List bucket contents
+    ansible.builtin.aws_s3:
+      bucket: "{{ s3_bucket }}"
+      mode: list
+      s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
+    register: objects
+
+  - name: Clear totals
+    ansible.builtin.set_fact:
+      nproc_used_avg: 0
+      nproc_used_max: 0
+      nproc_total: 0
+
+  - name: Process yesterday's CPU files
+    include_tasks: summarise-cpu-file.yaml
+    with_items: "{{ objects.s3_keys }}"
+    loop_control:
+      loop_var: s3_key
+    when:
+    - s3_key | ansible.builtin.regex_search(yesterday)
+    - s3_key | ansible.builtin.regex_search('-cpu[.]csv')
+
+  - name: Display totals
+    ansible.builtin.debug:
+      msg: nproc_used_avg = {{ nproc_used_avg }} nproc_used_max = {{ nproc_used_max }} nproc_total = {{ nproc_total }}

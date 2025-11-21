@@ -1,0 +1,51 @@
+---
+
+# Summarises the collected data in a given CPU file.
+# The file has been extracted from S3 and its name is in 's3_key'
+#
+# Expected variables: -
+#
+#   - s3_key
+#   - nproc_used_avg
+#   - nproc_used_max
+#   - nproc_total
+
+- name: Display CPU file name
+  debug:
+    var: s3_key
+
+- name: Retrieve the generated CPU file ({{ yesterday }})
+  ansible.builtin.aws_s3:
+    bucket: "{{ s3_bucket }}"
+    object: "{{ s3_key }}"
+    dest: /tmp/cpu.csv
+    mode: get
+    s3_url: "{{ s3_url }}"
+    aws_access_key: "{{ s3_aws_access_key }}"
+    aws_secret_key: "{{ s3_aws_secret_key }}"
+    region: "{{ s3_region }}"
+
+- name: Collect idle time
+  set_fact:
+    idle_values: "{{ lookup('file', '/tmp/cpu.csv').splitlines()
+                     | select('search', '\\s%idle\\s')
+                     | map('split')
+                     | map('last')
+                     | map('float') }}"
+
+- name: Sum non-idle for the day
+  set_fact:
+    idle_total: "{{ idle_values | sum }}"
+
+- name: Average and maximum for the day (non-idle)
+  set_fact:
+     average: "{{ 100.0 - idle_total | float / (idle_values | length) }}"
+     maximum: "{{ 100.0 - idle_values | min }}"
+
+- name: Summarise (in processors)
+  set_fact:
+    summary_avg:  "{{ '{:0.1f}'.format(average | float) }}"
+    summary_max:  "{{ '{:0.1f}'.format(maximum | float) }}"
+
+- debug:
+    msg: "{{ summary_avg }}, {{ summary_max }}"
