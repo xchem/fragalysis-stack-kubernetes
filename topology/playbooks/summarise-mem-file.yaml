@@ -6,9 +6,9 @@
 # Expected variables: -
 #
 #   - s3_key
-#   - mem_kb_used_avg
-#   - mem_kb_used_max
-#   - mem_kb_total
+#   - mem_mb_used_avg
+#   - mem_mb_used_max
+#   - mem_mb_total
 
 - name: Display Memory file name
   debug:
@@ -51,39 +51,27 @@
 - name: Collect kbmemused
   set_fact:
     kbmemused_values: "{{ lookup('file', '/tmp/mem.csv').splitlines()
-                     | select('search', '\\skbmemused\\s')
-                     | map('split')
-                     | map('last')
-                     | map('int') }}"
+                          | select('search', '\\skbmemused\\s')
+                          | map('split')
+                          | map('last')
+                          | map('int') }}"
 
-- name: Sum Memory for the day
+- name: Sum Memory for the day (kb)
   set_fact:
     kbmemused_total: "{{ kbmemused_values | sum }}"
 
-- name: Average and maximum for the day
+- name: Average and maximum for the day (kb)
   set_fact:
      average: "{{ kbmemused_total | int / (kbmemused_values | length) }}"
      maximum: "{{ kbmemused_values | max }}"
 
-- name: Summarise
+- name: Summarise (kb)
   set_fact:
-    summary_avg:  "{{ '{:0.0f}'.format(average | float) | int }}"
-    summary_max:  "{{ maximum }}"
+    summary_avg: "{{ '{:0.0f}'.format(average | float) | int }}"
+    summary_max: "{{ maximum }}"
 
-- name: Accumulate
+- name: Accumulate (mb)
   set_fact:
-    mem_kb_used_avg: "{{ mem_kb_used_avg | float + summary_avg | float }}"
-    mem_kb_used_max: "{{ mem_kb_used_max | float + summary_max | float }}"
-    mem_kb_total: "{{ mem_kb_total | int + memtotal_kb | int }}"
-
-- name: Display running total average
-  debug:
-    msg: This contribution = {{ summary_avg }} Running total = {{ mem_kb_used_avg }}
-
-- name: Display running total maximum
-  debug:
-    msg: This contribution = {{ summary_max }} Running total = {{ mem_kb_used_max }}
-
-- name: Display running total memory
-  debug:
-    msg: This contribution = {{ memtotal_kb }} Running total = {{ mem_kb_total }}
+    mem_mb_used_avg: "{{ mem_mb_used_avg | float + summary_avg | float / 1024 }}"
+    mem_mb_used_max: "{{ mem_mb_used_max | float + summary_max | float / 2024 }}"
+    mem_mb_total: "{{ mem_mb_total | int + memtotal_kb | int / 1024 }}"

@@ -37,9 +37,9 @@
       nproc_used_avg: 0
       nproc_used_max: 0
       nproc_total: 0
-      mem_kb_used_avg: 0
-      mem_kb_used_max: 0
-      mem_kb_total: 0
+      mem_mb_used_avg: 0
+      mem_mb_used_max: 0
+      mem_mb_total: 0
 
   - name: Process yesterday's CPU files
     include_tasks: summarise-cpu-file.yaml
@@ -66,9 +66,9 @@
         nproc_used_avg = {{ nproc_used_avg }}
         nproc_used_max = {{ nproc_used_max }}
         nproc_total = {{ nproc_total }}
-        mem_kb_used_avg = {{ mem_kb_used_avg }}
-        mem_kb_used_max = {{ mem_kb_used_max }}
-        mem_kb_total = {{ mem_kb_total }}
+        mem_mb_used_avg = {{ mem_mb_used_avg }}
+        mem_mb_used_max = {{ mem_mb_used_max }}
+        mem_mb_total = {{ mem_mb_total }}
 
   # We now update the "summary file" (summary.csv),
   # and add the following columns:
@@ -76,9 +76,9 @@
   # - Average nproc
   # - Maximum nproc
   # - Total nproc
-  # - Average memory (kb)
-  # - Maximum memory (kb)
-  # - Total memory (kb)
+  # - Average memory (mb)
+  # - Maximum memory (mb)
+  # - Total memory (mb)
 
   - name: Create {{ summary_file }}
     when: summary_file not in objects.s3_keys
@@ -103,7 +103,7 @@
     lineinfile:
       path: /tmp/{{ summary_file }}
       regexp: "^Date"
-      line: Date, nproc (avg), nproc (max), nproc (total), mem kb (avg), mem kb (max), mem kb (total)
+      line: Date, nproc (avg), nproc (max), nproc (total), mem mb (avg), mem mb (max), mem mb (total)
 
   - name: Ensure yesterday's summary
     lineinfile:
@@ -112,7 +112,7 @@
       line: >-
         {{ yesterday }},
         {{ '{:0.1f}'.format(nproc_used_avg | float) }}, {{ '{:0.1f}'.format(nproc_used_max | float ) }}, {{ nproc_total }},
-        {{ mem_kb_used_avg }}, {{ mem_kb_used_max }}, {{ mem_kb_total }}
+        {{ '{:0.0f}'.format(mem_mb_used_avg | float) }}, {{ '{:0.0f}'.format(mem_mb_used_max | float ) }}, {{ '{:0.0f}'.format(mem_mb_total) }}
 
   - name: Save {{ summary_file }}
     ansible.builtin.aws_s3:
