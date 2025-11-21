@@ -57,7 +57,7 @@
 
 - name: Maximum for the day (kb)
   set_fact:
-     maximum: "{{ kbmemused_values | max }}"
+    maximum: "{{ kbmemused_values | max }}"
 
 - name: Add to other machines (mb)
   set_fact:

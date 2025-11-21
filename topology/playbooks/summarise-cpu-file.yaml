@@ -31,7 +31,7 @@
 
 - name: Get nproc (for this machine)
   set_fact:
-     nproc: "{{ lookup('file', '/tmp/nproc.txt') }}"
+    nproc: "{{ lookup('file', '/tmp/nproc.txt') }}"
 
 - name: Display nproc (for this machine)
   debug:
@@ -62,13 +62,13 @@
 
 - name: Average and maximum for the day (non-idle)
   set_fact:
-     average: "{{ (100.0 - idle_total | float / (idle_values | length)) / 100.0 }}"
-     peak: "{{ (100.0 - idle_values | min ) / 100.0 }}"
+    average: "{{ (100.0 - idle_total | float / (idle_values | length)) / 100.0 }}"
+    peak: "{{ (100.0 - idle_values | min ) / 100.0 }}"
 
 - name: Summarise (in processors)
   set_fact:
-    summary_avg:  "{{ '{:0.3f}'.format(average | float * nproc | float) }}"
-    summary_peak:  "{{ '{:0.3f}'.format(peak | float * nproc | float) }}"
+    summary_avg: "{{ '{:0.3f}'.format(average | float * nproc | float) }}"
+    summary_peak: "{{ '{:0.3f}'.format(peak | float * nproc | float) }}"
 
 - name: Add to other machines
   set_fact:
