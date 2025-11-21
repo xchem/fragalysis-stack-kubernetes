@@ -22,15 +22,21 @@
     ansible.builtin.set_fact:
       yesterday: "{{ '%Y-%m-%d' | strftime(ansible_date_time.epoch | int - 86400) }}"
 
-  - name: List bucket contents
+  - name: List bucket contents ({{ yesterday }})
     ansible.builtin.aws_s3:
       bucket: "{{ s3_bucket }}"
       mode: list
+      prefix: "{{ yesterday }}"
       s3_url: "{{ s3_url }}"
       aws_access_key: "{{ s3_aws_access_key }}"
       aws_secret_key: "{{ s3_aws_secret_key }}"
       region: "{{ s3_region }}"
     register: objects
+
+  - name: Check we have some files
+    assert:
+      that: objects.s3_keys | length > 0
+      fail_msg: Didn't find any data for yesterday! ({{ yesterday }})
 
   - name: Clear totals
     ansible.builtin.set_fact:
