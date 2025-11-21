@@ -6,7 +6,7 @@
 # Expected variables: -
 #
 #   - s3_key
-#   - mem_mb_used
+#   - mem_mb_used_peak
 #   - mem_mb_total
 
 - name: Display Memory file name
@@ -61,5 +61,5 @@
 
 - name: Add to other machines (mb)
   set_fact:
-    mem_mb_used: "{{ mem_mb_used | float + maximum | float / 1024 }}"
+    mem_mb_used_peak: "{{ mem_mb_used_peak | float + maximum | float / 1024 }}"
     mem_mb_total: "{{ mem_mb_total | int + memtotal_kb | int / 1024 }}"
