@@ -15,6 +15,7 @@
     s3_region: ""
     s3_aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
     s3_aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+    summary_file: summary.csv
 
   tasks:
   - name: Get yesterday's date
@@ -36,6 +37,9 @@
       nproc_used_avg: 0
       nproc_used_max: 0
       nproc_total: 0
+      mem_kb_used_avg: 0
+      mem_kb_used_max: 0
+      mem_kb_total: 0
 
   - name: Process yesterday's CPU files
     include_tasks: summarise-cpu-file.yaml
@@ -48,4 +52,64 @@
 
   - name: Display totals
     ansible.builtin.debug:
-      msg: nproc_used_avg = {{ nproc_used_avg }} nproc_used_max = {{ nproc_used_max }} nproc_total = {{ nproc_total }}
+      msg: >-
+        {{ yesterday }}
+        nproc_used_avg = {{ nproc_used_avg }}
+        nproc_used_max = {{ nproc_used_max }}
+        nproc_total = {{ nproc_total }}
+
+  # We now update the "summary file" (summary.csv),
+  # and add the following columns:
+  # - Date
+  # - Average nproc
+  # - Maximum nproc
+  # - Total nproc
+  # - Average memory (kb)
+  # - Maximum memory (kb)
+  # - Total memory (kb)
+
+  - name: Create {{ summary_file }}
+    when: summary_file not in objects.s3_keys
+    copy:
+      content: ""
+      dest: /tmp/{{ summary_file }}
+      mode: 0664
+
+  - name: Get {{ summary_file }}
+    when: summary_file in objects.s3_keys
+    ansible.builtin.aws_s3:
+      bucket: "{{ s3_bucket }}"
+      object: "{{ summary_file }}"
+      dest: /tmp/{{ summary_file }}
+      mode: get
+      s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
+
+  - name: Ensure summary header
+    lineinfile:
+      path: /tmp/{{ summary_file }}
+      regexp: "^Date"
+      line: Date, nproc (avg), nproc (max), nproc (total), mem kb (avg), mem kb (max), mem kb (total)
+
+  - name: Ensure yesterday's summary
+    lineinfile:
+      path: /tmp/{{ summary_file }}
+      regexp: "^{{ yesterday }}"
+      line: >-
+        {{ yesterday }},
+        {{ '{:0.1f}'.format(nproc_used_avg | float) }}, {{ '{:0.1f}'.format(nproc_used_max | float ) }}, {{ nproc_total }},
+        {{ mem_kb_used_avg }}, {{ mem_kb_used_max }}, {{ mem_kb_total }}
+
+  - name: Save {{ summary_file }}
+    ansible.builtin.aws_s3:
+      bucket: "{{ s3_bucket }}"
+      encrypt: no
+      src: /tmp/{{ summary_file }}
+      object: "{{ summary_file }}"
+      mode: put
+      s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
