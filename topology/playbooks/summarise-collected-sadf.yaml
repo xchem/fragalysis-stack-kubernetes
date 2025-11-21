@@ -112,7 +112,7 @@
       line: >-
         {{ yesterday }},
         {{ '{:0.1f}'.format(nproc_used_avg | float) }}, {{ '{:0.1f}'.format(nproc_used_max | float ) }}, {{ nproc_total }},
-        {{ '{:0.0f}'.format(mem_mb_used_avg | float) }}, {{ '{:0.0f}'.format(mem_mb_used_max | float ) }}, {{ '{:0.0f}'.format(mem_mb_total) }}
+        {{ '{:0.0f}'.format(mem_mb_used_avg | float) }}, {{ '{:0.0f}'.format(mem_mb_used_max | float ) }}, {{ '{:0.0f}'.format(mem_mb_total | float) }}
 
   - name: Save {{ summary_file }}
     ansible.builtin.aws_s3:
