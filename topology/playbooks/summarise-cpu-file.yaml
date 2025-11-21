@@ -7,7 +7,7 @@
 #
 #   - s3_key
 #   - nproc_used_avg
-#   - nproc_used_max
+#   - nproc_used_peak
 #   - nproc_total
 
 - name: Display CPU file name
@@ -63,27 +63,15 @@
 - name: Average and maximum for the day (non-idle)
   set_fact:
      average: "{{ (100.0 - idle_total | float / (idle_values | length)) / 100.0 }}"
-     maximum: "{{ (100.0 - idle_values | min ) / 100.0 }}"
+     peak: "{{ (100.0 - idle_values | min ) / 100.0 }}"
 
 - name: Summarise (in processors)
   set_fact:
     summary_avg:  "{{ '{:0.3f}'.format(average | float * nproc | float) }}"
-    summary_max:  "{{ '{:0.3f}'.format(maximum | float * nproc | float) }}"
+    summary_peak:  "{{ '{:0.3f}'.format(peak | float * nproc | float) }}"
 
 - name: Add to other machines
   set_fact:
     nproc_used_avg: "{{ nproc_used_avg | float + summary_avg | float }}"
-    nproc_used_max: "{{ nproc_used_max | float + summary_max | float }}"
+    nproc_used_peak: "{{ nproc_used_peak | float + summary_peak | float }}"
     nproc_total: "{{ nproc_total | int + nproc | int }}"
-
-- name: Display running total average
-  debug:
-    msg: This contribution = {{ summary_avg }} Running total = {{ nproc_used_avg }}
-
-- name: Display running total maximum
-  debug:
-    msg: This contribution = {{ summary_max }} Running total = {{ nproc_used_max }}
-
-- name: Display running total nproc
-  debug:
-    msg: This contribution = {{ nproc }} Running total = {{ nproc_total }}
