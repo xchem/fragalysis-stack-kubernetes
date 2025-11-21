@@ -37,7 +37,6 @@
       nproc_used_avg: 0
       nproc_used_max: 0
       nproc_total: 0
-      mem_mb_used_avg: 0
       mem_mb_used_max: 0
       mem_mb_total: 0
 
@@ -66,7 +65,6 @@
         nproc_used_avg = {{ nproc_used_avg }}
         nproc_used_max = {{ nproc_used_max }}
         nproc_total = {{ nproc_total }}
-        mem_mb_used_avg = {{ mem_mb_used_avg }}
         mem_mb_used_max = {{ mem_mb_used_max }}
         mem_mb_total = {{ mem_mb_total }}
 
@@ -76,7 +74,6 @@
   # - Average nproc
   # - Maximum nproc
   # - Total nproc
-  # - Average memory (mb)
   # - Maximum memory (mb)
   # - Total memory (mb)
 
@@ -103,7 +100,7 @@
     lineinfile:
       path: /tmp/{{ summary_file }}
       regexp: "^Date"
-      line: Date, nproc (avg), nproc (max), nproc (total), mem mb (avg), mem mb (max), mem mb (total)
+      line: Date, nproc (avg), nproc (max), nproc (total), mem mb (max), mem mb (total)
 
   - name: Ensure yesterday's summary
     lineinfile:
@@ -112,7 +109,7 @@
       line: >-
         {{ yesterday }},
         {{ '{:0.1f}'.format(nproc_used_avg | float) }}, {{ '{:0.1f}'.format(nproc_used_max | float ) }}, {{ nproc_total }},
-        {{ '{:0.0f}'.format(mem_mb_used_avg | float) }}, {{ '{:0.0f}'.format(mem_mb_used_max | float ) }}, {{ '{:0.0f}'.format(mem_mb_total | float) }}
+        {{ '{:0.0f}'.format(mem_mb_used_max | float ) }}, {{ '{:0.0f}'.format(mem_mb_total | float) }}
 
   - name: Save {{ summary_file }}
     ansible.builtin.aws_s3:
