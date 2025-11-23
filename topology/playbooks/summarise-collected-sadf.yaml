@@ -83,6 +83,17 @@
   # - Maximum memory (mb)
   # - Total memory (mb)
 
+  - name: List bucket contents (for summary file)
+    ansible.builtin.aws_s3:
+      bucket: "{{ s3_bucket }}"
+      mode: list
+      prefix: "{{ summary_file }}"
+      s3_url: "{{ s3_url }}"
+      aws_access_key: "{{ s3_aws_access_key }}"
+      aws_secret_key: "{{ s3_aws_secret_key }}"
+      region: "{{ s3_region }}"
+    register: objects
+
   - name: Create {{ summary_file }}
     when: summary_file not in objects.s3_keys
     copy:
