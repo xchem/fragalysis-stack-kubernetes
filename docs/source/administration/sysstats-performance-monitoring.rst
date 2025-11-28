@@ -2,6 +2,10 @@
 Performance Monitoring (sysstats)
 #################################
 
+**********
+Collection
+**********
+
 For clusters where the linux `sysstats`_ monitoring tool is available you can run
 our playbook to collect daily machine statistics and write them to an S3 bucket and path.
 
@@ -63,16 +67,60 @@ at 5am each day, where the the previous day's stats are collected.
 
 The statistics files can be found in the `sysstats` bucket path.
 
+*******
+Summary
+*******
+
+A second playbook, which runs shortly after the collection of raw statistics,
+takes the previous day's files and generates a summary that consists of: -
+
+-   Average non-idle VCPU cores used
+-   Maximum non-idle VCPU cores used
+-   Total VCPU cores available
+-   Maximum memory consumed
+-   Total memory available
+
+The total VCPU cores and memory is the sum of all cores and memory on each
+machine in the summary.
+
+The playbook and its corresponding **Schedule** in AWX creates a ``summary.csv`` file
+that contains a header line and then a line for each day that has been processed::
+
+    Date, nproc (avg), nproc (peak), nproc (total), mem (MB peak), mem (MB total)
+    2025-11-20, 16.7, 28.1, 392, 562793, 2624644
+    2025-11-21, 16.6, 25.0, 392, 555470, 2624644
+    2025-11-22, 16.6, 25.2, 392, 552781, 2624644
+    2025-11-23, 16.6, 24.9, 392, 559744, 2624644
+    2025-11-24, 16.7, 33.1, 392, 579070, 2624644
+    2025-11-25, 17.1, 29.4, 392, 566701, 2624644
+    2025-11-26, 17.3, 29.0, 392, 567824, 2624644
+
 *********
 Playbooks
 *********
 
 The playbooks are located in the ``topology/playbooks`` directory of this repo.
-The playbook that is Scheduled to run is ``generate-sadf-for-yesterday.yaml``,
-which is expected to write collected results to S3.
 
-Variables
-=========
+The playbook that is Scheduled to run to collect the statistics
+is ``generate-sadf-for-yesterday.yaml``, which is expected to write collected
+results to S3.
+
+The playbook that is Scheduled to run to summarise the statistics
+is ``summarise-collected-sadf.yaml``. It updates the ``sysstats/summary.csv`` file.
+
+**********************
+Displaying the summary
+**********************
+
+If you have credentials you can display the ``summary.csv`` file with ``rclone``.
+For example, from the bastion::
+
+    export AWS_ACCESS_KEY_ID=00000000
+    export AWS_SECRET_ACCESS_KEY=00000000
+    rclone cat dls-echo:/sysstats/summary.csv
+
+Playbook variables
+==================
 
 The following variables (and environment variables) need to be provided to run the
 *yesterday* playbook. Ansible variables unless otherwise stated: -
@@ -111,15 +159,18 @@ Inventory
 The **Clusters** *Inventory* on AWX has a *Source* that is this repository's *Project*
 with the *Inventory File* set to ``topology/inventory.yaml``.
 
-If changes are made to the inventory you **MUST** *Sync* the AWX *Inventory* in order
-to pickup any changes.
+.. warning::
+    If changes are made to the inventory you **MUST** *Sync* the AWX *Inventory*
+    so that the playbooks can collect statistics for the correct machines.
 
-Job Template
-============
+Job Templates
+=============
 
-The **Collect cluster sysstats (sadf)** *Job Template* on AWX used the playbooks in
+The **Collect cluster sysstats (sadf)** *Job Template* on AWX uses the playbooks in
 this repo, providing suitable credentials and variables. It has a *Schedule* that
-ensures it is run at 5am (UTC) every day.
+ensures it is run at 05:00 (UTC) every day.
 
+The **Summarise cluster sysstats (sadf)** *Job Template* on AWX has a *Schedule* that
+ensures it is run at 05:15 (UTC) every day.
 
 .. _sysstats: https://en.wikipedia.org/wiki/Sysstat
