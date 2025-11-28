@@ -2,10 +2,10 @@
 Data Recovery
 #############
 
-In the event of data loss you will need to recostruct the missing components
-(databases and files) using installation instrutions and backups. What follows
-is a brief outline of steps to recover losts systems, based on what's been lost.
-We outline the reovery of: -
+In the event of data loss you will need to reconstruct the missing components
+(databases and files) using installation instructions and backups. What follows
+is a brief outline of steps to recover lost systems, based on what's been lost.
+We outline the recovery of: -
 
 1.  Production stack database
 2.  Production stack media directory
@@ -28,8 +28,8 @@ Stack database
 **************
 
 A convenient ansible playbook that can be used to restore backed-up databases
-can be found in the Informatics Matters `bandr-ansible`_ respository. From
-a clone of the respository you should create a suitable Python environment
+can be found in the Informatics Matters `bandr-ansible`_ repository. From
+a clone of the repository you should create a suitable Python environment
 and install the required packages. With this done you should prepare
 a suitable set of ``parameters.yaml`` variables to control the playbook.
 Here is a set used recently (replace the values as appropriate)::
@@ -74,7 +74,7 @@ Stack media
 
 This is most easily accomplished from within a shell in the Production stack **Pod**.
 From there you should move to the Django media directory (``/code/media``).
-You will need to install the Python ``awscli`` package and know the S3 credetnials
+You will need to install the Python ``awscli`` package and know the S3 credentials
 that give you access the bucket where the media files are kept::
 
     pip install awscli
@@ -96,7 +96,7 @@ Infrastructure databases
 
 As the infrastructure database server contains multiple databases we currently rely
 on the `pg_dumpall` utility in order to get a complete copy of the server.
-backups are performed every day, and are kept for a numebr of days,
+backups are performed every day, and are kept for a number of days,
 perfomed by a **CronJob** operating ion the corresponding ``im-infra`` **Namespaces**.
 
 Backups are located in an Echo S3 bucket: -
@@ -104,10 +104,10 @@ Backups are located in an Echo S3 bucket: -
 -   Development cluster: ``/im-infra-backup``
 -   Prodcution cluster: ``/im-infra-production-backup``
 
-Armed with the prevailing Postgress admin user and password, recovery can be
+Armed with the prevailing Postgres admin user and password, recovery can be
 performed manually via a Pod shell or using an AWX playbook. We test recovery using
 the ``site-recovery.yaml`` playbook (version **2024.1**) from our `bandr-ansible`_
-respository.
+repository.
 
 **************
 Rancher server

@@ -3,7 +3,7 @@ Backups
 #######
 
 Here, we describe the data and file backups that are kept to enable recovery of the
-installation. In order to provide sufficient material to accomplish a complet recovery
+installation. In order to provide sufficient material to accomplish a complete recovery
 of the installation we keep copies of the following: -
 
 1.  The **rancher server**. A docker-based service running in a asmake RKE cluster
@@ -35,8 +35,8 @@ This database manages Fragalysis & Squonk2 application logins in the development
 providing federated access to CAS.
 
 -   **Backup process**: This is handled by a **CronJob** container
-    using the ``informaticsmatters/sql-backup`` conatiner image. As the server hosts
-    mutiple databasee it uses the ``pg_dumpall`` utility to dump the server contents
+    using the ``informaticsmatters/sql-backup`` container image. As the server hosts
+    multiple databases it uses the ``pg_dumpall`` utility to dump the server contents
     to a backup volume (in the cluster) and ``rclone`` to copy this off cluster to
     an S3 bucket
 -   **Backup schedule**: Every day at 03:07, keeping 28 copies
@@ -51,7 +51,7 @@ providing federated access to CAS. It is also used by the AWX ansible playbook s
 
 -   **Backup process**: This is handled by a **CronJob** container
     using the ``informaticsmatters/sql-backup`` conatiner image. As the server hosts
-    mutiple databasee it uses the ``pg_dumpall`` utility to dump the server contents
+    multiple databases it uses the ``pg_dumpall`` utility to dump the server contents
     to a backup volume (in the cluster) and ``rclone`` to copy this off cluster to
     an S3 bucket
 -   **Backup schedule**: Every day at 03:07, keeping 28 copies

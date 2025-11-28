@@ -22,3 +22,4 @@ Administration
     data-recovery
     performance-considerations
     sysstats-performance-monitoring
+    ad-hoc-maintenance
