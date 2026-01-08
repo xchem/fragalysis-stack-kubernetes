@@ -18,7 +18,7 @@ This is done by an admin user on Rancher: -
 1.  Navigate to **Users & Authentication**
 2.  Select **Create**, and provide a **Username**, **Display Name**,
     and **Generate a random password**
-3.  The user should be a **Standard User**
+3.  The user should be a **Restricted Administrator**
 
 Keep the username and generated password safe.
 
@@ -26,10 +26,11 @@ Now add the user to the required clusters: -
 
 1.  Navigate to **Cluster Management**
 2.  Select the required cluster (e.g. ``nw-xch-dev``) and select **Config**
-3.  Under **Member Roles** select **+ Add Member**
-4.  Select an appropriate user and select the **Custom** role
-5.  The custom role should include **View All Projects** and **View Nodes** and save it
-6.  Scroll to the bottom of the configuration page and select **Save**
+3.  Under **Member Roles** select remove the new user (who wil be a **Cluster Owner**)
+4.  Select **+ Add Member** (to add the member again)
+5.  Select an appropriate user and select the **Custom** role
+6.  The custom role should include **View All Projects** and **View Nodes** and save it
+7.  Scroll to the bottom of the configuration page and select **Save**
 
 *******************************
 Getting a KUBECONFIG for a user
