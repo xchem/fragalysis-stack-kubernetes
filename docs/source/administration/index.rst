@@ -11,7 +11,7 @@ Administration
 
     cloud-stfc
     rancher
-    managing-cluster-users
+    managing-cluster-access
     nfs-configuration
     backups
     off-cluster-backup-locations
