@@ -81,6 +81,7 @@ What we do is...
 
 1.  Create a KUBECONFIG (via a Rancher login dedicated to the user)
 2.  Manage Project (Namespace) access (via a Rancher admin login)
+3.  Enable cluster membership (optional)
 
 Project access is independent of the user KUBECONFIG - you can download a KUBECONFIG
 and then manage user access separately, at any time.
@@ -127,6 +128,32 @@ From a Rancher admin login: -
 2.  Using the Project's ``...`` Select **Edit Config**
 3.  In the **Members** panel **Add** the user and **Select** the user as a **Member**
 4.  **Add** the user and then hit **Save**
+
+Enable cluster membership
+=========================
+
+The above allows us to control what **Namespace** material a user can edit
+through the **Project** they belong to. This means users cannot even see namespaces
+that are not part of their projects.
+
+This might be inconvenient so you can also add users to the **Cluster** as well as the
+project. We do this by adding users to the *cluster* using a *custom* role.
+This will allow the user to *see* the material in other namespaces, including the
+list of namespaces in the cluster.
+
+To do this we add the user as a **Member** to the **Cluster**.
+
+In Rancher (logged in as an administrator): -
+
+1.  Navigate to **Cluster Management**
+2.  Select the cluster from the list of **Clusters** and select **Config** from the top
+    bar
+3.  In the **Member Roles** section click **Add Member**
+4.  Select the member and, in the **Role** field select **Custom**.
+    From the custom roles pop-up select **View All Projects** and **View Nodes**,
+    and then click **Save**.
+5.  Finally scroll down to the bottom of the cluster COnfig page (it is long),
+    and then click **Save**
 
 ***************************
 Disabling a KUBECONFIG file
