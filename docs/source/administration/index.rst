@@ -23,4 +23,5 @@ Administration
     data-recovery
     performance-considerations
     sysstats-performance-monitoring
+    rotating-the-fragalysis-db-user
     ad-hoc-maintenance
