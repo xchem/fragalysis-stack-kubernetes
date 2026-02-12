@@ -81,12 +81,14 @@ workflow file variables to this::
     BE_IMAGE_TAG: 2023.05.1
     FE_IMAGE_TAG: 2023.05.4
 
-Commit the change and then (when the build passes) tag the stack repository's
-``master`` branch with the value ``2023.06.2``.
+Commit the change and then (when the build passes) *create a release* from the
+stack repository's ``master`` branch with the value ``2023.06.2``.
 
 The **stack** GitHub Action will ensure the new  build is automatically
 deployed to the ``production-stack`` **Namespace** of the production Kubernetes
 cluster (using the Action's **deploy-production** job step).
+
+Remember to also update the `changelog.md` in the `fragalysis`_ repository.
 
 .. epigraph::
 
@@ -95,3 +97,4 @@ cluster (using the Action's **deploy-production** job step).
     but it will not be deployed.
 
 .. _semantic versioning: https://semver.org
+.. _sfragalysis: https://github.com/xchem/fragalysis
