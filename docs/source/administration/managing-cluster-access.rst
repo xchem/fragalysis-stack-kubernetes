@@ -79,42 +79,12 @@ Let's assume that we have...
 
 What we do is...
 
-1.  Create a KUBECONFIG (via a Rancher login dedicated to the user)
-2.  Manage Project (Namespace) access (via a Rancher admin login)
-3.  Enable cluster membership (optional)
+1.  Manage Project (Namespace) access (via a Rancher admin login)
+2.  Optionally enable cluster membership (via a Rancher admin login)
+3.  Create a KUBECONFIG for a cluster (via a Rancher login dedicated to the user)
 
 Project access is independent of the user KUBECONFIG - you can download a KUBECONFIG
-and then manage user access separately, at any time.
-
-Create a KUBECONFIG
-===================
-
-Using a login dedicated to the corresponding user: -
-
-1.  Navigate to the cluster
-2.  Use the **Download KubeConfig** icon in the top-right of the cluster page
-
-Do this for each cluster you want the user to have access to.
-
-Preserve the config and send it to the user.
-
-You might want to rename the downloaded file to include the user's name, e.g.
-``nw-xch-dev-alan.yaml``
-
-Rancher is configured to generate a new API key for each ``KUBECONFIG`` that's generated.
-Each ``KUBECONFIG`` has its own API key and the keys can be seen on the
-**Accounts & API Keys** page where you can see their expiry period and its *scope*
-(a character code used by Rancher to identify the cluster).
-
-``KUBECONFIG`` API keys will expire after 90 days.
-
-The ``KUBECONFIG`` contains some superfluous material. The typical ``ctrl`` clusters
-in it (on the IP ``192.168``) are of no use so it might be worth removing these clusters
-from the ``clusters`` list along with the matching ``contexts`` in the file. But that's
-just to be *tidy*.
-
-Users only need one ``KUBECONFIG`` file for each cluster, and the **MUST** be told
-not to circulate the file - it must only be used by the user it was made for.
+and then manage cluster access separately, at any time.
 
 Manage Project access
 =====================
@@ -154,6 +124,37 @@ In Rancher (logged in as an administrator): -
     and then click **Save**.
 5.  Finally scroll down to the bottom of the cluster COnfig page (it is long),
     and then click **Save**
+
+Create a KUBECONFIG
+===================
+
+Using a login dedicated to the corresponding user: -
+
+1.  Navigate to the cluster
+2.  Use the **Download KubeConfig** icon in the top-right of the cluster page
+
+Do this for each cluster you want the user to have access to.
+
+Preserve the config and send it to the user.
+
+You might want to rename the downloaded file to include the user's name, e.g.
+``nw-xch-dev-alan.yaml``
+
+Rancher is configured to generate a new API key for each ``KUBECONFIG`` that's generated.
+Each ``KUBECONFIG`` has its own API key and the keys can be seen on the
+**Accounts & API Keys** page where you can see their expiry period and its *scope*
+(a character code used by Rancher to identify the cluster).
+
+Our ``KUBECONFIG`` API keys will expire after 90 days.
+
+The ``KUBECONFIG`` contains some superfluous material. The typical ``ctrl`` clusters
+in it (on the IP ``192.168``) are of no use so it might be worth removing these clusters
+from the ``clusters`` list along with the matching ``contexts`` in the file. But that's
+just to be *tidy*.
+
+Users should only need one ``KUBECONFIG`` file for each cluster, and they **MUST** be
+told not to circulate the file - it must only be used by the user it was made for,
+and they must understand the dangers of the power it provides.
 
 ***************************
 Disabling a KUBECONFIG file
