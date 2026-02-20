@@ -15,9 +15,9 @@ Fragalysis Stack (Kubernetes)
     :maxdepth: 3
     :caption: Release process
 
-    architecture/release-process
+    administration/release-process
     architecture/ci-logic
-    architecture/release-process-v1-hotfixes
+    administration/release-process-v1-hotfixes
 
 ..  toctree::
     :maxdepth: 3

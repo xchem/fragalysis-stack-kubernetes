@@ -9,6 +9,7 @@ Development Architecture
     branch-policy
     development-ci
     development-cd
+    ci-logic
 
 ..  toctree::
     :maxdepth: 2

@@ -66,8 +66,16 @@ When you are ready to release a production version of the **stack** you **MUST**
         ``2023.06.1`` for the first release in June 2023. The month
         is a 2-digit value with a leading zero if necessary.
 
+#.  Signal the release to others who might want to update remote release notes.
+    We do this by creating a ticket in the project board
+    (in the **push to production** swim-lane) with the title **Release [number]**
+    (e.g. ``Release 2026.02.1``). We add text with bullet-points summarising the
+    tickets the release contains, if you use ``#[NUMBER]`` it should automatically
+    resolve to the related ticket in the project. Finally, assign the ticket to those
+    who need to deal with the release.
+
 The action of tagging the **stack** ``master`` branch will result in automated
-execution of the project's CI and CD processes, automatically deploying the resultant
+execution of the project's CI and CD processes, deploying the resultant
 stack image to the ``production-stack`` **Namespace** of the
 production Kubernetes cluster.
 
@@ -87,8 +95,6 @@ stack repository's ``master`` branch with the value ``2023.06.2``.
 The **stack** GitHub Action will ensure the new  build is automatically
 deployed to the ``production-stack`` **Namespace** of the production Kubernetes
 cluster (using the Action's **deploy-production** job step).
-
-Remember to also update the `changelog.md` in the `fragalysis`_ repository.
 
 .. epigraph::
 

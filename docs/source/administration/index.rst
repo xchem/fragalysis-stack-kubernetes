@@ -25,3 +25,5 @@ Administration
     sysstats-performance-monitoring
     rotating-the-fragalysis-db-user
     ad-hoc-maintenance
+    release-process
+    release-process-v1-hotfixes
