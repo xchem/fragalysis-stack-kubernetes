@@ -108,7 +108,7 @@
 - name: Display database image
   debug:
     msg: >-
-      database_image_registry={{database_image_registry }}
+      database_image_registry={{ database_image_registry }}
       database_image={{ database_image }}
       database_image_tag={{ database_image_tag}}
 
