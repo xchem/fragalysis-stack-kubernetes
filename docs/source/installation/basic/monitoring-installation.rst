@@ -27,6 +27,14 @@ following (instead of what you're advised): -
     kubectl get secret -l app.kubernetes.io/component=admin-secret \
         -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
 
+If using lens you will need to set the following properties of its "Metrics"
+Cluster Settings in order to see _live_ CPU and Memory stats: -
+
+-   **METRICS SOURCE** : ``Prometheus``
+-   **PROMETHEUS** : ``Helm``
+-   **Filter empty containers** : ``Un-checked``
+-   **PROMETHEUS SERVICE ADDRESS** : ``monitoring/kube-prometheus-stack-prometheus:9090``
+
 A similar set of values, for the production cluster, provide the following ingresses: -
 
 -   https://alartmanager.xchem.diamond.ac.uk/
@@ -43,7 +51,7 @@ necessary: -
 
     kubectl delete pvc alertmanager-kube-prometheus-stack-alertmanager-db-alertmanager-kube-prometheus-stack-alertmanager-0 -n monitoring
 
-And then delete the namespace: -
+And then delete the _custom_ namespace: -
 
     kubectl delete namespace monitoring
 
