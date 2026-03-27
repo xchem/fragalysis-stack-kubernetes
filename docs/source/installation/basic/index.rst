@@ -33,3 +33,4 @@ associated Graph database to that cluster: -
     awx-configuration
     graph-deployment
     stack-deployment
+    monitoring-installation

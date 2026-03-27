@@ -1,0 +1,53 @@
+---
+namespaceOverride: monitoring
+prometheusOperator:
+  priorityClassName: im-application-critical
+prometheus:
+  prometheusSpec:
+    priorityClassName: im-application-critical
+thanosRuler:
+  thanosRulerSpec:
+    priorityClassName: im-application-critical
+alertmanager:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-nginx-production
+      kubernetes.io/tls-acme: "true"
+    hosts:
+    - alartmanager.xchem-dev.diamond.ac.uk
+    tls:
+    - secretName: alartmanager-general-tls
+      hosts:
+      - alartmanager.xchem-dev.diamond.ac.uk
+  alertmanagerSpec:
+    priorityClassName: im-application-critical
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: csi-cinder-sc-delete
+          accessModes:
+          - "ReadWriteOnce"
+          resources:
+            requests:
+              storage: 5Gi
+grafana:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-nginx-production
+      kubernetes.io/tls-acme: "true"
+    hosts:
+    - grafana.xchem-dev.diamond.ac.uk
+    tls:
+    - secretName: grafana-general-tls
+      hosts:
+      - grafana.xchem-dev.diamond.ac.uk
+  persistence:
+    enabled: true
+    type: pvc
+    accessModes:
+    - ReadWriteOnce
+    size: 5Gi
+    storageClassName: csi-cinder-sc-delete
