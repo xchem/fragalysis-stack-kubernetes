@@ -9,6 +9,7 @@ thanosRuler:
   thanosRulerSpec:
     priorityClassName: im-application-critical
 alertmanager:
+  namespaceOverride: monitoring
   ingress:
     enabled: true
     annotations:
@@ -32,6 +33,7 @@ alertmanager:
             requests:
               storage: 5Gi
 grafana:
+  namespaceOverride: monitoring
   ingress:
     enabled: true
     ingressClassName: nginx

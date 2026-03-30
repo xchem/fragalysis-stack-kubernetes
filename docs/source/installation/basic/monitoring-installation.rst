@@ -20,11 +20,10 @@ persistence, and provide the following ingresses: -
 -   https://alartmanager.xchem-dev.diamond.ac.uk/
 -   https://grafana.xchem-dev.diamond.ac.uk/
 
-With the current set of values a number of objects still get created in the
-``default`` **Namespace**, so to get the Grafana ``admin`` password run the
-following (instead of what you're advised): -
+To get the Grafana ``admin`` password run the following: -
 
-    kubectl get secret -l app.kubernetes.io/component=admin-secret \
+    kubectl get secret --namespace monitoring \
+        -l app.kubernetes.io/component=admin-secret \
         -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
 
 If using lens you will need to set the following properties of its "Metrics"
