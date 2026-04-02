@@ -87,7 +87,9 @@ spec:
         - containerPort: 80
         resources:
           limits:
+{% if worker_cpu_limit %}
             cpu: {{ worker_cpu_limit }}
+{% endif %}
             memory: {{ worker_mem_limit }}
           requests:
             cpu: {{ worker_cpu_request }}
