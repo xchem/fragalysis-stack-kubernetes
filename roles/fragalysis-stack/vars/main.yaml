@@ -41,10 +41,10 @@ stack_sa_psp: im-core-unrestricted
 # If blank ('') there will be no certificate.
 stack_cert_issuer: staging
 
-stack_cpu_limit: 4000m
-stack_mem_limit: 16Gi
-stack_cpu_request: 250m
-stack_mem_request: 16Gi
+stack_cpu_limit: 2
+stack_mem_limit: 8Gi
+stack_cpu_request: 1
+stack_mem_request: 8Gi
 
 # Inject proposals for specific users?
 # This DEBUG feature not available for production stacks.
@@ -64,10 +64,10 @@ stack_django_superuser_password: "{{ lookup('password', '/dev/null length=22 cha
 
 # Worker configuration --------------------------------------------------------
 
-worker_cpu_limit: 4000m
-worker_mem_limit: 16Gi
-worker_cpu_request: 250m
-worker_mem_request: 16Gi
+worker_cpu_limit: 0
+worker_mem_limit: 32Gi
+worker_cpu_request: 8
+worker_mem_request: 32Gi
 
 # Database configuration ------------------------------------------------------
 
