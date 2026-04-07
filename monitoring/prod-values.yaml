@@ -5,6 +5,25 @@ prometheusOperator:
 prometheus:
   prometheusSpec:
     priorityClassName: im-application-critical
+    additionalScrapeConfigs:
+    - job_name: staging-stack
+      scheme: https
+      scrape_interval: 5s
+      static_configs:
+      - targets:
+        - fragalysis.xchem.diamond.ac.uk
+        labels:
+          app: staging
+    - job_name: v2-production-stack
+      scheme: https
+      scrape_interval: 5s
+      static_configs:
+      - targets:
+        - fragalysis.diamond.ac.uk
+        labels:
+          app: production
+prometheus-node-exporter:
+  namespaceOverride: monitoring
 thanosRuler:
   thanosRulerSpec:
     priorityClassName: im-application-critical
@@ -51,5 +70,5 @@ grafana:
     type: pvc
     accessModes:
     - ReadWriteOnce
-    size: 5Gi
+    size: 10Gi
     storageClassName: csi-cinder-sc-delete

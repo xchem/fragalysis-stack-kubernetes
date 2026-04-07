@@ -5,6 +5,49 @@ prometheusOperator:
 prometheus:
   prometheusSpec:
     priorityClassName: im-application-critical
+    additionalScrapeConfigs:
+    - job_name: stack-alan-default
+      scheme: https
+      scrape_interval: 10s
+      static_configs:
+      - targets:
+        - fragalysis-alan-default.xchem-dev.diamond.ac.uk
+        labels:
+          app: alan-default
+    - job_name: stack-kalev-default
+      scheme: https
+      scrape_interval: 10s
+      static_configs:
+      - targets:
+        - fragalysis-kalev-default.xchem-dev.diamond.ac.uk
+        labels:
+          app: kalev-default
+    - job_name: stack-tibor-default
+      scheme: https
+      scrape_interval: 10s
+      static_configs:
+      - targets:
+        - fragalysis-tibor-default.xchem-dev.diamond.ac.uk
+        labels:
+          app: tibor-default
+    - job_name: stack-simona-default
+      scheme: https
+      scrape_interval: 10s
+      static_configs:
+      - targets:
+        - fragalysis-simona-default.xchem-dev.diamond.ac.uk
+        labels:
+          app: simona-default
+    - job_name: stack-samuel-default
+      scheme: https
+      scrape_interval: 10s
+      static_configs:
+      - targets:
+        - fragalysis-samuel-default.xchem-dev.diamond.ac.uk
+        labels:
+          app: samuel-default
+prometheus-node-exporter:
+  namespaceOverride: monitoring
 thanosRuler:
   thanosRulerSpec:
     priorityClassName: im-application-critical

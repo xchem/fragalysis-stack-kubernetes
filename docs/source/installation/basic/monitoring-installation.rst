@@ -26,6 +26,11 @@ To get the Grafana ``admin`` password run the following: -
         -l app.kubernetes.io/component=admin-secret \
         -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
 
+You can update/upgrade the installation with: -
+
+    helm upgrade -f dev-values.yaml kube-prometheus-stack \
+        oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+
 If using lens you will need to set the following properties of its "Metrics"
 Cluster Settings in order to see _live_ CPU and Memory stats: -
 
@@ -38,6 +43,39 @@ A similar set of values, for the production cluster, provide the following ingre
 
 -   https://alartmanager.xchem.diamond.ac.uk/
 -   https://grafana.xchem.diamond.ac.uk/
+
+********************
+Scraping new metrics
+********************
+
+If you have your own application metrics you can instruct prometheus to scrape these
+by adding a suitable configuration to `prometheus - prometheusSpec - additionalScrapeConfigs`.
+
+For example, we can collect Fragalysis Stack metrics from Alan's development stack
+with the following ``additionalScrapeConfigs`` declaration: -
+
+    prometheus:
+      prometheusSpec:
+        additionalScrapeConfigs:
+        - job_name: stack-alan-default
+        scheme: https
+        scrape_interval: 10s
+        static_configs:
+        - targets:
+            - fragalysis-alan-default.xchem-dev.diamond.ac.uk
+            labels:
+            app: alan-default
+
+If we then install a `Django dashboard`_ (like ``17658``) into Grafana we can see the
+metrics generated, and restrict them to Alan's stack by using the ``application`` value
+``alan-default``.
+
+*****************
+Useful Dashboards
+*****************
+
+- **Node Exporter Full** (1860)
+- **Django** (17658)
 
 *******************
 Removing Monitoring
@@ -54,5 +92,6 @@ And then delete the _custom_ namespace: -
 
     kubectl delete namespace monitoring
 
+.. _django dashboard: https://grafana.com/grafana/dashboards/17658-django/
 .. _kube-prometheus-stack: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 .. _uninstall: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#uninstall-helm-chart
