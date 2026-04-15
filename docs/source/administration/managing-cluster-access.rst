@@ -156,6 +156,27 @@ Users should only need one ``KUBECONFIG`` file for each cluster, and they **MUST
 told not to circulate the file - it must only be used by the user it was made for,
 and they must understand the dangers of the power it provides.
 
+Generating new API Keys (tokens)
+--------------------------------
+You can generate new API keys without needing to generate a new ``KUBECONFIG``.
+Simply navigate to **Accounts & API Keys** when logged-in as the chosen user
+and click **Create API Key**. Give the key a useful description so that you will be able
+to later understand why you generated the key. Choose the **Scope** that reflects the
+appropriate cluster (e.g. ``nw-xch-dev`` or ``nw-xch-prod``).
+
+Unlike  keys generated during ```KUBECONFIG`` generation, which expire after 90 days,
+you can select the expiry from a preset list of that contains "a day, a month, a year,
+or a custom expiry.
+
+Once generated copy the **Bearer Token** value you are presented with.
+You will not be shown it again so copy it now.
+
+This can be used to replace the ``users -> user -> token`` value in the user's
+``KUBECONFIG`` file.
+
+Bearer token strings typically begin start with the **Access Key**
+(e.g. ``token-?????``), a ``:`` and then the **Secret Key**.
+
 ***************************
 Disabling a KUBECONFIG file
 ***************************
