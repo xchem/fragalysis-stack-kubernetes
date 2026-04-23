@@ -313,6 +313,8 @@ spec:
         - name: INFECTIONS
           value: '{{ stack_infections }}'
 {% endif %}
+        - name: TMPDIR
+          value: /tmp
         # The playbook date/time
         # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
         # This is used in situations where the origin image's tag may not

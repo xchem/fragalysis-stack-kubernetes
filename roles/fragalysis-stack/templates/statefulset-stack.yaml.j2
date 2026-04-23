@@ -354,6 +354,8 @@ spec:
         - name: BE_DOCUMENTATION_URL_FORMAT_STRING
           value: '{{ be_documentation_url_format_string }}'
 {% endif %}
+        - name: TMPDIR
+          value: /tmp
         # The playbook date/time
         # (ISO8601 format - i.e. '2019-03-11T09:19:33.496910Z').
         # This is used in situations where the origin image's tag may not
