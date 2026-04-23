@@ -228,6 +228,12 @@ database_bu_rclone_s3_access_key_id: ''
 database_bu_rclone_s3_secret_access_key: ''
 database_bu_rclone_s3_default_region: ''
 
+# PgBouncer configuration.
+# Set the tag to a blank string to avoid deployment.
+pgbouncer_image: edoburu/pgbouncer
+pgbouncer_tag: ''
+#pgbouncer_tag: v1.25.1-p0
+
 # Media backups?
 media_bu_state: absent
 media_bu_image_tag: '3.1.1'

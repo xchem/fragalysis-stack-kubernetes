@@ -184,3 +184,19 @@
       wait_timeout: "{{ wait_timeout }}"
 
   when: database_bu_state|string == 'present'
+
+# pgBouncer ----------------------------------------------------------
+
+- name: pgBouncer
+  block:
+
+  - name: Deploy pgBouncer
+    k8s:
+      definition: "{{ lookup('template', item) }}"
+      wait: yes
+    loop:
+    - secret-pgbouncer.yaml.j2
+    - deployment-pgbouncer.yaml.j2
+    - service-pgbouncer.yaml.j2
+
+  when: pgbouncer_tag | string | length != 0

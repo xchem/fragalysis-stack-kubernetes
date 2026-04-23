@@ -91,9 +91,11 @@ spec:
             cpu: {{ worker_cpu_limit }}
 {% endif %}
             memory: {{ worker_mem_limit }}
+            ephemeral-storage: {{ worker_ephemeral_limit }}
           requests:
             cpu: {{ worker_cpu_request }}
             memory: {{ worker_mem_request }}
+            ephemeral-storage: {{ worker_ephemeral_request }}
         env:
         # This container's role is a (celery) worker...
         # Otherwise everything else is configured just like the Stack container.
@@ -141,7 +143,11 @@ spec:
               name: database
               key: user_password
         - name: POSTGRESQL_HOST
+{% if pgbouncer_tag %}
+          value: 'pgbouncer'
+{% else %}
           value: '{{ database_host_fact|default('database', true) }}'
+{% endif %}
         - name: POSTGRESQL_PORT
           value: '{{ database_port_fact|default('5432', true) }}'
 {% if stack_discourse_host %}
@@ -318,6 +324,8 @@ spec:
         volumeMounts:
         - name: media
           mountPath: /code/media
+        - name: ephemeral
+          mountPath: /tmp
 {% if stack_log_vol_storageclass %}
         - name: log
           mountPath: /code/logs
@@ -331,6 +339,9 @@ spec:
       - name: media
         persistentVolumeClaim:
           claimName: media
+      - name: ephemeral
+        emptyDir:
+          sizeLimit: {{ worker_ephemeral_size_limit }}
 {% if stack_use_private_key_fact is defined %}
       - name: ssh-key
         configMap:

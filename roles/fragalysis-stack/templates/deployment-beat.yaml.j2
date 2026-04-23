@@ -114,7 +114,11 @@ spec:
               name: database
               key: user_password
         - name: POSTGRESQL_HOST
+{% if pgbouncer_tag %}
+          value: 'pgbouncer'
+{% else %}
           value: '{{ database_host_fact|default('database', true) }}'
+{% endif %}
         - name: POSTGRESQL_PORT
           value: '{{ database_port_fact|default('5432', true) }}'
         # The playbook date/time

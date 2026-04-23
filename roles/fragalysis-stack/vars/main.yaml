@@ -68,6 +68,11 @@ worker_cpu_limit: 0
 worker_mem_limit: 32Gi
 worker_cpu_request: 8
 worker_mem_request: 32Gi
+# Worker ephemeral (emptyDir/local) storage.
+# Used for worker /tmp directory
+worker_ephemeral_request: 450Gi
+worker_ephemeral_limit: 450Gi
+worker_ephemeral_size_limit: 400Gi
 
 # Database configuration ------------------------------------------------------
 
