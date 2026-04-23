@@ -16,6 +16,7 @@ ignore: |
   roles/fragalysis-stack/templates/configmap-redis.yaml.j2
   roles/fragalysis-stack/templates/deployment-redis.yaml.j2
   roles/fragalysis-stack/templates/deployment-beat.yaml.j2
+  roles/fragalysis-stack/templates/deployment-pgbouncer.yaml.j2
   roles/fragalysis-stack/templates/statefulset-database.yaml.j2
   roles/fragalysis-stack/templates/statefulset-nery.yaml.j2
   roles/fragalysis-stack/templates/statefulset-stack.yaml.j2
