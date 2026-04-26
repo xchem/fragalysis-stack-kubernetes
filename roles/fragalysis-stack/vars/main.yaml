@@ -111,6 +111,14 @@ database_user_password: "{{ lookup('password', '/dev/null length=10 chars=ascii_
 # via the postgres-init ConfigMap.
 database_create_users_and_databases: yes
 
+# pgBouncer
+pgbouncer_default_pool_size: 16
+pgbouncer_log_connections: 0
+pgbouncer_log_disconnections: 1
+pgbouncer_max_client_conn: 1000
+pgbouncer_max_db_connections: 16
+pgbouncer_min_pool_size: 16
+
 redis_image: redis
 redis_image_tag: '7.4.1-alpine3.20'
 # Redis configuration (ConfigMap) values
