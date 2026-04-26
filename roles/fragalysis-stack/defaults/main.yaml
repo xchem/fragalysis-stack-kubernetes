@@ -230,9 +230,8 @@ database_bu_rclone_s3_default_region: ''
 
 # PgBouncer configuration.
 # Set the tag to a blank string to avoid deployment.
-pgbouncer_image: edoburu/pgbouncer
-pgbouncer_tag: ''
-#pgbouncer_tag: v1.25.1-p0
+pgbouncer_image: xchem/pgbouncer
+pgbouncer_tag: '1.25.1'
 
 # Media backups?
 media_bu_state: absent
