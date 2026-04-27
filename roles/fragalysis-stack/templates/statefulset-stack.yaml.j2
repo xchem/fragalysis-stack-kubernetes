@@ -91,9 +91,11 @@ spec:
             cpu: {{ stack_cpu_limit }}
 {% endif %}
             memory: {{ stack_mem_limit }}
+            ephemeral-storage: {{ stack_ephemeral_limit }}
           requests:
             cpu: {{ stack_cpu_request }}
             memory: {{ stack_mem_request }}
+            ephemeral-storage: {{ stack_ephemeral_request }}
         # Expect the earliest that the container can be ready is 60 seconds.
         # But check every 15 seconds and permit 36 failures before
         # considering the startup to have failed (that's about 10 minutes).
@@ -367,6 +369,8 @@ spec:
         volumeMounts:
         - name: media
           mountPath: /code/media
+        - name: ephemeral
+          mountPath: /tmp
 {% if stack_log_vol_storageclass %}
         - name: log
           mountPath: /code/logs
@@ -380,6 +384,9 @@ spec:
       - name: media
         persistentVolumeClaim:
           claimName: media
+      - name: ephemeral
+        emptyDir:
+          sizeLimit: {{ stack_ephemeral_size_limit }}
 {% if stack_use_private_key_fact is defined %}
       - name: ssh-key
         configMap:
