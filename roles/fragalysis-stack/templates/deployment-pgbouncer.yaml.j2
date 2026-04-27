@@ -28,10 +28,6 @@ spec:
         - secretRef:
             name: pgbouncer
         env:
-        - name: AUTH_TYPE
-          value: scram-sha-256
-        - name: CANCEL_WAIT_TIMEOUT
-          value: '0'
         - name: DEFAULT_POOL_SIZE
           value: {{ pgbouncer_default_pool_size }}
         - name: LOG_CONNECTIONS
@@ -44,18 +40,6 @@ spec:
           value: '{{ pgbouncer_max_db_connections }}'
         - name: MIN_POOL_SIZE
           value: '{{ pgbouncer_min_pool_size }}'
-        - name: POOL_MODE
-          value: transaction
-        - name: QUERY_WAIT_NOTIFY
-          value: '0'
-        - name: QUERY_WAIT_TIMEOUT
-          value: '0'
-        - name: SERVER_IDLE_TIMEOUT
-          value: '14400'
-        - name: SERVER_RESET_QUERY
-          value: DISCARD ALL
-        - name: STATS_PERIOD
-          value: '300'
         livenessProbe:
           tcpSocket:
             port: 5432
