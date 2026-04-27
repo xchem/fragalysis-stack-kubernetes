@@ -24,6 +24,15 @@ spec:
         image: {{ pgbouncer_image }}:{{ pgbouncer_tag }}
         ports:
         - containerPort: 5432
+        resources:
+          limits:
+{% if pgbouncer_cpu_limit %}
+            cpu: {{ pgbouncer_cpu_limit }}
+{% endif %}
+            memory: {{ pgbouncer_mem_limit }}
+          requests:
+            cpu: {{ pgbouncer_cpu_request }}
+            memory: {{ pgbouncer_mem_request }}
         envFrom:
         - secretRef:
             name: pgbouncer

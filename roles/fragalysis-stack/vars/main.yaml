@@ -45,6 +45,11 @@ stack_cpu_limit: 2
 stack_mem_limit: 8Gi
 stack_cpu_request: 1
 stack_mem_request: 8Gi
+# Worker ephemeral (emptyDir/local) storage.
+# Used for worker /tmp directory
+stack_ephemeral_request: 450Gi
+stack_ephemeral_limit: 450Gi
+stack_ephemeral_size_limit: 400Gi
 
 # Inject proposals for specific users?
 # This DEBUG feature not available for production stacks.
@@ -118,6 +123,11 @@ pgbouncer_log_disconnections: 1
 pgbouncer_max_client_conn: 1000
 pgbouncer_max_db_connections: 16
 pgbouncer_min_pool_size: 16
+
+pgbouncer_cpu_limit: 1
+pgbouncer_mem_limit: 128Mi
+pgbouncer_cpu_request: 1
+pgbouncer_mem_request: 128Mi
 
 redis_image: redis
 redis_image_tag: '7.4.1-alpine3.20'
