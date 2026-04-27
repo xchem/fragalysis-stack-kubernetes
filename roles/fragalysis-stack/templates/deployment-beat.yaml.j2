@@ -6,8 +6,10 @@ metadata:
   namespace: {{ stack_namespace }}
 spec:
   replicas: 1
+  revisionHistoryLimit: 10
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxUnavailable: 0  # Avoid Terminating and ContainerCreating at the same time
   selector:
     matchLabels:
       name: beat
