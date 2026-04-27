@@ -38,7 +38,7 @@ spec:
             name: pgbouncer
         env:
         - name: DEFAULT_POOL_SIZE
-          value: {{ pgbouncer_default_pool_size }}
+          value: '{{ pgbouncer_default_pool_size }}'
         - name: LOG_CONNECTIONS
           value: '{{ pgbouncer_log_connections }}'
         - name: LOG_DISCONNECTIONS
