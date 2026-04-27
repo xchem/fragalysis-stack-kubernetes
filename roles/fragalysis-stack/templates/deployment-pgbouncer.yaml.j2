@@ -22,6 +22,7 @@ spec:
       containers:
       - name: pgbouncer
         image: {{ pgbouncer_image }}:{{ pgbouncer_tag }}
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5432
         resources:
