@@ -124,10 +124,12 @@ pgbouncer_max_client_conn: 1000
 pgbouncer_max_db_connections: 16
 pgbouncer_min_pool_size: 16
 
-pgbouncer_cpu_limit: 1
-pgbouncer_mem_limit: 128Mi
-pgbouncer_cpu_request: 1
-pgbouncer_mem_request: 128Mi
+# During stress-testing of the stack (Apr 26) a concurrent download of 99 targets
+# resulted in the pgBouncer Pod using no more than 0.4 cores and 8MB RAM.
+pgbouncer_cpu_limit: 0.8
+pgbouncer_mem_limit: 64Mi
+pgbouncer_cpu_request: 0.1
+pgbouncer_mem_request: 8Mi
 
 redis_image: redis
 redis_image_tag: '7.4.1-alpine3.20'
