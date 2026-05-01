@@ -41,9 +41,9 @@ stack_sa_psp: im-core-unrestricted
 # If blank ('') there will be no certificate.
 stack_cert_issuer: staging
 
-stack_cpu_limit: 2
+stack_cpu_limit: ''
 stack_mem_limit: 8Gi
-stack_cpu_request: 1
+stack_cpu_request: 8
 stack_mem_request: 8Gi
 # Worker ephemeral (emptyDir/local) storage.
 # Used for worker /tmp directory
@@ -127,10 +127,8 @@ pgbouncer_max_db_connections: 16
 pgbouncer_min_pool_size: 16
 
 # During stress-testing of the stack (Apr 26) a concurrent download of 99 targets
-# resulted in the pgBouncer Pod using no more than 0.4 cores and 8MB RAM.
-pgbouncer_cpu_limit: 0.8
+# resulted in the pgBouncer Pod using no more than 8MB RAM.
 pgbouncer_mem_limit: 64Mi
-pgbouncer_cpu_request: 0.1
 pgbouncer_mem_request: 8Mi
 
 redis_image: redis
