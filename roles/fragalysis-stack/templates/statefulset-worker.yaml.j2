@@ -343,7 +343,7 @@ spec:
           claimName: media
       - name: ephemeral
         emptyDir:
-          sizeLimit: {{ worker_ephemeral_size_limit }}
+          sizeLimit: {{ worker_ephemeral_emptydir_size_limit }}
 {% if stack_use_private_key_fact is defined %}
       - name: ssh-key
         configMap:
