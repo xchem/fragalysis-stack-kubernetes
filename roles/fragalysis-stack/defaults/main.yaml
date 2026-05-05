@@ -142,6 +142,14 @@ stack_oidc_renew_id_token_expiry_minutes: 210
 # If desired, this should be set to "fragalysis.views.keycloak_logout"
 stack_oidc_op_logout_url_method: ''
 
+# Django API cache
+stack_cache_disabled: no
+# Leaving alias blank implies default cache (in-memory)
+# You can also choose 'redis'.
+stack_cache_middleware_alias: 'redis'
+# If you do not define a cache timeout the default is used (typically 28 days)
+stack_cache_middleware_timeout_minutes: ''
+
 # Email backend variables
 # If stack_email_user is set, then a full email configuration should be defined as follows:
 # e.g. For a gmail configuration
