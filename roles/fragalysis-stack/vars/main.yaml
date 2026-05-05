@@ -137,6 +137,17 @@ redis_image_tag: '7.4.1-alpine3.20'
 redis_conf_loglevel: notice
 redis_conf_maxmemory: 256mb
 
+# Memcached
+memcached_image: memcached
+memcached_image_tag: '1.6.41-alpine3.23'
+# The in-memory cache size limit (memcached's '-m' flag), in megabytes.
+memcached_memory_limit_mb: 1800
+# Pod CPU and Memory resources.
+memcached_cpu_limit: '1'
+memcached_mem_limit: ''
+memcached_cpu_request: 100m
+memcached_mem_request: 2Gi
+
 # General variables -----------------------------------------------------------
 
 # General timeout, used within the k8s module for wait duration
