@@ -74,9 +74,6 @@
   - name: Deploy redis
     import_tasks: deploy-redis.yaml
 
-  - name: Deploy memcached
-    import_tasks: deploy-memcached.yaml
-
   - name: Deploy the stack
     import_tasks: deploy-stack.yaml
 
