@@ -135,7 +135,7 @@ redis_image: redis
 redis_image_tag: '7.4.8-alpine3.21'
 # Redis configuration (ConfigMap) values
 redis_conf_loglevel: notice
-redis_conf_maxmemory: 256mb
+redis_conf_maxmemory: 2gb
 # The number of logical databases.
 # Valid DB indices are 0 .. (redis_conf_databases - 1).
 redis_conf_databases: 4
