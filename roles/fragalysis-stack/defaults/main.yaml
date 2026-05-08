@@ -144,9 +144,6 @@ stack_oidc_op_logout_url_method: ''
 
 # Django API cache
 stack_cache_disabled: no
-# Leaving alias blank implies default cache (in-memory)
-# You can also choose 'redis'.
-stack_cache_middleware_alias: 'redis'
 # If you do not define a cache timeout the default is used (typically 28 days)
 stack_cache_middleware_timeout_minutes: ''
 

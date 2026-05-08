@@ -120,10 +120,6 @@ spec:
         - name: CACHE_DISABLED
           value: 'yes'
 {% endif %}
-{% if stack_cache_middleware_alias %}
-        - name: CACHE_MIDDLEWARE_ALIAS
-          value: '{{ stack_cache_middleware_alias }}'
-{% endif %}
 {% if stack_cache_middleware_timeout_minutes %}
         - name: CACHE_MIDDLEWARE_TIMEOUT_MINUTES
           value: '{{ stack_cache_middleware_timeout_minutes }}'
