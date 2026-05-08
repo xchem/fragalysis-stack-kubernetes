@@ -116,8 +116,8 @@ spec:
           tcpSocket:
             port: 80
         env:
-{% if stack_cache_disabled %}
-        - name: CACHE_DISABLED
+{% if stack_cache_enabled %}
+        - name: CACHE_ENABLED
           value: 'yes'
 {% endif %}
 {% if stack_cache_middleware_timeout_minutes %}
