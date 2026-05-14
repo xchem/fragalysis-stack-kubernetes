@@ -60,7 +60,7 @@
     wait: yes
   loop:
   - ingress-auth.yaml.j2
-  when: taa_auth_url | string | length > 0
+  when: taa_auth_hostname | string | length > 0
 
 - name: Deploy authenticator stats Ingress
   k8s:
