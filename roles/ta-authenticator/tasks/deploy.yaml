@@ -54,6 +54,14 @@
   - deployment.yaml.j2
   - service-auth.yaml.j2
 
+- name: Deploy authenticator auth Ingress
+  k8s:
+    definition: "{{ lookup('template', item) }}"
+    wait: yes
+  loop:
+  - ingress-auth.yaml.j2
+  when: taa_auth_url | string | length > 0
+
 - name: Deploy authenticator stats Ingress
   k8s:
     definition: "{{ lookup('template', item) }}"

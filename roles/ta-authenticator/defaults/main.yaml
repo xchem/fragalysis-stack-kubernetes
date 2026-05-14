@@ -5,6 +5,8 @@ taa_state: 'present'
 # The namespace to deploy the authenticator to.
 taa_namespace: ta-authenticator
 
+# An Auth ingress
+taa_auth_url: ''
 # Add a stats Ingress?
 # Yes if a URL is provided.
 taa_stats_url: ''
