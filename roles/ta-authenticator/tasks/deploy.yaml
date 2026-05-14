@@ -69,4 +69,4 @@
   loop:
   - service-stats.yaml.j2
   - ingress-stats.yaml.j2
-  when: taa_stats_url | string | length > 0
+  when: taa_stats_hostname | string | length > 0

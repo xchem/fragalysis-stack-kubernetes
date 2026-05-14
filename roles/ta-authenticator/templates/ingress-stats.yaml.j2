@@ -13,11 +13,11 @@ spec:
 {% if taa_cert_issuer %}
   tls:
   - hosts:
-    - {{ taa_stats_url }}
+    - {{ taa_stats_hostname }}
     secretName: taa-stats-tls
 {% endif %}
   rules:
-  - host: {{ taa_stats_url }}
+  - host: {{ taa_stats_hostname }}
     http:
       paths:
       - path: /

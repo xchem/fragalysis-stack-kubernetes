@@ -6,10 +6,10 @@ taa_state: 'present'
 taa_namespace: ta-authenticator
 
 # An Auth ingress
-taa_auth_url: ''
+taa_auth_hostname: ''
 # Add a stats Ingress?
 # Yes if a URL is provided.
-taa_stats_url: ''
+taa_stats_hostname: ''
 taa_cert_issuer: production
 
 # The Target Access Authenticator image you want to deploy.
