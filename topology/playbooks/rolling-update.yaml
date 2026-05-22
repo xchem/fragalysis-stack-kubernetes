@@ -38,11 +38,23 @@
 
   tasks:
 
-  - name: Update apt cache and upgrade all packages
+  # The apt module updates the cache via python3-apt, which is stricter than
+  # the 'apt update' CLI: where the CLI prints a warning and carries on if one
+  # repo fails to fetch, python3-apt raises - reported as the unhelpful
+  # "Failed to update apt cache: unknown reason". Retry to ride out transient
+  # fetch failures; a persistent one points at a broken/unreachable source.
+  - name: Update apt cache
     ansible.builtin.apt:
       update_cache: true
-      upgrade: dist
       cache_valid_time: 0
+    register: apt_update
+    until: apt_update is succeeded
+    retries: 3
+    delay: 10
+
+  - name: Upgrade all packages
+    ansible.builtin.apt:
+      upgrade: dist
 
   - name: Remove unused dependencies
     ansible.builtin.apt:
