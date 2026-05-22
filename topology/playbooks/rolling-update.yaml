@@ -1,0 +1,214 @@
+---
+
+# Apply package updates to machines one at a time, rebooting each and
+# waiting for it to return to an operating state before moving to the next.
+#
+# 'serial: 1' guarantees a strict one-host-at-a-time rollout: a play does not
+# advance to the next host until the current one has updated, rebooted and
+# become reachable again. The ansible.builtin.reboot module performs the
+# reboot AND blocks until the host responds to a test command, so it handles
+# the "wait for it to come back" step for us.
+#
+# REBOOT ORDER
+# ------------
+# This file runs TWO plays in sequence so that the cluster stays healthy:
+#
+#   1. all *_worker hosts (drained first, then rebooted)
+#   2. everything else - etcd, control-plane and any non-kubernetes hosts
+#
+# The second play only starts once every worker in the first play is done, so
+# the etcd / control-plane nodes are always the last to be rebooted. The two
+# plays share one set of vars and one task list via YAML anchors (&name /
+# *name) to avoid duplication.
+#
+# Update every host in the inventory: -
+#
+#   ansible-playbook playbooks/rolling-update.yaml
+#
+# Update a single cluster (recommended - keeps kubectl on one API server): -
+#
+#   ansible-playbook playbooks/rolling-update.yaml --limit xch_dev
+#
+# Update a single host: -
+#
+#   ansible-playbook playbooks/rolling-update.yaml --limit 192.168.253.132
+#
+# By default a host is only rebooted when the package update says one is
+# required (/var/run/reboot-required). Force a reboot of every host with: -
+#
+#   ansible-playbook playbooks/rolling-update.yaml --extra-vars reboot_force=true
+#
+# KUBERNETES NODES
+# ----------------
+# Set 'drain_enabled=true' so that, immediately before a WORKER is rebooted, it
+# is cordoned and drained (its pods are evicted and rescheduled elsewhere) and,
+# once it is back and Ready, uncordoned. etcd and control-plane nodes are never
+# drained - they have no schedulable workload to move and draining them is both
+# unnecessary and disruptive. A worker is only drained when it is actually
+# going to reboot, so a no-op update does not disturb running pods.
+#
+# Run per-cluster so kubectl talks to the right API server: -
+#
+#   ansible-playbook playbooks/rolling-update.yaml --limit xch_prod \
+#       --extra-vars drain_enabled=true
+#
+# kubectl runs on each target host by default ('kubectl_host'). If your worker
+# nodes have no kubeconfig, point it at a control-plane node that does, e.g.: -
+#
+#   --extra-vars '{"drain_enabled": true, "kubectl_host": "192.168.253.8"}'
+#
+# 'kube_node_name' defaults to the host's hostname (how RKE registers nodes);
+# override it if your node names differ. 'kubectl_bin' lets you inject a
+# KUBECONFIG or alternate binary, e.g. kubectl_bin="KUBECONFIG=/root/.kube/config kubectl".
+#
+# ETCD HEALTH
+# -----------
+# On etcd nodes the cluster's health is checked BEFORE the member is rebooted
+# (so we never down a member while quorum is already fragile) and AFTER it
+# returns (the rollout blocks until the member has rejoined and the cluster is
+# healthy again). Because the second play is 'serial: 1', a failing post-reboot
+# health check halts the run before the next etcd node is touched.
+#
+# The default check assumes RKE1 - etcd running in a docker container with the
+# ETCDCTL_* environment preset, so etcdctl needs no cert flags. Override
+# 'etcd_health_cmd' for RKE2/k3s or a different layout, e.g.: -
+#
+#   --extra-vars 'etcd_health_cmd="/var/lib/rancher/rke2/bin/kubectl ... "'
+#
+# Disable the check entirely with --extra-vars etcd_health_check=false.
+
+- name: Rolling update and reboot (worker nodes)
+  hosts: "*_worker"
+  become: true
+  serial: 1
+  vars: &update_vars
+    # Reboot even if the system does not report one as required
+    reboot_force: false
+    # How long (seconds) to wait for a host to come back before failing
+    reboot_timeout: 600
+    # Cordon/drain (and later uncordon) worker nodes around the reboot
+    drain_enabled: false
+    # The kubernetes node name (RKE registers nodes by hostname)
+    kube_node_name: "{{ ansible_hostname }}"
+    # Host that kubectl commands are delegated to (needs cluster access)
+    kubectl_host: "{{ inventory_hostname }}"
+    # kubectl invocation - prefix with KUBECONFIG=... if needed
+    kubectl_bin: kubectl
+    # How long (seconds) to allow a drain to take before failing
+    drain_timeout: 300
+    # Verify etcd cluster health on etcd nodes (before downing a member and
+    # after it returns) so a degraded cluster halts the rollout
+    etcd_health_check: true
+    # Command used to check etcd health. Default assumes RKE1 (etcd in a
+    # docker container with ETCDCTL_* preset). Override for RKE2/k3s.
+    etcd_health_cmd: docker exec etcd etcdctl endpoint health --cluster
+    # Wait up to retries*delay seconds for etcd to be healthy after a reboot
+    etcd_health_retries: 30
+    etcd_health_delay: 10
+
+  tasks: &update_tasks
+
+  - name: Update apt cache and upgrade all packages
+    ansible.builtin.apt:
+      update_cache: true
+      upgrade: dist
+      cache_valid_time: 0
+
+  - name: Remove unused dependencies
+    ansible.builtin.apt:
+      autoremove: true
+
+  - name: Check whether a reboot is required
+    ansible.builtin.stat:
+      path: /var/run/reboot-required
+    register: reboot_required_file
+
+  - name: Decide whether this host will reboot
+    ansible.builtin.set_fact:
+      will_reboot: "{{ reboot_force or reboot_required_file.stat.exists }}"
+
+  - name: Determine this host's kubernetes role
+    ansible.builtin.set_fact:
+      is_worker: "{{ group_names | select('search', '_worker$') | list | length > 0 }}"
+      is_etcd: "{{ group_names | select('search', '_etcd$') | list | length > 0 }}"
+
+  # Drain only worker nodes, and only when they are about to reboot
+
+  - name: Cordon and drain the worker node
+    when: will_reboot | bool and drain_enabled | bool and is_worker | bool
+    delegate_to: "{{ kubectl_host }}"
+    block:
+
+    - name: Cordon the node (stop new pods scheduling here)
+      ansible.builtin.command: >-
+        {{ kubectl_bin }} cordon {{ kube_node_name }}
+      changed_when: true
+
+    - name: Drain the node (evict running pods)
+      ansible.builtin.command: >-
+        {{ kubectl_bin }} drain {{ kube_node_name }}
+        --ignore-daemonsets --delete-emptydir-data --force
+        --timeout={{ drain_timeout }}s
+      changed_when: true
+
+  # On etcd nodes, refuse to reboot unless the cluster is already healthy
+
+  - name: Verify the etcd cluster is healthy before rebooting this member
+    when: will_reboot | bool and etcd_health_check | bool and is_etcd | bool
+    ansible.builtin.command: "{{ etcd_health_cmd }}"
+    register: etcd_health_pre
+    changed_when: false
+    retries: 3
+    delay: "{{ etcd_health_delay }}"
+    until: etcd_health_pre.rc == 0
+
+  - name: Reboot and wait for the host to return to an operating state
+    when: will_reboot | bool
+    ansible.builtin.reboot:
+      reboot_timeout: "{{ reboot_timeout }}"
+      msg: Rebooting after package update (ansible rolling-update)
+
+  # Return the worker to service once it is back and Ready
+
+  - name: Wait for the node to be Ready and uncordon it
+    when: will_reboot | bool and drain_enabled | bool and is_worker | bool
+    delegate_to: "{{ kubectl_host }}"
+    block:
+
+    - name: Wait for the node to report Ready
+      ansible.builtin.command: >-
+        {{ kubectl_bin }} get node {{ kube_node_name }}
+        -o jsonpath={.status.conditions[?(@.type=="Ready")].status}
+      register: node_ready
+      changed_when: false
+      retries: 30
+      delay: 10
+      until: node_ready.stdout == "True"
+
+    - name: Uncordon the node (allow pods to schedule here again)
+      ansible.builtin.command: >-
+        {{ kubectl_bin }} uncordon {{ kube_node_name }}
+      changed_when: true
+
+  # On etcd nodes, block the rollout until the member has rejoined and the
+  # cluster is healthy again before advancing to the next host
+
+  - name: Wait for the etcd cluster to be healthy again
+    when: will_reboot | bool and etcd_health_check | bool and is_etcd | bool
+    ansible.builtin.command: "{{ etcd_health_cmd }}"
+    register: etcd_health_post
+    changed_when: false
+    retries: "{{ etcd_health_retries }}"
+    delay: "{{ etcd_health_delay }}"
+    until: etcd_health_post.rc == 0
+
+# Second play: etcd, control-plane and any non-kubernetes hosts. Runs only
+# after every worker above has finished. These are never drained (the
+# is_worker guard in the shared task list evaluates false for them).
+
+- name: Rolling update and reboot (etcd / control-plane / other)
+  hosts: "all:!*_worker"
+  become: true
+  serial: 1
+  vars: *update_vars
+  tasks: *update_tasks
