@@ -17,15 +17,15 @@
 
 - name: Shutdown stack, and redis
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     state: absent
     wait: yes
   loop:
-  - statefulset-stack
-  - statefulset-worker
-  - deployment-beat
-  - deployment-redis
-  - secret-django
+  - statefulset-stack.yaml.j2
+  - statefulset-worker.yaml.j2
+  - deployment-beat.yaml.j2
+  - deployment-redis.yaml.j2
+  - secret-django.yaml.j2
 
 - name: Wait for stack to disappearAdd commentMore actions
   k8s_info:
@@ -56,13 +56,16 @@
 
 - name: Shutdown database
   k8s:
-    definition: "{{ lookup('template', '{{ item }}.yaml.j2') }}"
+    definition: "{{ lookup('template', item) }}"
     state: absent
     wait: yes
   loop:
-  - statefulset-database
+  - statefulset-database.yaml.j2
+  - secret-pgbouncer.yaml.j2
+  - deployment-pgbouncer.yaml.j2
+  - service-pgbouncer.yaml.j2
 
-- name: Wait for database to disappearAdd commentMore actions
+- name: Wait for database to disappear
   k8s_info:
     kind: Pod
     name: database-0
