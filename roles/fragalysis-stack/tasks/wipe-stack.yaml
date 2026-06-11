@@ -60,10 +60,9 @@
     state: absent
     wait: yes
   loop:
-  - statefulset-database.yaml.j2
-  - secret-pgbouncer.yaml.j2
-  - deployment-pgbouncer.yaml.j2
   - service-pgbouncer.yaml.j2
+  - deployment-pgbouncer.yaml.j2
+  - statefulset-database.yaml.j2
 
 - name: Wait for database to disappear
   k8s_info:
