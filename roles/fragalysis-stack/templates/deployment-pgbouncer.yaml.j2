@@ -29,10 +29,10 @@ spec:
           limits:
             # PG Bouncer is single-threaded.
             # Having more than 1 core is pointless.
-            cpu: '1'
+            cpu: '{{ pgbouncer_cpu_limit }}'
             memory: {{ pgbouncer_mem_limit }}
           requests:
-            cpu: '1'
+            cpu: '{{ pgbouncer_cpu_request }}'
             memory: {{ pgbouncer_mem_request }}
         envFrom:
         - secretRef:
