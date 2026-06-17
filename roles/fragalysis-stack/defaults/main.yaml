@@ -269,6 +269,10 @@ stack_squonk2_unit_billing_day: 3
 stack_oidc_as_client_id: ''
 stack_oidc_dm_client_id: ''
 
+# Maximum download concurrency (the task concurrency to reject new Downloads)
+# Set to '0' to disable this check.
+stack_max_download_concurrency_percent: 80
+
 # Stack service status reporting.
 # A colon-separated list of service IDs whose status is expected to be returned
 # by the service status API. This is provided to the container via the

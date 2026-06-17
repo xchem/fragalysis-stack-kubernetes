@@ -364,6 +364,10 @@ spec:
         - name: BE_DOCUMENTATION_URL_FORMAT_STRING
           value: '{{ be_documentation_url_format_string }}'
 {% endif %}
+{% if stack_max_download_concurrency_percent %}
+        - name: MAX_DOWNLOAD_CONCURRENCY_PERCENT
+          value: '{{ stack_max_download_concurrency_percent }}'
+{% endif %}
         - name: TMPDIR
           value: /tmp
         # The playbook date/time
