@@ -195,7 +195,6 @@
       definition: "{{ lookup('template', item) }}"
       wait: yes
     loop:
-    - secret-pgbouncer.yaml.j2
     - deployment-pgbouncer.yaml.j2
     - service-pgbouncer.yaml.j2
 
