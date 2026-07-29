@@ -41,10 +41,10 @@ stack_sa_psp: im-core-unrestricted
 # If blank ('') there will be no certificate.
 stack_cert_issuer: staging
 
-stack_cpu_limit: 1
-stack_mem_limit: 4Gi
+stack_cpu_limit:
+stack_mem_limit: 8Gi
 stack_cpu_request: 1
-stack_mem_request: 4Gi
+stack_mem_request: 8Gi
 # Worker ephemeral (emptyDir/local) storage.
 # Used for worker /tmp directory
 stack_ephemeral_request: 100Gi
