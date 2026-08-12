@@ -12,6 +12,7 @@ Administration
     cloud-stfc
     rancher
     managing-cluster-access
+    claude-skills-cluster-access
     nfs-configuration
     backups
     off-cluster-backup-locations
@@ -27,3 +28,4 @@ Administration
     ad-hoc-maintenance
     release-process
     release-process-v1-hotfixes
+    claude-skills-release-process
