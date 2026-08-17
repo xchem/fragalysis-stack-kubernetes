@@ -19,8 +19,8 @@ taa_image_tag: '1.4.4'
 
 taa_cpu_request: 10m
 taa_cpu_limit: 1
-taa_memory_request: 128Mi
-taa_memory_limit: 128Mi
+taa_memory_request: 512Mi
+taa_memory_limit: 512Mi
 
 # Image pull policy?
 # If not set it's automatic.
