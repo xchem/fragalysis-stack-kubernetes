@@ -10,6 +10,7 @@ Development Architecture
     development-ci
     development-cd
     ci-logic
+    kubeview-diagrams
 
 ..  toctree::
     :maxdepth: 2
