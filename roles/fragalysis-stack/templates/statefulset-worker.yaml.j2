@@ -108,7 +108,7 @@ spec:
         - name: DEPLOYMENT_MODE
           value: '{{ stack_deployment_mode }}'
         - name: NEO4J_BOLT_URL
-          value: bolt://neo4j:test@{{ graph_hostname }}:7687
+          value: '{{ graph_scheme }}://neo4j:test@{{ graph_hostname }}:7687'
         - name: NEO4J_QUERY
           value: '{{ graph_query }}'
         - name: NEO4J_AUTH
