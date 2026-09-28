@@ -318,3 +318,13 @@ stack_ta_auth_query_key: ''
 # The Graph instance to connect to.
 graph_hostname: ''
 graph_password: ''
+
+# An optional Bolt URI scheme for the graph connection (e.g. 'bolt+s').
+# Set it for a graph that requires an encrypted connection,
+# where 'graph_hostname' must be the hostname in the graph's certificate
+# (e.g. 'graph-x.xchem-dev.diamond.ac.uk'). The stack's NEO4J_QUERY then becomes
+# '<graph_scheme>://<graph_hostname>:7687' (this needs a backend image using
+# xchem-fragutils 2.1.0 or later). If blank, NEO4J_QUERY is just 'graph_hostname'
+# (a plain 'bolt://' connection), which suits every backend image.
+graph_scheme: ''
+graph_query: "{{ graph_scheme ~ '://' ~ graph_hostname ~ ':7687' if graph_scheme else graph_hostname }}"
