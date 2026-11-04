@@ -1,0 +1,35 @@
+---
+
+# Check the media storage variables.
+# The backend also checks these at start-up (viewer.E002/E003/E004),
+# but here we find the problem before we deploy anything.
+
+- name: Assert media storage variables
+  assert:
+    that:
+    - stack_media_storage in ['FILESYSTEM', 'S3']
+    - stack_media_tmp_max_age_h|int >= 1
+    - stack_media_s3_url_expiry_s|int > 0
+    - stack_media_transfer_threads|int > 0
+    fail_msg: >-
+      stack_media_storage must be FILESYSTEM or S3,
+      stack_media_tmp_max_age_h must be 1 or more,
+      and stack_media_s3_url_expiry_s and stack_media_transfer_threads
+      must be more than 0
+
+- name: Assert S3 media storage variables
+  assert:
+    that:
+    - stack_media_s3_bucket_name|string|length > 0
+    fail_msg: >-
+      You must set stack_media_s3_bucket_name for S3 media storage
+  when: stack_media_storage == 'S3'
+
+- name: Assert S3 media keys
+  assert:
+    that:
+    - stack_media_s3_secret_access_key|string|length > 0
+    fail_msg: >-
+      You set stack_media_s3_access_key_id,
+      so you must also set stack_media_s3_secret_access_key
+  when: stack_media_s3_access_key_id|string|length > 0

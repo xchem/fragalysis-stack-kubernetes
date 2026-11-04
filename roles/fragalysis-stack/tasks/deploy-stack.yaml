@@ -100,6 +100,14 @@
   - stack_xchem_host is defined
   - stack_xchem_host|string != 'SetMe'
 
+# Media storage (S3) secrets... (if an access key is defined)
+
+- name: Write media-s3 secrets
+  k8s:
+    definition: "{{ lookup('template', 'secret-media-s3.yaml.j2') }}"
+    wait: yes
+  when: stack_media_s3_access_key_id|string|length > 0
+
 # Now the stack, its service and ingress
 # and give the user their stack URL.
 

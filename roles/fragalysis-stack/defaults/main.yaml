@@ -273,6 +273,47 @@ stack_oidc_dm_client_id: ''
 # Set to '0' to disable this check.
 stack_max_download_concurrency_percent: 80
 
+# Media storage.
+# The backend stores media on the filesystem ('FILESYSTEM')
+# or in an S3 bucket ('S3'). The stack and worker get the same values,
+# because both read and write the same media.
+#
+# For S3 you must set 'stack_media_s3_bucket_name'. You usually also set
+# the endpoint, the two keys and (only if the provider needs one) the region.
+# The endpoint must be a fully qualified host name in Kubernetes,
+# because the nginx resolver does not use search domains.
+# The keys go into a 'media-s3' Secret. If the keys are empty,
+# boto3 tries its usual sources (AWS_* variables and others).
+#
+# In S3 mode the stack and worker use '/tmp' (an emptyDir) for bundles
+# and downloads. Make sure that 'stack_ephemeral_emptydir_size_limit' and
+# 'worker_ephemeral_emptydir_size_limit' are about twice the largest one.
+stack_media_storage: FILESYSTEM
+stack_media_s3_bucket_name: ''
+stack_media_s3_endpoint_url: ''
+stack_media_s3_access_key_id: ''
+stack_media_s3_secret_access_key: ''
+stack_media_s3_region_name: ''
+# An optional key prefix in the bucket (for example 'media'),
+# or a name for each stack if stacks share a bucket.
+stack_media_s3_location: ''
+# The life of a presigned URL (seconds).
+# Only nginx uses these URLs, and it uses them at once,
+# so a short value (for example 300) is safer.
+stack_media_s3_url_expiry_s: 3600
+# The number of parallel S3 transfers,
+# and the size of the client's connection pool.
+stack_media_transfer_threads: 16
+# The age (hours) after which 'tmp/' objects are deleted (minimum 1).
+# The stack-0 scheduler does this clean-up.
+stack_media_tmp_max_age_h: 48
+
+# The stack's nginx resolver (one or more addresses).
+# Usually leave it empty. The stack then uses the first nameserver
+# in the Pod's '/etc/resolv.conf'. Set it only if that nameserver
+# is not one that nginx can use.
+stack_nginx_resolver: ''
+
 # Stack service status reporting.
 # A colon-separated list of service IDs whose status is expected to be returned
 # by the service status API. This is provided to the container via the

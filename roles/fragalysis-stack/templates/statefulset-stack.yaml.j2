@@ -368,6 +368,50 @@ spec:
         - name: MAX_DOWNLOAD_CONCURRENCY_PERCENT
           value: '{{ stack_max_download_concurrency_percent }}'
 {% endif %}
+        # Media storage (FILESYSTEM or S3).
+        # The stack and worker must use the same values.
+        - name: MEDIA_STORAGE
+          value: '{{ stack_media_storage }}'
+{% if stack_media_s3_bucket_name %}
+        - name: MEDIA_S3_BUCKET_NAME
+          value: '{{ stack_media_s3_bucket_name }}'
+{% endif %}
+{% if stack_media_s3_endpoint_url %}
+        - name: MEDIA_S3_ENDPOINT_URL
+          value: '{{ stack_media_s3_endpoint_url }}'
+{% endif %}
+{% if stack_media_s3_access_key_id %}
+        # Extracted from media-s3 secrets...
+        #
+        - name: MEDIA_S3_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: media-s3
+              key: access_key_id
+        - name: MEDIA_S3_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: media-s3
+              key: secret_access_key
+{% endif %}
+{% if stack_media_s3_region_name %}
+        - name: MEDIA_S3_REGION_NAME
+          value: '{{ stack_media_s3_region_name }}'
+{% endif %}
+{% if stack_media_s3_location %}
+        - name: MEDIA_S3_LOCATION
+          value: '{{ stack_media_s3_location }}'
+{% endif %}
+        - name: MEDIA_S3_URL_EXPIRY_S
+          value: '{{ stack_media_s3_url_expiry_s }}'
+        - name: MEDIA_TRANSFER_THREADS
+          value: '{{ stack_media_transfer_threads }}'
+        - name: MEDIA_TMP_MAX_AGE_H
+          value: '{{ stack_media_tmp_max_age_h }}'
+{% if stack_nginx_resolver %}
+        - name: NGINX_RESOLVER
+          value: '{{ stack_nginx_resolver }}'
+{% endif %}
         - name: TMPDIR
           value: /tmp
         # The playbook date/time
