@@ -18,6 +18,6 @@ Why? This project started with the ability to deploy NFS, Rancher, and run inves
 tooling, and many of these features and services are no longer in use.
 
 ## Site file naming convention
-The site file naming convention is `site-<role>[-<task>].yaml`. So, to deploy the
+The site file naming convention is `site-<role>[_<task>].yaml`. So, to deploy the
 stack one runs the `site-fragalysis-stack.yaml`. To execute the `update` tasks
-in the Stacks' **Role** you'd run `site-fragalysis-stack-update.yaml`.
+in the Stacks' **Role** you'd run `site-fragalysis-stack_update.yaml`.
